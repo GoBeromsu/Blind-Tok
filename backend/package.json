@@ -1,0 +1,19 @@
+{
+  "name": "blindTok-Backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon"
+  },
+  "dependencies": {
+    "fastify": "^4.15.0",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.10",
+    "tsconfig-paths": "^4.1.2"
+  }
+}
