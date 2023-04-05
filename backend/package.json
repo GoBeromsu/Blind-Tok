@@ -10,11 +10,14 @@
     "cross-env": "^7.0.3",
     "fastify": "^4.15.0",
     "nodemon": "^2.0.22",
+    "pg": "^8.10.0",
     "ts-node": "^10.9.1",
+    "typeorm": "^0.3.12",
     "typescript": "^5.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.15.10",
+    "prettier": "^2.8.7",
     "tsconfig-paths": "^4.1.2"
   }
 }
