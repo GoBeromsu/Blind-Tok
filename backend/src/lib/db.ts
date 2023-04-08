@@ -7,7 +7,7 @@ let _datasource: DataSource;
 export const initDatasource = async () => {
   if (_datasource == null) {
     const datasource = new DataSource({
-      type:"postgres",
+      type: "postgres",
       host,
       port,
       username,
@@ -29,4 +29,20 @@ export const initDatasource = async () => {
     }
   }
   return _datasource;
+};
+export const txProcess = async (callback: (manager: EntityManager) => Promise<any>) => {
+  const queryRunner = _datasource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+  try {
+    const manager: EntityManager = queryRunner.manager;
+    const result: any = await callback(manager);
+    await queryRunner.commitTransaction();
+    return result;
+  } catch (err: any) {
+    await queryRunner.rollbackTransaction();
+    throw Error(err);
+  } finally {
+    await queryRunner.release();
+  }
 };
