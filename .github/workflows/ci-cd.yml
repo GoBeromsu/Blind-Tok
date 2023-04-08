@@ -25,9 +25,11 @@ jobs:
       #   working-directory: ./backend
       #   run: yarn install
 
-      - name: Install dependencies for frontend
-        working-directory: ./frontend
-        run: npm ci
+
+    - name: Install dependencies for frontend
+      working-directory: ./frontend
+      run: npm install
+
 
       # - name: Run backend
       #   working-directory: ./backend
