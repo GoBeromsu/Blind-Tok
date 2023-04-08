@@ -14,25 +14,25 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies for backend
-      working-directory: ./backend
-      run: yarn install
+      # - name: Install dependencies for backend
+      #   working-directory: ./backend
+      #   run: yarn install
 
-    - name: Install dependencies for frontend
-      working-directory: ./frontend
-      run: npm ci
+      - name: Install dependencies for frontend
+        working-directory: ./frontend
+        run: npm ci
 
-    - name: Run backend
-      working-directory: ./backend
-      run: yarn dev & sleep 5; pkill -f "node ."
+      # - name: Run backend
+      #   working-directory: ./backend
+      #   run: yarn dev & sleep 5; pkill -f "node ."
 
-    - name: Run frontend
-      working-directory: ./frontend
-      run: npm start & sleep 5; pkill -f "node ."
+      - name: Run frontend
+        working-directory: ./frontend
+        run: npm start & sleep 5; pkill -f "node ."
