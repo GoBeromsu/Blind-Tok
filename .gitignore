@@ -35,3 +35,4 @@ server/dist
 server/src/test.ts
 frontend/tsconfig.tsbuildinfo
 backend/config/adam.json
+*.code-workspace
