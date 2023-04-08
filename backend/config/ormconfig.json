@@ -6,8 +6,8 @@
   "password": "1234",
   "database": "adam",
   "synchronize": true,
-  "logging": false,
-  "entities": ["src/entity/**/*.ts"],
+  "logging": true,
+  "entities": ["src/app/**/entity/*.ts"],
   "migrations": ["src/migration/**/*.ts"],
   "subscribers": ["src/subscriber/**/*.ts"],
   "cli": {"entitiesDir": "src/entity", "migrationsDir": "src/migration", "subscribersDir": "src/subscriber"}

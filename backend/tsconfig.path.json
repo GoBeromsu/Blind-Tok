@@ -3,7 +3,12 @@
     "baseUrl": ".",
     "paths": {
       "@config/*": ["config/*"],
-      "@lib/*": ["src/lib/*"]
+      "@lib/*": ["src/lib/*"],
+      "@user/*": ["src/app/user/*"],
+      "@friends/*": ["src/app/friends/*"],
+      "@chat/*": ["src/app/chat/*"],
+      "@audio/*": ["src/app/audio/*"],
+      "@common/*": ["src/app/common/*"]
     }
   }
 }
