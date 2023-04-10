@@ -1,23 +1,42 @@
 # List of src_Directory PATHs
 <pre>
   <code>
-    src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
-    ├── front_directory_structure.txt
-    ├── index.css
-    ├── index.js
-    ├── reportWebVitals.js
-    ├── setupTests.js
-    ├── components
-    ├── pages
-    ├── services
-    ├── store
-    │   ├── index.js
-    │   ├── actions
-    │   └── reducers
-    └── utils
+src
+│  index.css
+│  index.js
+│  reportWebVitals.js
+│  setupTests.js
+│
+├─components
+│  │  App.js
+│  │  AudioPlayer.js
+│  │  BoxComponent.js
+│  │  Br.js
+│  │  Button.js
+│  │  CircularImage.js
+│  │  FriendPage.js
+│  │  Header.js
+│  │  MainComponent.js
+│  │  MessageBox.js
+│  │  ResponsiveComponent.js
+│  │  SideBar.js
+│  │  UserProfile.js
+│  │  VideoPlayer.js
+│  │
+│  └─style
+│          App.css
+│          AudioPlayer.css
+│          BoxComponent.css
+│          CircularImage.css
+│          MainComponent.css
+│          ResponsiveImage.css
+│          SideBar.css
+│
+├─image
+│      l.png
+│
+└─store
+        index.js
   <code>
 <pre>
 이 구조에서 각 폴더의 용도는 다음과 같습니다:
