@@ -1,0 +1,6 @@
+﻿.maincomponent {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-item: center;
+}

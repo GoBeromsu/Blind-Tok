@@ -1,0 +1,17 @@
+﻿.audio-panel {
+    display: flex;
+    justify-content: center;
+}
+
+.audio-player {
+    background-image: url('../image/l.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 20px;
+    border-radius: 30px;
+    height: 500px;
+    width: 700px;
+}

@@ -1,21 +1,25 @@
 # List of src_Directory PATHs
-src
-├── App.css
-├── App.js
-├── App.test.js
-├── front_directory_structure.txt
-├── index.css
-├── index.js
-├── reportWebVitals.js
-├── setupTests.js
-├── components
-├── pages
-├── services
-├── store
-│   ├── index.js
-│   ├── actions
-│   └── reducers
-└── utils
+<pre>
+  <code>
+    src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── front_directory_structure.txt
+    ├── index.css
+    ├── index.js
+    ├── reportWebVitals.js
+    ├── setupTests.js
+    ├── components
+    ├── pages
+    ├── services
+    ├── store
+    │   ├── index.js
+    │   ├── actions
+    │   └── reducers
+    └── utils
+  <code>
+<pre>
 이 구조에서 각 폴더의 용도는 다음과 같습니다:
 
 components: 재사용 가능한 리액트 컴포넌트를 저장합니다.

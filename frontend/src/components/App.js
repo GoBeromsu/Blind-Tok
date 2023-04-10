@@ -1,12 +1,16 @@
-import React, { Component } from 'react';
+import React,{ useEffect, useState ,Component } from 'react';
+
 import { connect } from 'react-redux';
-import './App.css';
+import './style/App.css';
+import SideBar from './SideBar';
+import ToggleSidebar from './ToggleSidebar'
 
 class App extends Component {
   render() {
     return (
       <div>
-        
+            { <SideBar/>}
+            <ToggleSidebar/>
       </div>
     );
   }
