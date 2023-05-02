@@ -1,0 +1,7 @@
+﻿.ll < .box {
+    width: 500px;
+    height: 40px;
+    background-color: greenyellow;
+    border-color: black;
+    border-style: solid;
+}
