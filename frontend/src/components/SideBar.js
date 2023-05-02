@@ -5,6 +5,7 @@ import image from "../image/l.png";
 import "./style/SideBar.css";
 import Br from "./Br";
 import MessageBox from "./MessageBox";
+import BTlogo from "./BTlogo";
 
 const SideBar = () => {
   const handleClick = () => {
@@ -32,13 +33,14 @@ const SideBar = () => {
       <div className="test">
         <div className="sidebar_main">
           <p>
-            <h3>아담 : 블라인드 챗</h3>
-            <hr />
+            <BTlogo style={{display: "flex", alignItems: "center"}} />
+            <Br />
           </p>
           <C_Image src={image} alt="프로필 이미지" size="130" />
           <br />
-          <Br />
+
           <MessageBox />
+          <Br />
           <div className="item">
             <Button onClick={handleClick} label="친구 목록" />
             <br />

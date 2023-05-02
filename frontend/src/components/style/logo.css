@@ -1,0 +1,16 @@
+svg {
+  fill: none;
+  width: 200px;
+  stroke-width: 2px;
+}
+path {
+  stroke: #000;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: path 5000ms forwards;
+}
+@keyframes path {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

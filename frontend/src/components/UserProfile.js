@@ -72,10 +72,10 @@ const UserProfile = () => {
     const fetchProfile = async () => {
       // API 호출 결과를 사용하여 setProfile 업데이트
       setProfile({
-        name: "홍길동",
-        email: "hong.gildong@example.com",
-        phone: "010-1234-5678",
-        bio: "안녕하세요! 저는 홍길동입니다.",
+        name: "추우엽",
+        email: "cndnduq@gmail.com",
+        phone: "010-8703-5923",
+        bio: "나는야 우엽이",
       });
     };
 
@@ -99,22 +99,22 @@ const UserProfile = () => {
 
   return (
     <Container>
-      <Title>사용자 프로필</Title>
+      <Title>User Profile</Title>
       <Form onSubmit={handleSubmit}>
         <Label>
-          이름:
+          Name
           <Input type="text" name="name" value={profile.name} onChange={handleChange} readOnly={!isEditing} />
         </Label>
         <Label>
-          이메일:
+          E-mail
           <Input type="email" name="email" value={profile.email} onChange={handleChange} readOnly={!isEditing} />
         </Label>
         <Label>
-          전화번호:
+          Phone-number
           <Input type="tel" name="phone" value={profile.phone} onChange={handleChange} readOnly={!isEditing} />
         </Label>
         <Label>
-          소개:
+          소개글
           <Textarea name="bio" value={profile.bio} onChange={handleChange} readOnly={!isEditing} />
         </Label>
         {isEditing ? (

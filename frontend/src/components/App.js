@@ -1,5 +1,4 @@
 import React, {useEffect, useState, Component} from "react";
-
 import {connect} from "react-redux";
 import "./style/App.css";
 import SideBar from "./SideBar";
@@ -26,6 +25,7 @@ const App = () => {
     setSidebarWidth(windowWidth <= 768 ? 50 : 332);
     setContentWidth(windowWidth - sidebarWidth);
   }, [windowWidth, sidebarWidth]);
+
   return (
     <div className="container">
       <div className="sidebar" style={{width: sidebarWidth, height: "100vh"}}>

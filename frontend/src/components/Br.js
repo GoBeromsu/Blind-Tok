@@ -6,7 +6,6 @@ const Br = () => {
       <br />
       <br />
       <br />
-      <br />
     </div>
   );
 };
