@@ -1,18 +1,9 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import User from "./User";
 import {COLUMN_TYPE_BIGINT} from "@common/CommonConstants";
 
 @Entity()
-export default class FriendRelation extends BaseEntity {
+export default class UserRelation extends BaseEntity {
   @PrimaryGeneratedColumn({type: COLUMN_TYPE_BIGINT})
   id: number;
 
