@@ -2,7 +2,7 @@ import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, One
 import UserMeta from "./UserMeta";
 import UserRelation from "./UserRelation";
 import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
-import Audio from "@audio/index";
+import Audio from "@audio/entity/Audio";
 
 @Entity()
 export default class User extends BaseEntity {
