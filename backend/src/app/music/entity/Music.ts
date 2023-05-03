@@ -3,9 +3,9 @@ import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
 import User from "@user/entity/User";
 
 @Entity()
-export default class Audio extends BaseEntity {
+export default class Music extends BaseEntity {
   @PrimaryGeneratedColumn({type: COLUMN_TYPE_BIGINT})
-  audioid: number;
+  musicid: number;
 
   @Column()
   userid: number;
@@ -16,13 +16,13 @@ export default class Audio extends BaseEntity {
   filePath: string;
 
   @Column({type: COLUMN_TYPE_TEXT})
-  mime_type: string;
+  mimeType: string;
 
   @Column({type: COLUMN_TYPE_BIGINT})
   duration: number;
 
   @Column({type: COLUMN_TYPE_BIGINT})
-  file_size: number;
+  fileSize: number;
 
   @ManyToOne(() => User, user => user.userid)
   @JoinColumn({name: "userid"})
