@@ -2,6 +2,7 @@ import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, One
 import UserMeta from "./UserMeta";
 import UserRelation from "./UserRelation";
 import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
+import Music from "../../music/entity/Music";
 
 @Entity()
 export default class User extends BaseEntity {
@@ -22,6 +23,9 @@ export default class User extends BaseEntity {
 
   @OneToMany(() => UserRelation, relation => relation.user)
   friends: UserRelation;
+
+  @OneToMany(() => Music, music => music.user)
+  music: Music;
 
   @CreateDateColumn()
   createdate: Date;
