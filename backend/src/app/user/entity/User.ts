@@ -20,8 +20,8 @@ export default class User extends BaseEntity {
   @OneToOne(() => UserMeta, meta => meta.user)
   meta: UserMeta;
 
-  @OneToMany(() => UserRelation, friendRelation => friendRelation.user)
-  friends: UserRelation[];
+  @OneToMany(() => UserRelation, relation => relation.user)
+  friends: UserRelation;
 
   @CreateDateColumn()
   createdate: Date;
