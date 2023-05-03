@@ -5,16 +5,22 @@ import {COLUMN_TYPE_BIGINT} from "@common/CommonConstants";
 @Entity()
 export default class UserRelation extends BaseEntity {
   @PrimaryGeneratedColumn({type: COLUMN_TYPE_BIGINT})
-  id: number;
+  relationid: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({name: "user_id"})
+  @Column()
+  userid: number;
+  @Column()
+  friendid: number;
+
+  @ManyToOne(() => User, user => user.userid)
+  @JoinColumn({name: "userid"})
   user: User;
 
-  @ManyToOne(() => User)
-  @JoinColumn({name: "friend_id"})
-  friend: User;
+  @ManyToOne(() => User, user => user.friends)
+  @JoinColumn({name: "friendid"})
+  friend: User[];
 
+  //TODO: enum 값 상수로 빼야 한다
   @Column({type: "enum", enum: ["normal", "ban"], default: "normal"})
   status: string;
 
