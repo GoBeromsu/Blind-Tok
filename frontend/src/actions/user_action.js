@@ -2,11 +2,15 @@ import {LOGIN_USER, REGISTER_USER} from "./types";
 import axios from "axios";
 
 export function registerUser(dataToSubmit) {
-  // axios를 이용해 login 요청을 보내고 response.data를 반환하여 request에 넣어준다.
-  const request = axios.post("/api/users/register", dataToSubmit).then(response => response.data);
+  return async dispatch => {
+    const response = await axios.post("/api/users/register", dataToSubmit);
+    const data = response.data;
 
-  return {
-    type: REGISTER_USER,
-    payload: request,
+    dispatch({
+      type: REGISTER_USER,
+      payload: data,
+    });
+
+    return data;
   };
 }

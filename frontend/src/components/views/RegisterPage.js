@@ -7,10 +7,8 @@ function RegisterPage() {
   // redux의 dispatch
   const dispatch = useDispatch();
 
-  // react-router-dom v6에서 useHistory 대신 사용
   const navigate = useNavigate();
 
-  // react hook에서 state 사용
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Name, setName] = useState("");
