@@ -1,6 +1,5 @@
 import {txProcess} from "@lib/db";
 import Music from "../entity/Music";
-import User from "@user/entity/User";
 
 export async function getMusicInfo(musicid: number) {
   return await Music.findOne({where: {musicid}, relations: {user: true}});
@@ -26,11 +25,10 @@ export async function addMusic({
   const nickname = name;
   return await txProcess(async manager => {
     const repository = manager.getRepository(Music);
-    const result = repository.save({userid, fileName, filePath, mimeType, duration, fileSize});
-    return result;
+    return repository.save({userid, fileName, filePath, mimeType, duration, fileSize});
   });
 }
-export async function editUser(
+export async function editMusic(
   musicid: number,
   {
     userid,
