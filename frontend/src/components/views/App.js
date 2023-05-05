@@ -1,8 +1,10 @@
 import React, {useEffect, useState, Component} from "react";
 import {connect} from "react-redux";
-import "./style/App.css";
+import "../style/App.css";
 import SideBar from "./SideBar";
 import UserProfile from "./UserProfile";
+import RegisterPage from "./RegisterPage";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
 const App = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -32,7 +34,12 @@ const App = () => {
         <SideBar />
       </div>
       <div className="content" style={{width: contentWidth, height: "100vh"}}>
-        <UserProfile />
+        {/* <UserProfile /> */}
+        <Router>
+          <Routes>
+            <Route path="/" element={<RegisterPage />} />
+          </Routes>
+        </Router>
       </div>
     </div>
   );

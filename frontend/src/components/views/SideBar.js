@@ -1,8 +1,8 @@
 ﻿import React, {useState, useEffect} from "react";
 import Button from "./Button";
 import C_Image from "./CircularImage";
-import image from "../image/l.png";
-import "./style/SideBar.css";
+import image from "../../image/l.png";
+import "../style/SideBar.css";
 import Br from "./Br";
 import MessageBox from "./MessageBox";
 import BTlogo from "./BTlogo";
