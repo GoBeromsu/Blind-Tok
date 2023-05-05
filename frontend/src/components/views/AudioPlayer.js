@@ -18,7 +18,7 @@ const AudioPlayer = ({src, type}) => {
   }, []);
 
   return (
-    <div className="audio-panel" style={{width: `${windowWidth - 300}px`}}>
+    <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
       <div className="audio-player">
         <audio controls>
           <source src={src} type={type} />

@@ -6,6 +6,7 @@ import "../style/SideBar.css";
 import Br from "./Br";
 import MessageBox from "./MessageBox";
 import BTlogo from "./BTlogo";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   const handleClick = () => {
@@ -29,6 +30,7 @@ const SideBar = () => {
     };
   }, []);
   return (
+    <div style={{display : "flex"}}>
     <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
       <div className="test">
         <div className="sidebar_main">
@@ -42,32 +44,29 @@ const SideBar = () => {
           <MessageBox />
           <Br />
           <div className="item">
-            <Button onClick={handleClick} label="친구 목록" />
-            <br />
-          </div>
-          <br />
-          <br />
-          <div className="item">
-            <Button onClick={handleClick} label="검색" />
-          </div>
-          <div className="item">
-            <Button onClick={handleClick} label="채팅" />
-            <br />
-          </div>
-          <div className="item">
-            <Button onClick={handleClick} label="알림" />
-            <br />
-          </div>
-          <div className="item">
-            <Button onClick={handleClick} label="설정" />
-            <br />
-          </div>
-          <div className="item">
-            <Button onClick={handleClick} label="로그아웃" />
-            <br />
-          </div>
-        </div>
+                <Link to="/friend"><Button onClick={handleClick} label="친구 목록" /></Link><br />
+            </div>
+            <br/><br/>
+            <div className="item">
+                <Button onClick={handleClick} label="검색" />
+            </div>
+            <div className="item">
+                <Link to="/chat"><Button onClick={handleClick} label="채팅" /></Link><br />
+            </div>
+            <div className="item">
+                <Button onClick={handleClick} label="알림" /><br />
+            </div>
+            <div className="item">
+                <Button onClick={handleClick} label="설정" /><br />
+            </div>
+            <div className="item">
+                <Button onClick={handleClick} label="로그아웃" /><br />
+            </div>
+            </div>
       </div>
+    </div>
+
+    <Outlet/>
     </div>
   );
 };

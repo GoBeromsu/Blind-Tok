@@ -1,10 +1,14 @@
 import React, {useEffect, useState, Component} from "react";
-import {connect} from "react-redux";
+//import {connect} from "react-redux";
 import "../style/App.css";
 import SideBar from "./SideBar";
 import UserProfile from "./UserProfile";
-import RegisterPage from "./RegisterPage";
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import MainComponent from './MainComponent';
+import FriendList from './FriendList';
+import FriendPage from './FriendPage';
+import ChatList from './ChatList';
+//import RegisterPage from "./RegisterPage";
+import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
 
 const App = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -30,25 +34,30 @@ const App = () => {
 
   return (
     <div className="container">
-      <div className="sidebar" style={{width: sidebarWidth, height: "100vh"}}>
-        <SideBar />
-      </div>
-      <div className="content" style={{width: contentWidth, height: "100vh"}}>
-        {/* <UserProfile /> */}
-        <Router>
-          <Routes>
-            <Route path="/" element={<RegisterPage />} />
-          </Routes>
-        </Router>
-      </div>
+      <Router>
+        <Routes> 
+            <Route path="/" element={<SideBar />}>
+                <Route index element={<MainComponent />} />
+                <Route path="/friend" element={<FriendList />} />
+		            <Route path="/chat" element={<ChatList />} />
+            </Route>
+        
+            <Route path="/friend_s" element={<SideBar />}>
+                <Route path=":friendid" element={<MainComponent/>}/>
+            </Route>
+ 
+            <Route path="/ChatRoom" element={<SideBar />}>
+                {/*<Route path=":friendid" element={</>}/>*/}
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+      
     </div>
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    counter: state.counter,
-  };
-};
 
-export default connect(mapStateToProps)(App);
+
+export default App;
