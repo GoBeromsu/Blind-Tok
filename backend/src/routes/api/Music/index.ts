@@ -1,8 +1,5 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
-import friend from "../User/friend";
-import {addUser, editUser, getUserInfo, getUsersInfo} from "@user/service/UserService";
 import {addMusic, editMusic, getMusicInfo, getMusicsInfo} from "../../../app/music/service/MusicService";
-
 export default async function (fastify: FastifyInstance) {
   fastify.get("/", async (req: FastifyRequest, reply: FastifyReply) => {
     const musics = await getMusicsInfo();
@@ -13,25 +10,23 @@ export default async function (fastify: FastifyInstance) {
     const music = await getMusicInfo(musicid);
     reply.send(music);
   });
-  fastify.post(
-    "/",
-    async (
-      req: FastifyRequest<{
-        Body: {
-          userid: number;
-          fileName: string;
-          filePath: string;
-          mimeType: string;
-          duration: number;
-          fileSize: number;
-        };
-      }>,
-      reply: FastifyReply,
-    ) => {
-      const music = await addMusic(req.body);
-      reply.send(music);
-    },
-  );
+  fastify.post("/", async (req: FastifyRequest<{}>, reply: FastifyReply) => {
+    // const files = req.files();
+    const data = await req.file();
+    if (!data) {
+      reply.status(400).send({error: "No file provided"});
+      return;
+    }
+
+    const file = data?.file || null; // stream
+    const fields = data?.fields; // other parsed parts
+    const fieldname = data?.fieldname || null;
+    const filename = data?.filename || null;
+    const encoding = data?.encoding || null;
+    const mimetype = data?.mimetype || null;
+
+    reply.send(filename);
+  });
   fastify.put(
     "/:musicid",
     async (
