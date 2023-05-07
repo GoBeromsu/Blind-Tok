@@ -8,7 +8,7 @@ import MessageBox from "./MessageBox";
 import BTlogo from "./BTlogo";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-const SideBar = () => {
+const SideBar = ({user}) => {
   const handleClick = () => {
     alert("Button clicked!");
   };
@@ -41,26 +41,26 @@ const SideBar = () => {
           <C_Image src={image} alt="프로필 이미지" size="130" />
           <br />
 
-          <MessageBox />
+          <MessageBox user={user}/>
           <Br />
           <div className="item">
                 <Link to="/friend"><Button onClick={handleClick} label="친구 목록" /></Link><br />
             </div>
             <br/><br/>
             <div className="item">
-                <Button onClick={handleClick} label="검색" />
+              <Button onClick={handleClick} label="검색" />
             </div>
             <div className="item">
-                <Link to="/chat"><Button onClick={handleClick} label="채팅" /></Link><br />
+              <Link to="/chat"><Button onClick={handleClick} label="채팅" /></Link><br />
             </div>
             <div className="item">
-                <Button onClick={handleClick} label="알림" /><br />
+              <Button onClick={handleClick} label="알림" /><br />
             </div>
             <div className="item">
-                <Button onClick={handleClick} label="설정" /><br />
+              <Link to="/User"><Button onClick={handleClick} label="설정" /></Link><br />
             </div>
             <div className="item">
-                <Button onClick={handleClick} label="로그아웃" /><br />
+              <Button onClick={handleClick} label="로그아웃" /><br />
             </div>
             </div>
       </div>

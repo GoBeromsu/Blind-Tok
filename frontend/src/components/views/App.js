@@ -5,17 +5,23 @@ import SideBar from "./SideBar";
 import UserProfile from "./UserProfile";
 import MainComponent from './MainComponent';
 import FriendList from './FriendList';
-import FriendPage from './FriendPage';
+//import FriendPage from './FriendPage';
 import ChatList from './ChatList';
+import ChatRoom from "./ChatRoom";
+import getUser from '../../data/user_data';
 //import RegisterPage from "./RegisterPage";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
 
 const App = () => {
+  const user_id = "choichoichoi";
+  const [user, setUser] = useState(getUser(user_id));
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [sidebarWidth, setSidebarWidth] = useState(windowWidth <= 768 ? 50 : 200);
   const [contentWidth, setContentWidth] = useState(windowWidth - sidebarWidth);
 
   useEffect(() => {
+    setUser(getUser(user_id));
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -36,18 +42,19 @@ const App = () => {
     <div className="container">
       <Router>
         <Routes> 
-            <Route path="/" element={<SideBar />}>
+            <Route path="/" element={<SideBar user={user}/>}>
                 <Route index element={<MainComponent />} />
-                <Route path="/friend" element={<FriendList />} />
-		            <Route path="/chat" element={<ChatList />} />
+                <Route path="/friend" element={<FriendList user={user}/>} />
+		            <Route path="/chat" element={<ChatList user={user}/>} />
+                <Route path="/User" element={<UserProfile/>}/>
             </Route>
         
-            <Route path="/friend_s" element={<SideBar />}>
-                <Route path=":friendid" element={<MainComponent/>}/>
+            <Route path="/friend_s" element={<SideBar user={user} />}>
+                {/*<Route path=":friendid" element={<MainComponent/>}/>*/}
             </Route>
  
-            <Route path="/ChatRoom" element={<SideBar />}>
-                {/*<Route path=":friendid" element={</>}/>*/}
+            <Route path="/ChatRoom" element={<SideBar user={user}/>}>
+                <Route path=":room_id" element={<ChatRoom/>}/>
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
