@@ -1,28 +1,27 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
 import User from "@user/entity/User";
 
 @Entity()
-export default class Music extends BaseEntity {
-  @PrimaryGeneratedColumn({type: COLUMN_TYPE_BIGINT})
-  musicid: number;
+export default class File extends BaseEntity {
+  @PrimaryColumn()
+  fileid: string;
 
   @Column()
   userid: number;
 
   @Column({type: COLUMN_TYPE_TEXT})
-  fileName: string;
+  filename: string;
   @Column({type: COLUMN_TYPE_TEXT})
-  filePath: string;
+  filepath: string;
 
   @Column({type: COLUMN_TYPE_TEXT})
-  mimeType: string;
+  filetype: string;
+  @Column({type: COLUMN_TYPE_TEXT})
+  mimetype: string;
 
   @Column({type: COLUMN_TYPE_BIGINT})
-  duration: number;
-
-  @Column({type: COLUMN_TYPE_BIGINT})
-  fileSize: number;
+  filesize: number;
 
   @ManyToOne(() => User, user => user.userid)
   @JoinColumn({name: "userid"})
@@ -30,7 +29,4 @@ export default class Music extends BaseEntity {
 
   @CreateDateColumn()
   createdate: Date;
-
-  @UpdateDateColumn()
-  updatedate: Date;
 }
