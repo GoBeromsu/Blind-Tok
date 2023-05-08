@@ -8,7 +8,7 @@ export async function getUserInfo(userid: number) {
   return await User.findOne({where: {userid}, relations: {meta: true}});
 }
 export async function getUsersInfo() {
-  return await User.find({relations: {meta: true}});
+  return await User.find({relations: {login: true, meta: true}});
 }
 export async function addUser({name, email, ssoid, type}: {name: string; email: string; ssoid: string; type: string}) {
   // TODO: 현재 닉네임을 부여하는 기능이 없어서 이름과 동일하게 nickname을 부여하겠음
@@ -21,7 +21,7 @@ export async function addUser({name, email, ssoid, type}: {name: string; email: 
 
     const user = await repository.save({name: name, nickname: nickname, email: email});
     const userid = user.userid;
-    await loginRepository.save({userid, ssoid, type});
+    await loginRepository.save({userid, email, ssoid, type});
 
     //TODO: 현재 프로필 메시지와 프로필 이미지 URL는 Default 값을 지정하겠습니다
     user.meta = await metaRepository.save({userid: userid, profilemesage: " ", profilepictureurl: " "});
