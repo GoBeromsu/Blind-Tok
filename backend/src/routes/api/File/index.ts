@@ -34,7 +34,6 @@ export default async function (fastify: FastifyInstance) {
     }
     // reply.send(file);
   });
-  fastify.post("/", async (req: FastifyRequest<{Body: {userid: number}}>, reply: FastifyReply) => {
   fastify.post("/", async (req: FastifyRequest<{Body: {file: any; userid: any}}>, reply: FastifyReply) => {
     const userid = req.body.userid?.value;
     const file = req.body.file;
