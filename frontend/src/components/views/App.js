@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import "../style/App.css";
 import SideBar from "./SideBar";
 import UserProfile from "./UserProfile";
-import RegisterPage from "./RegisterPage";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import GoogleLoginBtn from "./GoogleLoginBtn";
 
 const App = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -33,22 +33,12 @@ const App = () => {
       <div className="sidebar" style={{width: sidebarWidth, height: "100vh"}}>
         <SideBar />
       </div>
+      <GoogleLoginBtn />
       <div className="content" style={{width: contentWidth, height: "100vh"}}>
-        {/* <UserProfile /> */}
-        <Router>
-          <Routes>
-            <Route path="/" element={<RegisterPage />} />
-          </Routes>
-        </Router>
+        <Router>{/* <Routes>{<Route path="/" element={GoogleLoginBtn} />}</Routes> */}</Router>
       </div>
     </div>
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    counter: state.counter,
-  };
-};
-
-export default connect(mapStateToProps)(App);
+export default App;
