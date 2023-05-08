@@ -49,5 +49,12 @@ export async function editUser(
     return user;
   });
 }
+export async function editUserRefresh(userid: number, params: {refresh_token: string}) {
+  return await txProcess(async manager => {
+    const repository = manager.getRepository(User);
+    return repository.update({userid}, params);
+  });
+}
+
 //TODO: 유저 삭제하는 기능은 당장은 안필요한 듯..?
 export async function removeUser() {}

@@ -19,6 +19,8 @@ export default class User extends BaseEntity {
 
   @Column({type: COLUMN_TYPE_TEXT})
   email: string;
+  @Column({nullable: true, length: 512})
+  refresh_token: string;
 
   @OneToOne(() => UserMeta, meta => meta.userid)
   meta: UserMeta;
