@@ -9,7 +9,7 @@ export default async function (fastify: FastifyInstance) {
     const users = await getUsersInfo();
     reply.send(users);
   });
-  fastify.post("/", async (req: FastifyRequest<{Body: {name: string; email: string}}>, reply: FastifyReply) => {
+  fastify.post("/", async (req: FastifyRequest<{Body: {name: string; email: string; ssoid: string; type: string}}>, reply: FastifyReply) => {
     const user = await addUser(req.body);
     reply.send(user);
   });
