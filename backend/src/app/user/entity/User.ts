@@ -3,6 +3,8 @@ import UserMeta from "./UserMeta";
 import UserRelation from "./UserRelation";
 import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
 import File from "../../file/entity/File";
+import UserLogin from "@user/entity/UserLogin";
+import UserAuth from "@user/entity/UserAuth";
 
 @Entity()
 export default class User extends BaseEntity {
@@ -18,10 +20,15 @@ export default class User extends BaseEntity {
   @Column({type: COLUMN_TYPE_TEXT})
   email: string;
 
-  @OneToOne(() => UserMeta, meta => meta.user)
+  @OneToOne(() => UserMeta, meta => meta.userid)
   meta: UserMeta;
+  @OneToMany(() => UserLogin, login => login.user)
+  login: UserLogin[];
 
-  @OneToMany(() => UserRelation, relation => relation.user)
+  @OneToMany(() => UserAuth, auth => auth.user)
+  auth: UserAuth;
+
+  @OneToMany(() => UserRelation, relation => relation.userid)
   friends: UserRelation;
 
   @OneToMany(() => File, music => music.user)
