@@ -6,13 +6,22 @@ import friend from "./friend";
 export default async function (fastify: FastifyInstance) {
   fastify.register(friend, {prefix: "/friend"});
   fastify.get("/", async (req: FastifyRequest, reply: FastifyReply) => {
+    console.log("api called");
     const users = await getUsersInfo();
     reply.send(users);
   });
-  fastify.post("/", async (req: FastifyRequest<{Body: {name: string; email: string; ssoid: string; type: string}}>, reply: FastifyReply) => {
-    const user = await addUser(req.body);
-    reply.send(user);
-  });
+  fastify.post(
+    "/",
+    async (
+      req: FastifyRequest<{
+        Body: {name: string; email: string; ssoid: string; type: string};
+      }>,
+      reply: FastifyReply,
+    ) => {
+      const user = await addUser(req.body);
+      reply.send(user);
+    },
+  );
 
   fastify.get("/:userid", async (req: FastifyRequest<{Params: {userid: number}}>, reply: FastifyReply) => {
     const userid = req.params.userid;
