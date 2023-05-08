@@ -24,6 +24,9 @@ export async function addUser({name, email}: {name: string; email: string}) {
     return user;
   });
 }
+export async function getUserInfoByRefreshToken(refresh_token: string) {
+  return await User.findOne({where: {refresh_token}});
+}
 export async function editUser(
   userid: number,
   {

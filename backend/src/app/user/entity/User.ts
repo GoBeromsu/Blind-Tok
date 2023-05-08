@@ -24,6 +24,7 @@ export default class User extends BaseEntity {
 
   @OneToOne(() => UserMeta, meta => meta.userid)
   meta: UserMeta;
+
   @OneToMany(() => UserLogin, login => login.user)
   login: UserLogin[];
 

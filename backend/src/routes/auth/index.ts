@@ -1,10 +1,14 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
-import {editUserRefresh, getUserInfo} from "@user/service/UserService";
+import {editUserRefresh, getUserInfo, getUserInfoByRefreshToken} from "@user/service/UserService";
+
 import {getUserLogin} from "@user/service/UserLoginService";
-import {ERROR_AUTH_NOTEXISTS} from "../../error/AuthCode";
+import {ERROR_AUTH_EXPIRED, ERROR_AUTH_NOTEXISTS, ERROR_AUTH_REFRESH_EXPIRED, ERROR_AUTH_TOKEN_NOTEXISTS, ERROR_AUTH_UNVALID} from "@error/AuthCode";
 import {signJWT, verifyJWT} from "@utils/OAuth2Utils";
 import {decrypted, encrypted} from "@utils/CipherUtils";
+import {addLoginHistory} from "@user/service/LoginHistoryService";
+import google from "./google";
 export default async function (fastify: FastifyInstance) {
+  fastify.register(google, {prefix: "/google"});
   type jwt = {userid: number; email: string; iat: number; exp: number};
 
   fastify.get("/user", async (req: FastifyRequest<{Body: {jwt: jwt}}>, reply: FastifyReply) => {
@@ -55,6 +59,50 @@ export default async function (fastify: FastifyInstance) {
       const refresh = await signJWT({userid: userId, ssoid, email}, "30d");
       refreshToken = encrypted(refresh);
       await editUserRefresh(userId, {refresh_token: refreshToken});
+    }
+  });
+  // POST 요청을 처리하는 "/refreshToken" 엔드포인트를 정의합니다.
+  fastify.post("/refreshToken", async (req: FastifyRequest, reply: FastifyReply) => {
+    // 쿠키에서 "refresh_token"을 가져와서 서명을 확인합니다.
+    const result = req.unsignCookie(req.cookies["refresh_token"] || "");
+
+    // refresh_token이 없으면 오류를 반환합니다.
+    if (!result || result.value == null) {
+      return reply.code(ERROR_AUTH_TOKEN_NOTEXISTS).send("ERROR_AUTH_TOKEN_NOTEXISTS");
+    }
+
+    // 서명이 올바르지 않으면 오류를 반환합니다.
+    if (!result.valid) {
+      return reply.code(ERROR_AUTH_UNVALID).send("ERROR_AUTH_UNVALID");
+    }
+
+    const refresh_token = result.value || "";
+    const user = await getUserInfoByRefreshToken(refresh_token);
+
+    // 사용자가 존재하지 않으면 오류를 반환합니다.
+    if (!user) {
+      return reply.code(ERROR_AUTH_NOTEXISTS).send("ERROR_AUTH_NOTEXISTS");
+    }
+
+    try {
+      // refresh_token을 복호화하고 JWT를 검증합니다.
+      const decryptStr = decrypted(refresh_token);
+      const {userid, ssoid, email} = await verifyJWT(decryptStr);
+
+      // 새로운 access 토큰을 생성합니다.
+      const access = await signJWT({userid, ssoid, email});
+      const access_token = encrypted(access);
+
+      // access_token을 쿠키로 설정하고 클라이언트에 전송합니다.
+      reply.cookie("access_token", access_token, {path: "/", signed: true});
+
+      // 로그인 기록을 추가합니다.
+      await addLoginHistory({userid, ssoid, token: access_token});
+
+      return reply.send("USER_AUTHENTICATED");
+    } catch (err) {
+      // 토큰 검증에 실패하면 오류를 반환합니다.
+      return reply.code(ERROR_AUTH_REFRESH_EXPIRED).send("ERROR_AUTH_REFRESH_EXPIRED");
     }
   });
 }
