@@ -22,7 +22,7 @@ export default class User extends BaseEntity {
   @Column({nullable: true, length: 512})
   refresh_token: string;
 
-  @OneToOne(() => UserMeta, meta => meta.userid)
+  @OneToOne(() => UserMeta, meta => meta.user)
   meta: UserMeta;
 
   @OneToMany(() => UserLogin, login => login.user)
@@ -31,7 +31,7 @@ export default class User extends BaseEntity {
   @OneToMany(() => UserAuth, auth => auth.user)
   auth: UserAuth;
 
-  @OneToMany(() => UserRelation, relation => relation.userid)
+  @OneToMany(() => UserRelation, relation => relation.user)
   friends: UserRelation;
 
   @OneToMany(() => File, music => music.user)

@@ -60,6 +60,12 @@ export default async function (fastify: FastifyInstance) {
       refreshToken = encrypted(refresh);
       await editUserRefresh(userId, {refresh_token: refreshToken});
     }
+    reply.cookie("refresh_token", refreshToken, {path: "/", signed: true});
+    //FIXME: access_token을 30분 짜리로 만들어서 줘?!
+    reply.cookie("access_token", accessToken, {path: "/", signed: true});
+    //발급한 토큰을 저장한다
+    addLoginHistory({userid: userId, ssoid, token: accessToken});
+    reply.send(accessToken);
   });
   // POST 요청을 처리하는 "/refreshToken" 엔드포인트를 정의합니다.
   fastify.post("/refreshToken", async (req: FastifyRequest, reply: FastifyReply) => {
