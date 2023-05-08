@@ -5,10 +5,10 @@ import UserMeta from "@user/entity/UserMeta";
 import UserLogin from "@user/entity/UserLogin";
 
 export async function getUserInfo(userid: number) {
-  return await User.findOne({where: {userid}, relations: {meta: true}});
+  return await User.findOne({where: {userid}, relations: {login: true, meta: true, friends: true, auth: true}});
 }
 export async function getUsersInfo() {
-  return await User.find({relations: {login: true, meta: true}});
+  return await User.find({relations: {login: true, meta: true, friends: true, auth: true}});
 }
 export async function addUser({name, email, ssoid, type}: {name: string; email: string; ssoid: string; type: string}) {
   // TODO: 현재 닉네임을 부여하는 기능이 없어서 이름과 동일하게 nickname을 부여하겠음
