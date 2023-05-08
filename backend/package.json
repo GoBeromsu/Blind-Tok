@@ -7,14 +7,18 @@
     "dev": "cross-env NODE_ENV=development nodemon"
   },
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^7.6.0",
     "@fastify/view": "^7.4.1",
     "@types/ejs": "^3.1.2",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/uuid": "^9.0.1",
     "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
     "ejs": "^3.1.9",
     "fastify": "^4.15.0",
+    "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.22",
     "pg": "^8.10.0",
     "ts-node": "^10.9.1",
