@@ -35,43 +35,24 @@ export default async function (fastify: FastifyInstance) {
     // reply.send(file);
   });
   fastify.post("/", async (req: FastifyRequest<{Body: {userid: number}}>, reply: FastifyReply) => {
-    const {userid} = req.body;
-    const part = await req.file();
-    if (!part) {
+  fastify.post("/", async (req: FastifyRequest<{Body: {file: any; userid: any}}>, reply: FastifyReply) => {
+    const userid = req.body.userid?.value;
+    const file = req.body.file;
+    if (!file) {
       reply.status(400).send({error: "No file provided"});
       return;
     }
+    console.log(file);
     const fileresult = [];
     // const part = part?.file || null; // stream
-    const filename = part?.filename || "";
-    const filetype = part?.mimetype || "";
-    const fileid = await makefile(userid, part, filename, filetype);
+    const filename = file?.filename || "";
+    const filetype = file?.mimetype || "";
+    const fileid = await makefile(userid, file, filename, filetype);
     fileresult.push(fileid);
     reply.send({files: fileresult, filetype});
   });
-  // fastify.put(
-  //   "/:fileid",
-  //   async (
-  //     req: FastifyRequest<{
-  //       Params: {fileid: string};
-  //       Body: {
-  //         userid: number;
-  //         filename: string;
-  //         filepath: string;
-  //         filetype: string;
-  //         filesize: number;
-  //         mimetype: string;
-  //       };
-  //     }>,
-  //     reply: FastifyReply,
-  //   ) => {
-  //     const {fileid} = req.params;
-  //     const selected = await editFile({fileid, ...req.body});
-  //     reply.send(selected);
-  //   },
-  // );
 
-  async function makefile(userid: number, part: any, filename: string, filetype: string) {
+  async function makefile(userid: any, part: any, filename: string, filetype: string) {
     const mimetype = part.mimetype;
     const fileid = generatedUUID();
     const img_root = "public/temp";
