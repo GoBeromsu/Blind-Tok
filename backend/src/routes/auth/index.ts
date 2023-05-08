@@ -6,8 +6,9 @@ import {ERROR_AUTH_EXPIRED, ERROR_AUTH_NOTEXISTS, ERROR_AUTH_REFRESH_EXPIRED, ER
 import {signJWT, verifyJWT} from "@utils/OAuth2Utils";
 import {decrypted, encrypted} from "@utils/CipherUtils";
 import {addLoginHistory} from "@user/service/LoginHistoryService";
-
+import google from "./google";
 export default async function (fastify: FastifyInstance) {
+  fastify.register(google, {prefix: "/google"});
   type jwt = {userid: number; email: string; iat: number; exp: number};
 
   fastify.get("/user", async (req: FastifyRequest<{Body: {jwt: jwt}}>, reply: FastifyReply) => {
