@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
-const MessageBox = () => {
-  const [message, setMessage] = useState("");
+const MessageBox = ({user}) => {
+  const [message, setMessage] = useState(user.detail);
 
   const handleMessageChange = e => {
     setMessage(e.target.value);

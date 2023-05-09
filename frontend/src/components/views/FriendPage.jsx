@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿﻿import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useSearchParams, Link } from "react-router-dom";
 import '../style/FriendList.css';
 import { getFriends, getFriend } from '../../data/friend_data';
