@@ -1,0 +1,22 @@
+﻿.f_list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    height:auto;
+}
+.f_item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid black;
+    overflow: auto;
+}
+
+.f_item > .friend-item {
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+}
