@@ -2,7 +2,9 @@ import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, One
 import UserMeta from "./UserMeta";
 import UserRelation from "./UserRelation";
 import {COLUMN_TYPE_BIGINT, COLUMN_TYPE_TEXT} from "@common/CommonConstants";
-import Music from "../../music/entity/Music";
+import File from "@file/entity/File";
+import UserLogin from "@user/entity/UserLogin";
+import UserAuth from "@user/entity/UserAuth";
 
 @Entity()
 export default class User extends BaseEntity {
@@ -17,15 +19,23 @@ export default class User extends BaseEntity {
 
   @Column({type: COLUMN_TYPE_TEXT})
   email: string;
+  @Column({nullable: true, length: 512})
+  refresh_token: string;
 
   @OneToOne(() => UserMeta, meta => meta.user)
   meta: UserMeta;
 
+  @OneToMany(() => UserLogin, login => login.user)
+  login: UserLogin[];
+
+  @OneToMany(() => UserAuth, auth => auth.user)
+  auth: UserAuth;
+
   @OneToMany(() => UserRelation, relation => relation.user)
   friends: UserRelation;
 
-  @OneToMany(() => Music, music => music.user)
-  music: Music;
+  @OneToMany(() => File, music => music.user)
+  file: File;
 
   @CreateDateColumn()
   createdate: Date;

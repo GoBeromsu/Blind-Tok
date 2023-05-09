@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+backend/public/temp
 node_modules
 dist
 dist-ssr
@@ -270,3 +270,4 @@ $RECYCLE.BIN/
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,yarn,react,node
+backend/machinet.conf
