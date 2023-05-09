@@ -3,7 +3,7 @@ import {Entity, Column, BaseEntity, CreateDateColumn, PrimaryGeneratedColumn} fr
 
 @Entity()
 export default class Auth extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   authid: string;
 
   @Column({length: 40})

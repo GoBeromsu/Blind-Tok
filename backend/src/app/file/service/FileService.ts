@@ -24,29 +24,29 @@ export async function addFile(file: {
 export async function editFile({
   fileid,
   userid,
-  fileName,
-  filePath,
+  filename,
+  filepath,
   filetype,
   mimetype,
-  fileSize,
+  filesize,
 }: {
   fileid: string;
   userid: number;
-  fileName: string;
-  filePath: string;
+  filename: string;
+  filepath: string;
   filetype: string;
   mimetype: string;
-  fileSize: number;
+  filesize: number;
 }) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(File);
     return repository.update(fileid, {
       userid,
-      filename: fileName,
-      filepath: filePath,
+      filename,
+      filepath,
       filetype,
       mimetype,
-      filesize: fileSize,
+      filesize,
     });
   });
 }
