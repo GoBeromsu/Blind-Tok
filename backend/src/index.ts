@@ -7,8 +7,8 @@ import routes from "./routes";
 const PORT: number = Number(process.env.PORT) || 4000;
 const fastify: FastifyInstance<Server, IncomingMessage, ServerResponse> = Fastify();
 
-middleware(fastify)
-routes(fastify)
+middleware(fastify);
+routes(fastify);
 async function start() {
   try {
     await initDatasource();

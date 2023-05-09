@@ -32,10 +32,9 @@ const SideBar = () => {
     <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
       <div className="test">
         <div className="sidebar_main">
-          <p>
-            <BTlogo style={{display: "flex", alignItems: "center"}} />
-            <Br />
-          </p>
+          <BTlogo style={{display: "flex", alignItems: "center"}} />
+          <Br />
+
           <C_Image src={image} alt="프로필 이미지" size="130" />
           <br />
 
