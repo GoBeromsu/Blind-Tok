@@ -4,8 +4,8 @@
         user_id : "gogogo",
         list:[
             {
-                user_id:"",
-                nickname:"",
+                user_id:"choichoichoi",
+                nickname:"최승주",
             }
         ],
     },
@@ -14,8 +14,8 @@
         user_id : "choochoochoo",
         list:[
             {
-                user_id:"",
-                nickname:"",
+                user_id:"choichoichoi",
+                nickname:"최승주",
             }
         ],
     },

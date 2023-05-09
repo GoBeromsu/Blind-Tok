@@ -54,7 +54,7 @@ const App = () => {
             </Route>
  
             <Route path="/ChatRoom" element={<SideBar user={user}/>}>
-                <Route path=":room_id" element={<ChatRoom/>}/>
+                <Route path=":room_id" element={<ChatRoom user={user}/>}/>
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
