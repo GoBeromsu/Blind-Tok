@@ -1,5 +1,5 @@
 ﻿import React, {useEffect, useState} from "react";
-import "../style/ResponsiveImage.css";
+import "../../style/ResponsiveImage.css";
 
 const ResponsiveImage = ({src, alt}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

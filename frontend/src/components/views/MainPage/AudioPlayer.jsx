@@ -1,5 +1,5 @@
 ﻿import React, {useEffect, useState} from "react";
-import "../style/AudioPlayer.css";
+import "../../style/AudioPlayer.css";
 
 const AudioPlayer = ({src, type}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
