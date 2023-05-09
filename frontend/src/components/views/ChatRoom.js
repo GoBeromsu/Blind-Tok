@@ -5,6 +5,9 @@ import { getFriendlist } from '../../data/friend_data';
 import { getChatData, updateChatData } from '../../data/chat_data';
 
 const ChatRoom = ({user}) => {
+    useEffect(()=>{
+        updateChatData({...chatRoom, data : chat_data});
+    },[]);
     const myCSS ={
         display: "flex",
         alignItems: "flex-end",
@@ -58,13 +61,15 @@ const ChatRoom = ({user}) => {
 
     const updateChat = (data) => {
         setChat_data([...chat_data,data]);
-        updateChatData({...chatRoom, data : chat_data});
+        updateChatData({...chatRoom, data : data});
     };
 
     const click = (e)=>{
         let today = new Date();   
         let hours = today.getHours(); // 시
+        hours = hours < 10 ? "0"+hours : hours; // 자릿수 맞추기
         let minutes = today.getMinutes();  // 분
+        minutes = minutes < 10 ? "0"+minutes : minutes; // 자릿수 맞추기
         const data = {
             num : chat_data.at(-1).num + 1,
             user_id : user.user_id,
