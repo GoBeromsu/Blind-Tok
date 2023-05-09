@@ -1,6 +1,6 @@
 ﻿import React, {useState, useEffect} from "react";
 import AudioPlayer from "./AudioPlayer";
-import "../style/MainComponent.css";
+import "../../style/MainComponent.css";
 
 const MainComponent = ({}) => {
   const [components, setComponents] = useState([]);

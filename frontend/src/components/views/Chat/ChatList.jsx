@@ -1,9 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../style/ChatList.css';
+import '../../style/ChatList.css';
 import Modal from 'react-modal';
-import { getChat_list } from '../../data/chat_list';
-import { getFriendlist } from '../../data/friend_data';
+import { getChat_list } from '../../../data/chat_list';
+import { getFriendlist } from '../../../data/friend_data';
 
 const ChatList = ({user}) => {
     const [chatList, setChatList] = useState(getChat_list(user.user_id));

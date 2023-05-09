@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useSearchParams, Link } from "react-router-dom";
-import { getChat_list } from '../../data/chat_list';
-import { getFriendlist } from '../../data/friend_data';
-import { getChatData, updateChatData } from '../../data/chat_data';
+import { getChat_list } from '../../../data/chat_list';
+import { getFriendlist } from '../../../data/friend_data';
+import { getChatData, updateChatData } from '../../../data/chat_data';
 
 const ChatRoom = ({user}) => {
     useEffect(()=>{
