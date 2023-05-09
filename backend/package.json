@@ -28,7 +28,8 @@
     "ts-node": "^10.9.1",
     "typeorm": "^0.3.12",
     "typescript": "^5.0.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/node": "^18.15.10",

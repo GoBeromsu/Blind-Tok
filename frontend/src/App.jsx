@@ -2,11 +2,12 @@ import React, {useEffect, useState, Component} from "react";
 import "./components/style/App.css";
 import SideBar from "./components/views/Layout/SideBar";
 import UserProfile from "./components/views/User/UserProfile";
-import MainComponent from './components/views/MainPage/MainComponent';
-import FriendList from './components/views/Friend/FriendList';
-import ChatList from './components/views/Chat/ChatList';
+import MainComponent from "./components/views/MainPage/MainComponent";
+import FriendList from "./components/views/Friend/FriendList";
+import ChatList from "./components/views/Chat/ChatList";
 import ChatRoom from "./components/views/Chat/ChatRoom";
-import getUser from './data/user_data';
+import getUser from "./data/user_data";
+import LoginPage from "./components/views/Login/LoginPage";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
 
 const App = () => {
@@ -38,30 +39,28 @@ const App = () => {
   return (
     <div className="container">
       <Router>
-        <Routes> 
-            <Route path="/" element={<SideBar user={user}/>}>
-                <Route index element={<MainComponent />} />
-                <Route path="/friend" element={<FriendList user={user}/>} />
-		            <Route path="/chat" element={<ChatList user={user}/>} />
-                <Route path="/User" element={<UserProfile/>}/>
-            </Route>
-        
-            <Route path="/friend_s" element={<SideBar user={user} />}>
-                {/*<Route path=":friendid" element={<MainComponent/>}/>*/}
-            </Route>
- 
-            <Route path="/ChatRoom" element={<SideBar user={user}/>}>
-                <Route path=":room_id" element={<ChatRoom user={user}/>}/>
-            </Route>
+        <Routes>
+          <Route path="/" element={<SideBar user={user} />}>
+            <Route index element={<MainComponent />} />
+            <Route path="/friend" element={<FriendList user={user} />} />
+            <Route path="/chat" element={<ChatList user={user} />} />
+            <Route path="/User" element={<UserProfile />} />
+            <Route path="/Login" element={<LoginPage />} />
+          </Route>
 
-            <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/friend_s" element={<SideBar user={user} />}>
+            {/*<Route path=":friendid" element={<MainComponent/>}/>*/}
+          </Route>
+
+          <Route path="/ChatRoom" element={<SideBar user={user} />}>
+            <Route path=":room_id" element={<ChatRoom user={user} />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
-      
     </div>
   );
 };
-
-
 
 export default App;
