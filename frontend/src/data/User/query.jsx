@@ -1,5 +1,6 @@
-// import {getUserList} from "./axios";
-// import {options} from "../constant";
+import {getUserList} from "./axios";
+import {useQuery} from "react-query";
+import {options} from "../constant";
 
 let users = [
   {
@@ -35,7 +36,7 @@ let users = [
 export default function getUser(id = 0) {
   return users.find(user => user.user_id === id);
 }
-// export const getUserListQuery = () => {
-//   const {isLoading, isError, data, error} = fetch("getUserList", getUserList, options);
-//   return {isLoading, isError, data: data?.data, error};
-// };
+export const getUserListQuery = () => {
+  const {isLoading, isError, data, error} = useQuery("getUserList", getUserList, options);
+  return {isLoading, isError, data: data?.data, error};
+};

@@ -1,13 +1,15 @@
 ﻿import React, {useState, useEffect} from "react";
 import AudioPlayer from "./AudioPlayer";
 import "../../style/MainComponent.css";
+import {getUserListQuery} from "../../../data/User/query";
 
-const MainComponent = ({}) => {
+const MainComponent = () => {
   const [components, setComponents] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
-
+  const {isLoading, isError, data, error} = getUserListQuery();
+  console.log(data);
   const debounce = (func, wait) => {
     let timeout;
     return (...args) => {

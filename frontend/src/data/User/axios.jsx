@@ -1,4 +1,5 @@
-﻿// import {api} from "../constant";
+﻿import {api} from "../constant";
+export const getUserList = () => api.get("/user");
 
 let friend_list = [
   {
@@ -36,7 +37,7 @@ let friend_list = [
     ],
   },
 ];
-// export const getUserList = () => api.get("/user");
+
 //데이터 조회
 export function getFriendlist(id) {
   return friend_list.find(user_id => user_id.user_id === id).list;
