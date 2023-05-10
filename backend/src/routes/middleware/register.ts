@@ -3,6 +3,7 @@ import fastifyMultipart from "@fastify/multipart";
 import {fastifyView} from "@fastify/view";
 import formbody from "@fastify/formbody";
 import ejs from "ejs";
+import cors, {FastifyCorsOptions} from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import oauth2 from "@fastify/oauth2";
 import {googleAuth} from "@config/auth.config";
@@ -25,6 +26,12 @@ export default async function (fastify: FastifyInstance) {
   });
 
   fastify.register(fastifyView, {engine: {ejs}});
-  console.log(googleAuth.callbackUri);
   fastify.register(oauth2, googleAuth);
+
+  fastify.register(cors, (_: any) => {
+    return (_: any, callback: (error: Error | null, options: FastifyCorsOptions) => void) => {
+      let corsOption: FastifyCorsOptions = {origin: true, credentials: true};
+      return callback(null, corsOption);
+    };
+  });
 }
