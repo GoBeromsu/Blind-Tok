@@ -1,7 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import AudioPlayer from "./AudioPlayer";
 import "../../style/MainComponent.css";
-import {getUserListQuery} from "../../../data/User/query";
+import {getUserListQuery} from "../../../data/user/query";
 
 const MainComponent = () => {
   const [components, setComponents] = useState([]);

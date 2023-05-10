@@ -1,5 +1,12 @@
-﻿import {api} from "../constant";
+﻿import {api, axiosProcess, server} from "../constant";
 export const getUserList = () => api.get("/user");
+export const getUserInfo = userid => api.get(`/user/${userid}`);
+export function postUserRegistAxios(userInfo) {
+  return api.post("/user", userInfo);
+}
+export async function getAuthUser() {
+  return axiosProcess(() => server.get(`/auth/user`), false).catch(err => null);
+}
 
 let friend_list = [
   {

@@ -1,16 +1,17 @@
 import React, {useEffect, useState, Component, Suspense} from "react";
 import "./components/style/App.css";
-import SideBar from "./components/views/Layout/SideBar";
-import UserProfile from "./components/views/User/UserProfile";
-import MainComponent from "./components/views/MainPage/MainComponent";
-import FriendList from "./components/views/Friend/FriendList";
-import ChatList from "./components/views/Chat/ChatList";
-import ChatRoom from "./components/views/Chat/ChatRoom";
+// import SideBar from "./components/views/Layout/SideBar";
+// import UserProfile from "./components/views/User/UserProfile";
+// import MainComponent from "./components/views/MainPage/MainComponent";
+// import FriendList from "./components/views/Friend/FriendList";
+// import ChatList from "./components/views/Chat/ChatList";
+// import ChatRoom from "./components/views/Chat/ChatRoom";
 
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
-import {getAuthUserQuery, getUserInfoQuery} from "./data/User/query";
+import {getAuthUserQuery, getUserInfoQuery} from "@data/user/query";
 import Loading from "react-loading";
 import Auth from "./hoc/Auth";
+import Login from "@views/Login/Login";
 
 export default function App() {
   return (
@@ -52,7 +53,7 @@ function AppRoutes() {
     <div className="container">
       <Router>
         <Routes>
-          <Route path="/login" element={Auth(Login, false)}></Route>
+          <Route path="/login" element={Auth(Login, true)}></Route>
           {/*<Route path="/" element={<SideBar user={user} />}>*/}
           {/*  <Route index element={<MainComponent />} />*/}
           {/*  <Route path="/friend" element={<FriendList user={user} />} />*/}

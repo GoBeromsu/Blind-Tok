@@ -1,7 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import "../../style/FriendList.css";
-import {getFriendlist} from "../../../data/User/axios";
+import {getFriendlist} from "../../../data/user/axios";
 
 const FriendList = ({user}) => {
   const [friendList, setFriendList] = useState(getFriendlist(user.user_id));
