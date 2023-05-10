@@ -9,7 +9,7 @@ const MainComponent = () => {
   const [allLoaded, setAllLoaded] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const {isLoading, isError, data, error} = getUserListQuery();
-  console.log(data);
+  // console.log(data);
   const debounce = (func, wait) => {
     let timeout;
     return (...args) => {

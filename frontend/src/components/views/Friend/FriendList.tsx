@@ -1,13 +1,22 @@
 ﻿import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
-import "../../style/FriendList.css";
-import {getFriendlist} from "../../../data/user/axios";
+import {userState} from "@data/user/state";
+import {useRecoilValue} from "recoil";
+import {getUserInfoQuery} from "@data/Friend/state";
 
-const FriendList = ({user}) => {
-  const [friendList, setFriendList] = useState(getFriendlist(user.user_id));
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-  const [W, setW] = useState(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+interface Friend {
+  id: number;
+  nickname: string;
+}
+
+const FriendList = () => {
+  const loginUser: any = useRecoilValue(userState);
+  const {isLoading, isError, data, error} = getUserInfoQuery(1);
+  const [friendList, setFriendList] = useState<Friend[]>([]);
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
+  const [W, setW] = useState<number>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
@@ -21,9 +30,9 @@ const FriendList = ({user}) => {
     };
   }, []);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
 
-  const handleSearchChange = event => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 
