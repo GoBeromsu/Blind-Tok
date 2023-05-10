@@ -29,6 +29,7 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "scss": "^0.2.4",
+    "react-google-button": "^0.7.2",
     "styled-components": "^5.3.9"
   },
   "browserslist": {
