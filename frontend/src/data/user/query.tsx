@@ -32,7 +32,7 @@ import {options} from "../constant";
 //   },
 // ];
 
-export const getUserInfoQuery = userid => {
+export const getUserInfoQuery = (userid: number) => {
   const {isLoading, isError, data, error} = useQuery("getUserInfo", () => getUserInfo(userid), options);
   return {isLoading, isError, data: data?.data, error};
 };
