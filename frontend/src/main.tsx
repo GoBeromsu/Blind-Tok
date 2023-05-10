@@ -4,6 +4,7 @@ import App from "./App";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {RecoilRoot} from "recoil";
+import {BrowserRouter} from "react-router-dom";
 
 const queryClient = new QueryClient();
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -16,11 +17,13 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 function Init() {
   return (
     <React.StrictMode>
-      <GoogleOAuthProvider clientId={clientId}>
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
-      </GoogleOAuthProvider>
+      <BrowserRouter>
+        <GoogleOAuthProvider clientId={clientId}>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </GoogleOAuthProvider>
+      </BrowserRouter>
     </React.StrictMode>
   );
 }
