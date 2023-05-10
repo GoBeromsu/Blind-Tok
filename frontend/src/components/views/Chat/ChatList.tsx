@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import "../../style/ChatList.css";
 import Modal from "react-modal";
 import {getChat_list} from "../../../data/chat/chat_list";
-import {getFriendlist} from "../../../data/User/axios";
+import {getFriendlist} from "../../../data/user/axios";
 
 const ChatList = ({user}) => {
   const [chatList, setChatList] = useState(getChat_list(user.user_id));
