@@ -1,15 +1,12 @@
 import React, {useEffect, useState, Component} from "react";
-//import {connect} from "react-redux";
-import "../style/App.css";
-import SideBar from "./SideBar";
-import UserProfile from "./UserProfile";
-import MainComponent from './MainComponent';
-import FriendList from './FriendList';
-//import FriendPage from './FriendPage';
-import ChatList from './ChatList';
-import ChatRoom from "./ChatRoom";
-import getUser from '../../data/user_data';
-//import RegisterPage from "./RegisterPage";
+import "./components/style/App.css";
+import SideBar from "./components/views/Layout/SideBar";
+import UserProfile from "./components/views/User/UserProfile";
+import MainComponent from './components/views/MainPage/MainComponent';
+import FriendList from './components/views/Friend/FriendList';
+import ChatList from './components/views/Chat/ChatList';
+import ChatRoom from "./components/views/Chat/ChatRoom";
+import getUser from './data/user_data';
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
 
 const App = () => {

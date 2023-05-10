@@ -1,23 +1,20 @@
-﻿import { NULL } from "mysql/lib/protocol/constants/types";
-
-let chat_rooms = [
-    {
+﻿let chat_rooms = [{
         id: 1,
-        room_id : 1,
-        room_name : "모임1",
-        member : ["gogogo", "choochoochoo", "choichoichoi"],
+        room_id: 1,
+        room_name: "모임1",
+        member: ["gogogo", "choochoochoo", "choichoichoi"],
     },
     {
         id: 2,
-        room_id : 2,
-        room_name : "모임2",
-        member : ["choichoichoi"],
+        room_id: 2,
+        room_name: "모임2",
+        member: ["choichoichoi"],
     },
     {
         id: 3,
-        room_id : 3,
-        room_name : "모임3",
-        member : ["choichoichoi"],
+        room_id: 3,
+        room_name: "모임3",
+        member: ["choichoichoi"],
     },
 ];
 
@@ -30,6 +27,6 @@ export function getChatingRoom(id) {
     return chat_rooms.find((chat_room) => chat_room.id === id);
 }
 
-export function getChat_list(user_id){
-    return chat_rooms.filter((chat_room) => chat_room.member.find((member) => member === user_id) !== NULL)
+export function getChat_list(user_id) {
+    return chat_rooms.filter((chat_room) => chat_room.member.find((member) => member === user_id) !== null)
 }

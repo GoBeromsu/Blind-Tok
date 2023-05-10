@@ -1,16 +1,16 @@
 ﻿import React, {useState, useEffect} from "react";
 import Button from "./Button";
 import C_Image from "./CircularImage";
-import image from "../../image/l.png";
-import "../style/SideBar.css";
+import image from "../../../image/l.png";
+import "../../style/SideBar.css";
 import Br from "./Br";
-import MessageBox from "./MessageBox";
-import BTlogo from "./BTlogo";
+import MessageBox from "../MainPage/MessageBox";
+import BTlogo from "../../../image/BTlogo";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const SideBar = ({user}) => {
   const handleClick = () => {
-    alert("Button clicked!");
+    
   };
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
