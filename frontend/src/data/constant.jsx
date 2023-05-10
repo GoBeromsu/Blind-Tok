@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const options = {
   refetchOnWindowFocus: false,
   retry: 0,
@@ -10,3 +12,7 @@ export const options = {
     console.log("onError >> ", error.message);
   },
 };
+export const api = axios.create({
+  baseURL: "http://localhost:4000/api/v1",
+  withCredentials: true,
+});
