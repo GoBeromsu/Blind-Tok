@@ -6,9 +6,8 @@ import MainComponent from "./components/views/MainPage/MainComponent";
 import FriendList from "./components/views/Friend/FriendList";
 import ChatList from "./components/views/Chat/ChatList";
 import ChatRoom from "./components/views/Chat/ChatRoom";
-import getUser from "./data/user_data";
-import LoginPage from "./components/views/Login/LoginPage";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
+import getUser from "./data/User/query";
 
 const App = () => {
   const user_id = "choichoichoi";
@@ -45,7 +44,6 @@ const App = () => {
             <Route path="/friend" element={<FriendList user={user} />} />
             <Route path="/chat" element={<ChatList user={user} />} />
             <Route path="/User" element={<UserProfile />} />
-            <Route path="/Login" element={<LoginPage />} />
           </Route>
 
           <Route path="/friend_s" element={<SideBar user={user} />}>
