@@ -1,4 +1,15 @@
-﻿// import {api} from "../constant";
+﻿import {api, axiosProcess, server} from "../constant";
+export const getUserList = () => api.get("/user");
+
+export const getUserInfo = (userid: number) => api.get(`/user/${userid}`);
+
+// export function postUserRegistAxios(userInfo: postUser) {
+//   return api.post("/user", userInfo);
+// }
+
+export async function getAuthUser() {
+  return axiosProcess(() => server.get(`/auth/user`), false).catch(err => null);
+}
 
 let friend_list = [
   {
@@ -36,8 +47,3 @@ let friend_list = [
     ],
   },
 ];
-// export const getUserList = () => api.get("/user");
-//데이터 조회
-export function getFriendlist(id) {
-  return friend_list.find(user_id => user_id.user_id === id).list;
-}

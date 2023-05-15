@@ -1,7 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {getChat_list} from "../../../data/chat/chat_list";
-import {getFriendlist} from "../../../data/User/axios";
+import {getFriendlist} from "../../../data/user/axios";
 import {getChatData, updateChatData} from "../../../data/chat/chat_data";
 
 const ChatRoom = ({user}) => {
