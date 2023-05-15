@@ -11,8 +11,21 @@ import ChatRoom from "./ChatRoom";
 import getUser from '../../data/user_data';
 //import RegisterPage from "./RegisterPage";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
+import {getSocket, createSocket} from './client';
 
 const App = () => {
+  // socket.io
+  var socket;
+  var init = false;
+  useEffect(() => {
+    if(init == false){
+      createSocket();
+      socket = getSocket();
+      socket.emit("data_init", user_id);
+      init = true;
+    }
+  },[]);
+  
   const user_id = "choichoichoi";
   const [user, setUser] = useState(getUser(user_id));
 

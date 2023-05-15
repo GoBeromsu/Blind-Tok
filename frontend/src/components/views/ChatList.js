@@ -6,7 +6,7 @@ import { getChat_list } from '../../data/chat_list';
 import { getFriendlist } from '../../data/friend_data';
 
 const ChatList = ({user}) => {
-    const [chatList, setChatList] = useState(getChat_list(user.user_id));
+    const [chatList, setChatList] = useState(getChat_list());
     const [friendList, setFriendList] = useState(getFriendlist(user.user_id));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -54,8 +54,10 @@ const ChatList = ({user}) => {
         setSearch(event.target.value);
     };
 
-    const filteredChatRoom = chatList.filter((chat) =>
-        chat.room_name.toLowerCase().includes(search.toLowerCase())
+    const filteredChatRoom = chatList.filter((chat) =>{
+        if(!chat.room_name) return;
+        return chat.room_name.toLowerCase().includes(search.toLowerCase())
+        }
     );
 
     const [search_f, setSearch_f] = useState('');

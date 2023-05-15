@@ -2,12 +2,12 @@
 import { useParams, useLocation, useSearchParams, Link } from "react-router-dom";
 import { getChat_list } from '../../data/chat_list';
 import { getFriendlist } from '../../data/friend_data';
-import { getChatData, updateChatData } from '../../data/chat_data';
+import { getChatData } from '../../data/chat_data';
+import { sendMessage } from './client';
+
+export let updateChat = () => {};
 
 const ChatRoom = ({user}) => {
-    useEffect(()=>{
-        updateChatData({...chatRoom, data : chat_data});
-    },[]);
     const myCSS ={
         display: "flex",
         alignItems: "flex-end",
@@ -59,9 +59,11 @@ const ChatRoom = ({user}) => {
     const [string, setString] = useState("");
     let check_n = "";
 
-    const updateChat = (data) => {
-        setChat_data([...chat_data,data]);
-        updateChatData({...chatRoom, data : data});
+    updateChat = (data) => {
+        let {room_id, ...rest} = data;
+        if(room_id === chatRoom.room_id){
+            setChat_data([...chat_data,rest]);
+        }
     };
 
     const click = (e)=>{
@@ -71,13 +73,13 @@ const ChatRoom = ({user}) => {
         let minutes = today.getMinutes();  // 분
         minutes = minutes < 10 ? "0"+minutes : minutes; // 자릿수 맞추기
         const data = {
-            num : chat_data.at(-1).num + 1,
+            room_id : chatRoom.room_id,
             user_id : user.user_id,
             user_nickname : user.nickname,
             time : `${hours} : ${minutes}`,
             data_s : string,
         };
-        updateChat(data);
+        sendMessage(data);
         setString("");
     };
 
