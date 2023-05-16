@@ -4,7 +4,24 @@ import {getChat_list} from "../../../data/chat/chat_list";
 import {getFriendlist} from "../../../data/user/axios";
 import {getChatData, updateChatData} from "../../../data/chat/chat_data";
 
-const ChatRoom = ({user}) => {
+interface User {
+  user_id: number;
+  nickname: string;
+}
+
+interface Props {
+  user: User;
+}
+
+interface ChatData {
+  num: number;
+  user_id: number;
+  user_nickname: string;
+  time: string;
+  data_s: string;
+}
+
+const ChatRoom: React.FC<Props> = ({user}) => {
   useEffect(() => {
     updateChatData({...chatRoom, data: chat_data});
   }, []);
@@ -42,10 +59,9 @@ const ChatRoom = ({user}) => {
     backgroundColor: "rgba(30, 150, 100, 0.1)",
   };
 
-  const params = useParams();
+  const params = useParams<{room_id: string}>();
   const chatRoom = getChatData(parseInt(params.room_id));
   const location = useLocation();
-  //console.log(location);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const detail = searchParams.get("detail");
@@ -55,16 +71,16 @@ const ChatRoom = ({user}) => {
     console.log(detail);
   };
 
-  const [chat_data, setChat_data] = useState(chatRoom.data);
+  const [chat_data, setChat_data] = useState<ChatData[]>(chatRoom.data);
   const [string, setString] = useState("");
   let check_n = "";
 
-  const updateChat = data => {
+  const updateChat = (data: ChatData) => {
     setChat_data([...chat_data, data]);
     updateChatData({...chatRoom, data: data});
   };
 
-  const click = e => {
+  const click = (e: React.MouseEvent) => {
     let today = new Date();
     let hours = today.getHours(); // 시
     hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
@@ -81,11 +97,11 @@ const ChatRoom = ({user}) => {
     setString("");
   };
 
-  const textChange = e => {
+  const textChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setString(e.target.value);
   };
 
-  const check_name = str => {
+  const check_name = (str: string) => {
     if (str === check_n) return 1;
     else {
       check_n = str;

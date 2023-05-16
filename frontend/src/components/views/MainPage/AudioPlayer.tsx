@@ -1,7 +1,12 @@
 ﻿import React, {useEffect, useState} from "react";
 import "../../style/AudioPlayer.css";
 
-const AudioPlayer = ({src, type}) => {
+interface Props {
+  src: string;
+  type: string;
+}
+
+const AudioPlayer: React.FC<Props> = ({src, type}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 

@@ -1,32 +1,41 @@
-import React, {useRef, useState} from "react";
-import {useForm} from "react-hook-form";
-import GoogleLoginBtn from "./GoogleLoginBtn";
-const LoginPage = props => {
+import React from "react";
+import {useForm, SubmitHandler} from "react-hook-form";
+import {useGoogleLogin} from "@react-oauth/google";
+import Login from "@views/Login/Login";
+
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+interface LoginPageProps {
+  onSubmit: SubmitHandler<FormValues>;
+}
+
+const LoginPage: React.FC<LoginPageProps> = props => {
   const {
     register,
     handleSubmit,
     formState: {errors},
     getValues,
-  } = useForm({mode: "onChange"});
+  } = useForm<FormValues>({mode: "onChange"});
+
+  const handleFormSubmit: SubmitHandler<FormValues> = data => {
+    props.onSubmit(data);
+    console.log(getValues());
+  };
 
   return (
-    // handleSubmit안에 실제로 동작할 함수를 넣음
     <>
       <div>
         SignIn
-        <form
-          onSubmit={e => {
-            handleSubmit(props.onSubmit);
-            console.log(getValues());
-            e.preventDefault();
-          }}>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div>
             <label htmlFor="email">이메일</label>
             <input
               id="email"
               type="text"
-              placeholder="test@email.com"
-              // input의 기본 config를 작성
+              placeholder="test@example.com"
               {...register("email", {
                 required: "이메일은 필수 입력입니다.",
                 pattern: {
@@ -54,10 +63,11 @@ const LoginPage = props => {
             {errors.password && <small role="alert">{errors.password.message}</small>}
           </div>
           <button type="submit">로그인</button>
-          <GoogleLoginBtn />
+          <Login />
         </form>
       </div>
     </>
   );
 };
+
 export default LoginPage;

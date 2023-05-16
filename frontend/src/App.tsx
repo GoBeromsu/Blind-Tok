@@ -19,6 +19,7 @@ import MainComponent from "@views/MainPage/MainComponent";
 import FriendList from "@views/Friend/FriendList";
 import ChatList from "@views/Chat/ChatList";
 import UserProfile from "@views/User/UserProfile";
+import {GoogleOAuthProvider} from "@react-oauth/google";
 
 export default function App() {
   return (
@@ -35,7 +36,7 @@ function AppRoutes() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [sidebarWidth, setSidebarWidth] = useState(windowWidth <= 768 ? 50 : 200);
   const [contentWidth, setContentWidth] = useState(windowWidth - sidebarWidth);
-
+  const client = "644571698921-7564ulcresh2sif3ce5qafmc1p5vluns.apps.googleusercontent.com";
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
@@ -63,6 +64,12 @@ function AppRoutes() {
   //   setContentWidth(windowWidth - sidebarWidth);
   // }, [windowWidth, sidebarWidth]);
   const user = loginUser || data;
+  if (!user)
+    return (
+      <Routes>
+        <Route path="*" element={<Login />} />
+      </Routes>
+    );
   return (
     <div className="container">
       <Routes>
@@ -73,24 +80,26 @@ function AppRoutes() {
         {/*<Route path="/chat" element={Auth(ChatList, true, user)}></Route>*/}
         {/*<Route path="/User" element={Auth(UserProfile, true, user)}></Route>*/}
       </Routes>
-      <Routes>
-        // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
-        <Route path="/login" element={Auth(Login, false)}></Route>
-        //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
-        {/*<Route path="/" element={<SideBar user={user} />}>*/}
-        {/*  <Route index element={<MainComponent />} />*/}
-        {/*  <Route path="/friend" element={<FriendList user={user} />} />*/}
-        {/*  <Route path="/chat" element={<ChatList user={user} />} />*/}
-        {/*<Route path="/User" element={<UserProfile />} />*/}
-        {/*</Route>*/}
-        {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
-        {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
-        {/*</Route>*/}
-        {/*<Route path="/ChatRoom" element={<SideBar user={user} />}>*/}
-        {/*  <Route path=":room_id" element={<ChatRoom user={user} />} />*/}
-        {/*</Route>*/}
-        {/*<Route path="*" element={<Navigate to="/" />} />*/}
-      </Routes>
+      <GoogleOAuthProvider clientId={client}>
+        <Routes>
+          // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
+          <Route path="/login" element={Auth(Login, true)}></Route>
+          //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
+          {/*<Route path="/" element={<SideBar user={user} />}>*/}
+          {/*  <Route index element={<MainComponent />} />*/}
+          {/*  <Route path="/friend" element={<FriendList user={user} />} />*/}
+          {/*  <Route path="/chat" element={<ChatList user={user} />} />*/}
+          {/*<Route path="/User" element={<UserProfile />} />*/}
+          {/*</Route>*/}
+          {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
+          {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
+          {/*</Route>*/}
+          {/*<Route path="/ChatRoom" element={<SideBar user={user} />}>*/}
+          {/*  <Route path=":room_id" element={<ChatRoom user={user} />} />*/}
+          {/*</Route>*/}
+          {/*<Route path="*" element={<Navigate to="/" />} />*/}
+        </Routes>
+      </GoogleOAuthProvider>
     </div>
   );
 }
