@@ -24,7 +24,9 @@ export default function App() {
   return (
     //App 최초 로딩 fallback
     <Suspense fallback={<Loading />}>
-      <AppRoutes />
+      <Router>
+        <AppRoutes />
+      </Router>
     </Suspense>
   );
 }
@@ -63,6 +65,10 @@ function AppRoutes() {
   //   setContentWidth(windowWidth - sidebarWidth);
   // }, [windowWidth, sidebarWidth]);
   const user = loginUser || data;
+  if(!user)
+  return (
+    <Login/>
+  )
   return (
     <div className="container">
       <Routes>

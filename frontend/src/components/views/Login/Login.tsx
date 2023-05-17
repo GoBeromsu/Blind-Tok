@@ -2,8 +2,8 @@ import {useRecoilState, useSetRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {useNavigate} from "react-router-dom";
 import {useGoogleLogin} from "@react-oauth/google";
-import {userGoogleAuthState} from "@data/login/state";
-import {getGoogleInfoAxios, getToken} from "@data/login/axios";
+import {userGoogleAuthState} from "@data/Login/state";
+import {getGoogleInfoAxios, getToken} from "@data/Login/axios";
 import React from "react";
 import GoogleButton from "react-google-button";
 
