@@ -1,4 +1,4 @@
-import {FastifyInstance} from "fastify";
+import Fastify, {FastifyInstance} from "fastify";
 import fastifyMultipart from "@fastify/multipart";
 import {fastifyView} from "@fastify/view";
 import formbody from "@fastify/formbody";
@@ -8,6 +8,7 @@ import fastifyCookie from "@fastify/cookie";
 import oauth2 from "@fastify/oauth2";
 import {googleAuth} from "@config/auth.config";
 import {adam} from "@config/adam.config";
+import fastifyIO from "fastify-socket.io";
 export default async function (fastify: FastifyInstance) {
   // FormBody
   fastify.register(formbody);
@@ -24,7 +25,10 @@ export default async function (fastify: FastifyInstance) {
       fileSize: 10 * 1024 * 1024,
     },
   });
+  // socket 등록
+  fastify.register(fastifyIO);
 
+  //View
   fastify.register(fastifyView, {engine: {ejs}});
   fastify.register(oauth2, googleAuth);
 
