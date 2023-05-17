@@ -10,7 +10,7 @@ export const localStorageEffect =
     if (isEmpty(savedValue)) {
       setSelf(null);
     } else {
-      setSelf(JSON.parse(savedValue));
+      setSelf(savedValue ? JSON.parse(savedValue) : null);
       // setSelf()
     }
     onSet((newValue: any, _: any, isReset: boolean) => {
@@ -23,8 +23,8 @@ export const localStorageEffect =
   };
 // "" null undegined
 
-export function isEmpty(str: string) {
-  return str == "" || str == undefined || str == null;
+export function isEmpty(value: any) {
+  return value === "" || value === undefined || value === null;
 }
 export const userGoogleAuthState = atom<any>({
   key: "userGoogleAuthState",

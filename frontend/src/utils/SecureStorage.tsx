@@ -1,22 +1,31 @@
-import CryptoJS from "crypto-js"; // Import the CryptoJS library for encryption/decryption
-import {LocalStorage} from "typescript-web-storage"; // Import the third-party typescript-web-storage library for working with local storage in TypeScript
+import CryptoJS from "crypto-js";
+import {LocalStorage} from "typescript-web-storage";
+
 const SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET_KEY;
 
-// Function to generate a hash value for a given input string using SHA256
+if (typeof SECRET_KEY === "undefined") {
+  throw new Error("SECRET_KEY is not defined");
+}
+
+const strSecretKey = String(SECRET_KEY);
 
 export function getHash(value: string) {
-  const key = CryptoJS.SHA256(value, {SECRET_KEY});
+  const key = CryptoJS.SHA256(value);
   return key;
 }
 
 export function setStorage(key: string, value: string) {
   const storage = new LocalStorage();
-  const data = CryptoJS.AES.encrypt(value, SECRET_KEY);
+  const data = CryptoJS.AES.encrypt(value, strSecretKey);
   storage.setItem<string>(key, data.toString());
 }
 
 export function getStorage(key: string) {
   const storage = new LocalStorage();
-  const data = CryptoJS.AES.decrypt(storage.getItem<string>(key) ?? "", SECRET_KEY).toString(CryptoJS.enc.Utf8);
-  return data;
+  const encryptedData = storage.getItem<string>(key);
+  if (encryptedData == null) {
+    return null;
+  }
+  const data = CryptoJS.AES.decrypt(encryptedData, strSecretKey);
+  return data.toString(CryptoJS.enc.Utf8);
 }

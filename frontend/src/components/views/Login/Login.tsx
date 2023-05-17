@@ -7,7 +7,7 @@ import {getGoogleInfoAxios, getToken} from "@data/Login/axios";
 import React from "react";
 import GoogleButton from "react-google-button";
 
-const Login = () => {
+const Login: React.FC = () => {
   const [googleAuth, setGoogleAuth] = useRecoilState(userGoogleAuthState);
   const setUser = useSetRecoilState(userState);
 
