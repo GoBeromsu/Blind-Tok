@@ -2,8 +2,8 @@
 import { Link } from 'react-router-dom';
 import '../style/ChatList.css';
 import Modal from 'react-modal';
-import { createRoom } from './client';
-import { getChat_list } from '../../data/chat_list';
+import { createRoom } from '../../socket/client';
+import { getChat_list } from '../../../data/chat/chat_list';
 import { getFriendlist } from '../../data/friend_data';
 import FriendList from './FriendList';
 

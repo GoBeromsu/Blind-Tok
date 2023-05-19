@@ -6,12 +6,12 @@ import UserProfile from "./UserProfile";
 import MainComponent from './MainComponent';
 import FriendList from './FriendList';
 //import FriendPage from './FriendPage';
-import ChatList from './ChatList';
+import ChatList from './Chat/ChatList';
 import ChatRoom from "./ChatRoom";
 import getUser from '../../data/user_data';
 //import RegisterPage from "./RegisterPage";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
-import {getSocket, createSocket} from './client';
+import {getSocket, createSocket} from '../socket/client';
 
 const App = () => {
   // socket.io
