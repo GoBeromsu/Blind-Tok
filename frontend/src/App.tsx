@@ -68,14 +68,15 @@ function AppRoutes() {
       <Routes>
         // Auth에 뭐 줘야 할지 헷갈리면 걍 True로 두셈 ㅇㅇ 아니면 주석 처리하거나 // Auth 페이지에 유저를 주는 이유는 로그인이 되어 있지 않으면
         로그인 페이지로 이동하기 위함
-        <Route path={"/"} element={Auth(MainComponent, false)}></Route>
-        <Route path="/friend" element={Auth(FriendList, false)}></Route>
+        <Route path={"/"} element={Auth(MainComponent, true, user)}></Route>
+        <Route path="/friend" element={Auth(FriendList, true,user)}></Route>
         {/*<Route path="/chat" element={Auth(ChatList, true, user)}></Route>*/}
         {/*<Route path="/User" element={Auth(UserProfile, true, user)}></Route>*/}
       </Routes>
       <Routes>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
+
         //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
         {/*<Route path="/" element={<SideBar user={user} />}>*/}
         {/*  <Route index element={<MainComponent />} />*/}
@@ -89,7 +90,7 @@ function AppRoutes() {
         {/*<Route path="/ChatRoom" element={<SideBar user={user} />}>*/}
         {/*  <Route path=":room_id" element={<ChatRoom user={user} />} />*/}
         {/*</Route>*/}
-        {/*<Route path="*" element={<Navigate to="/" />} />*/}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

@@ -1,7 +1,12 @@
 ﻿import React, {useEffect, useState} from "react";
 import "../../style/ResponsiveImage.css";
 
-const ResponsiveImage = ({src, alt}) => {
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const ResponsiveImage: React.FC<Props> = ({src, alt}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const handleResize = () => {
