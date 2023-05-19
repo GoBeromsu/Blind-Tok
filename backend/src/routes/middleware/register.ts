@@ -26,7 +26,7 @@ export default async function (fastify: FastifyInstance) {
     },
   });
   // socket 등록
-  fastify.register(fastifyIO);
+  fastify.register(fastifyIO, {cors: {credentials: true}});
 
   //View
   fastify.register(fastifyView, {engine: {ejs}});
