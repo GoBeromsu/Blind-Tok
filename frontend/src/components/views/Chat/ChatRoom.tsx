@@ -5,9 +5,14 @@ import { getFriendlist } from '@data/Friend/axios';
 import { getChatData } from '@data/chat/chat_data';
 import { sendMessage } from '@socket/client';
 
-export let updateChat = () => {};
+export let updateChat: any = () => {};
 
-const ChatRoom = ({user}) => {
+interface User {
+    user_id: any;
+    nickname: any;
+}
+
+const ChatRoom: React.FC<{ user: User }> = ({user}) => {
     const myCSS ={
         display: "flex",
         alignItems: "flex-end",
@@ -42,35 +47,29 @@ const ChatRoom = ({user}) => {
         backgroundColor: "rgba(30, 150, 100, 0.1)",
     };
 
-    const params = useParams();
-    const chatRoom = getChatData(parseInt(params.room_id));
-    const location = useLocation();
-    //console.log(location);
+    const params: any = useParams();
+    const chatRoom: any = getChatData(parseInt(params.room_id));
+    const location: any = useLocation();
 
-    const [searchParams, setSearchParams] = useSearchParams();
-    const detail = searchParams.get("detail");
+    const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
+    const detail: any = searchParams.get("detail");
 
-    const handleClick = () => {
-        setSearchParams({ detail: detail === "true" ? false : true });
-        console.log(detail);
-    };
-
-    const [chat_data, setChat_data] = useState(chatRoom.data);
-    const [string, setString] = useState("");
+    const [chat_data, setChat_data]: [any, (data: any) => void] = useState(chatRoom.data);
+    const [string, setString]: [string, (str: string) => void] = useState("");
     let check_n = "";
 
-    updateChat = (data) => {
+    updateChat = (data: any) => {
         let {room_id, ...rest} = data;
         if(room_id === chatRoom.room_id){
             setChat_data([...chat_data,rest]);
         }
     };
 
-    const click = (e)=>{
+    const click = (e:any)=>{
         let today = new Date();   
-        let hours = today.getHours(); // 시
+        let hours:any = today.getHours(); // 시
         hours = hours < 10 ? "0"+hours : hours; // 자릿수 맞추기
-        let minutes = today.getMinutes();  // 분
+        let minutes:any = today.getMinutes();  // 분
         minutes = minutes < 10 ? "0"+minutes : minutes; // 자릿수 맞추기
         const data = {
             room_id : chatRoom.room_id,
@@ -83,11 +82,11 @@ const ChatRoom = ({user}) => {
         setString("");
     };
 
-    const textChange = (e) => {
+    const textChange = (e:any) => {
         setString(e.target.value);
     };
 
-    const check_name = (str) =>{
+    const check_name = (str:any) =>{
         if(str === check_n) return 1;
         else {
             check_n = str;
@@ -99,7 +98,7 @@ const ChatRoom = ({user}) => {
         <div>
             <div style={{ width: `100%`, height:'100%' }}>
                 <div style={{ width: `100%`, height:'90%' }}>
-                    {chat_data.map((p) => (
+                    {chat_data.map((p:any) => (
                         <div key={p.num} className="text" style={{width:"800px"}}>
                             <div style={user.user_id===p.user_id ? {...nameCSS, textAlign:"left"} : {...nameCSS, textAlign: "right"}}
                             >{check_name(p.user_nickname) === 1 ? "" : p.user_nickname}</div>

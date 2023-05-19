@@ -1,14 +1,16 @@
 ﻿import React, {useState, useEffect} from "react";
 import Button from "./Button";
 import C_Image from "./CircularImage";
-import image from "../../../image/l.png";
 import "../../style/SideBar.css";
-import Br from "./Br";
-import MessageBox from "../MainPage/MessageBox.js";
-import BTlogo from "../../../image/BTlogo";
+import MessageBox from "../MainPage/MessageBox";
+import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 
-const SideBar = ({user}) => {
+interface SideBarProps {
+  user: any; // 사용자 타입에 맞게 수정해야 함
+}
+
+const SideBar: React.FC<SideBarProps> = ({user}) => {
   const handleClick = () => {};
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -27,19 +29,19 @@ const SideBar = ({user}) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const image = require("/image/l.png");
+
   return (
     <div style={{display: "flex"}}>
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
         <div className="test">
           <div className="sidebar_main">
-            <BTlogo style={{display: "flex", alignItems: "center"}} />
-            <Br />
-
+            <img src={BTlogo} style={{display: "flex", alignItems: "center"}} alt="BT 로고" />
             <C_Image src={image} alt="프로필 이미지" size="130" />
             <br />
 
             <MessageBox user={user} />
-            <Br />
             <div className="item">
               <Link to="/friend">
                 <Button onClick={handleClick} label="친구 목록" />

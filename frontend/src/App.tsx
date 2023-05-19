@@ -1,11 +1,11 @@
 import React, {useEffect, useState, Component, Suspense} from "react";
-import "./components/style/App.css";
+import "@style/App.css";
 // import SideBar from "./components/views/Layout/SideBar";
 // import UserProfile from "./components/views/User/UserProfile";
 // import MainComponent from "./components/views/MainPage/MainComponent";
 // import FriendList from "./components/views/Friend/FriendList";
-// import ChatList from "./components/views/Chat/ChatList";
-// import ChatRoom from "./components/views/Chat/ChatRoom";
+//import ChatList from "./components/views/Chat/ChatList";
+
 
 import {BrowserRouter as Router, Route, Routes, Navigate, Outlet} from "react-router-dom";
 import {getAuthUserQuery, getUserInfoQuery} from "@data/user/query";
@@ -17,6 +17,7 @@ import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import MainComponent from "@views/MainPage/MainComponent";
 import FriendList from "@views/Friend/FriendList";
+//import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import UserProfile from "@views/User/UserProfile";
 
@@ -40,6 +41,9 @@ function AppRoutes() {
     if (loginUser == null && data != null) {
       setLoginUser(data);
     }
+    console.log("user : "
+    );
+    console.log(data);
   }, [data]);
 
   if (isLoading) {
@@ -68,14 +72,15 @@ function AppRoutes() {
       <Routes>
         // Auth에 뭐 줘야 할지 헷갈리면 걍 True로 두셈 ㅇㅇ 아니면 주석 처리하거나 // Auth 페이지에 유저를 주는 이유는 로그인이 되어 있지 않으면
         로그인 페이지로 이동하기 위함
-        <Route path={"/"} element={Auth(MainComponent, false)}></Route>
-        <Route path="/friend" element={Auth(FriendList, false)}></Route>
-        {/*<Route path="/chat" element={Auth(ChatList, true, user)}></Route>*/}
+        <Route path={"/"} element={Auth(MainComponent, true, user)}></Route>
+        <Route path="/friend" element={Auth(FriendList, true, user)}></Route>
+        <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
         {/*<Route path="/User" element={Auth(UserProfile, true, user)}></Route>*/}
       </Routes>
       <Routes>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
+
         //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
         {/*<Route path="/" element={<SideBar user={user} />}>*/}
         {/*  <Route index element={<MainComponent />} />*/}
@@ -86,10 +91,10 @@ function AppRoutes() {
         {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
-        {/*<Route path="/ChatRoom" element={<SideBar user={user} />}>*/}
-        {/*  <Route path=":room_id" element={<ChatRoom user={user} />} />*/}
-        {/*</Route>*/}
-        {/*<Route path="*" element={<Navigate to="/" />} />*/}
+        <Route path="/ChatRoom" element={""}>
+          <Route path=":room_id" element={Auth(ChatList, true, user)} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

@@ -2,12 +2,12 @@ import {useRecoilState, useSetRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {useNavigate} from "react-router-dom";
 import {useGoogleLogin} from "@react-oauth/google";
-import {userGoogleAuthState} from "@data/login/state";
-import {getGoogleInfoAxios, getToken} from "@data/login/axios";
+import {userGoogleAuthState} from "@data/Login/state";
+import {getGoogleInfoAxios, getToken} from "@data/Login/axios";
 import React from "react";
 import GoogleButton from "react-google-button";
 
-const Login = () => {
+const Login: React.FC = () => {
   const [googleAuth, setGoogleAuth] = useRecoilState(userGoogleAuthState);
   const setUser = useSetRecoilState(userState);
 
@@ -20,7 +20,7 @@ const Login = () => {
 
     if (status == "REGISTER") {
       setGoogleAuth(data); //구글 sso 로그인 등록을 하기 위한, 정보를 state에 저장함
-
+      console.log(auth.ssoid);
       navigate("/register");
     } else {
       const {ssoid} = auth;
