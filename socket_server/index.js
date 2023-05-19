@@ -1,8 +1,44 @@
-import {checkData, removeUserList, show_r, updateRoom, getRoomData_name_user} from "./room_userList.js";
-import {show_d} from "./data.js";
-import {getUserRoomList,removeRoomList,updateRoomList, show_u} from "./user_roomList.js";
+import {checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData_name_user, setData_R, getData_R} from "./room_userList.js";
+import {getUserRoomList,removeRoomList,updateRoomList, show_u, setData_U, getData_U} from "./user_roomList.js";
+import {show_d, setData_D, getData_D} from "./data.js";
 import { createRequire } from "module";
+import { fileURLToPath } from 'url';
+
 const require = createRequire(import.meta.url);
+
+const schedule = require('node-schedule');
+
+const job = schedule.scheduleJob('0 * * * * *', function(){
+  save_Data();
+  console.log("------------saveData----------")
+});
+
+
+// 파일 저장 - data/ --- .json
+const fs = require('fs');
+const path = require('path');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const path_chatData = path.join(__dirname, 'data', 'chatData.json');
+const path_userData = path.join(__dirname, 'data', 'user_roomData.json');
+const path_roomData = path.join(__dirname, 'data', 'room_userData.json');
+
+function save_Data(){
+  fs.writeFileSync(path_chatData, JSON.stringify(getData_D()));
+  fs.writeFileSync(path_userData, JSON.stringify(getData_U()));
+  fs.writeFileSync(path_roomData, JSON.stringify(getData_R()));
+}
+
+function load_Data(){
+  let data_chatData = fs.readFileSync(path_chatData);
+  let data_userData = fs.readFileSync(path_userData);
+  let data_roomData = fs.readFileSync(path_roomData);
+  setData_D(JSON.parse(data_chatData));
+  setData_U(JSON.parse(data_userData));
+  setData_R(JSON.parse(data_roomData));
+}
 
 
 const app = require('express')()
@@ -15,14 +51,16 @@ const io = require('socket.io')(server,{
   }
 });
 
+var user_list = [];
+
 io.on('connection', socket=>{
   console.log(`User Connected: ${socket.id}`);
-  socket.on("join_room_init", (user_id) => {
-    userJoin(socket, user_id);
-    console.log("join_room_init");
-  });
+  load_Data();
   
   socket.on("data_init", (user_id)=>{
+    user_list.push({user_id: user_id, socket_id: socket.id});
+    console.log(user_list);
+    
     let list = getUserRoomList(user_id);
 
     // 유저가 속한 방에 연결
@@ -43,6 +81,13 @@ io.on('connection', socket=>{
     io.to(socket.id).emit("rec_chatList", make_RoomListData(list));
     
   })
+
+  socket.on("disconnect", (reason) => {
+    let index = user_list.findIndex((user)=> user.socket_id === socket.id);
+    console.log("연결 종료 : " + user_list[index].user_id);
+    user_list.splice(index,1);
+    console.log("new user_list : " + user_list);
+  })
   
   // data = {room_id : , user_id :}
   socket.on("join_room", (user_id) => {
@@ -56,8 +101,10 @@ io.on('connection', socket=>{
   socket.on("get_UserRoomList", (user_id) => {
     io.to(socket.id).emit("rec_chatList", getUserRoomList(user_id));
   })
-  socket.on("create_room", (user_id) => {
-
+  socket.on("create_room", (data) => {
+    let tmp = [{user_id: data.user.user_id, nickname: data.user.nickname}, ...data.user_list]
+    console.log(data);
+    createRoom(10,tmp,data.room_name)
   })
   socket.on("add_user", ()=>{
 

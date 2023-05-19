@@ -1,36 +1,4 @@
-var data = [
-    {
-        room_id : 1,
-        room_data :[{
-            num : 1,
-            user_id : "choichoichoi",
-            user_nickname : "최승주",
-            time : "00-00-00",
-            data_s : "안녕하세요.안녕하세요.안녕하세요.",
-        }]
-    },
-    {
-        room_id : 2,
-        room_data :[{
-            num : 1,
-            user_id : "choichoichoi",
-            user_nickname : "최승주",
-            time : "00-00-00",
-            data_s : "안녕하세요.안녕하세요.안녕하세요.",
-        }]
-    },
-    {
-        room_id : 3,
-        room_data :[{
-            num : 1,
-            user_id : "choichoichoi",
-            user_nickname : "최승주",
-            time : "00-00-00",
-            data_s : "안녕하세요.안녕하세요.안녕하세요.",
-        }]
-    },
-
-];
+var data =[]
 
 export function getData(room_id, data_num, opt){
     let index = data.findIndex((data) => data.room_id === room_id);
@@ -46,6 +14,7 @@ export function getData(room_id, data_num, opt){
 }
 
 export function createData(room_id){
+    if(data.find((data)=> data.room_id === room_id))return;
     let data_n = {room_id : room_id, room_data : []};
     data = [...data, data_n];
     console.log("createData : ");
@@ -64,8 +33,11 @@ export function setData(room_id, data_t){
     console.log(data)
 };
 
-export function saveLocal(){
-
+export function getData_D(){
+    return data;
+}
+export function setData_D(data_r){
+    data = data_r;
 }
 
 // test

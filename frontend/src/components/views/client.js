@@ -45,12 +45,8 @@ export function getSocket(){
     return socket;
 }
 
-export function joinRoom(user_id){
-    socket.emit("join_room", {user_id});
-}
-
-export function createRoom(user_id){
-    socket.emit("create_room", {user_id});
+export function createRoom(user, user_list, room_name = ""){
+    socket.emit("create_room", {user, user_list, room_name});
 }
 
 export function addUser(user_id){

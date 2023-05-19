@@ -2,10 +2,13 @@
 import { Link } from 'react-router-dom';
 import '../style/ChatList.css';
 import Modal from 'react-modal';
+import { createRoom } from './client';
 import { getChat_list } from '../../data/chat_list';
 import { getFriendlist } from '../../data/friend_data';
+import FriendList from './FriendList';
 
 const ChatList = ({user}) => {
+    const [addFrendList, setAddFriendList] = useState([]);
     const [chatList, setChatList] = useState(getChat_list());
     const [friendList, setFriendList] = useState(getFriendlist(user.user_id));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -37,9 +40,23 @@ const ChatList = ({user}) => {
             borderRadius: "14px",
             outline: "none",
             zIndex: 10,
+            flexDirection: "column",
+            flexWrap: "nowrap",
+            alignItems: "stretch",
+            justifyContent: "flex-start",
         },
     };
 
+    const add_list = (friend_n) =>{
+        if(!addFrendList.find((friend)=>friend.id === friend_n.id)){
+            setAddFriendList([friend_n, ...addFrendList]);
+            //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
+        }
+    };
+    const sub_list = (friend_n) =>{
+        setAddFriendList(addFrendList.filter((friend) => friend.user_id !== friend_n.user_id));
+        //setFriendList([friend_n, ...friendList]);
+    };
 
     useEffect(() => {
         window.addEventListener('resize', handleResize);
@@ -77,16 +94,23 @@ const ChatList = ({user}) => {
             <h1>Chating Room</h1>
             <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{ position: 'sticky', top: '30px' }} />
             <button onClick={() => setModalIsOpen(true)} > 추가</button>
-            <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={M_style}>
-                <div className="f_item" >
-                    <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{ position: 'sticky', top: '30px' }} />
-                    {filteredFriends.map((friend) => (
-                        <div key={friend.id} className="friend-item" style={{ width: `${W}px`, height:'50px' }}>
-                            <Link to={`/friend_s/${friend.id}`}>{friend.nickname}</Link>
+            <Modal isOpen={modalIsOpen} onRequestClose={() => {setModalIsOpen(false); setAddFriendList([]);}} style={M_style}>
+                <div className="f_itemd" >
+                    {addFrendList.map((friend)=>(
+                        <div key={friend.id} style={{ width: `${W}px`, height:'50px' }} onClick={()=>{sub_list(friend)}}>
+                            {friend.nickname}
                         </div>
                     ))}
                 </div>
-                <button onClick={() => setModalIsOpen(false)} style={{width:'50px', height:'50px'}}>확인</button>
+                <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{ position: 'sticky', top: '0px' }} />
+                <div className="f_item" >
+                    {filteredFriends.map((friend) => (
+                        <div key={friend.id} className="friend-item" style={{ width: `${W}px`, height:'50px' }} onClick={()=>{add_list(friend)}}>
+                            {friend.nickname}
+                        </div>
+                    ))}
+                </div>
+                <button onClick={() => {createRoom(user, addFrendList); setModalIsOpen(false); setAddFriendList([]);}} style={{width:'50px', height:'50px'}}>확인</button>
             </Modal>
             <div className="f_item" >
                 {filteredChatRoom.map((chat) => (

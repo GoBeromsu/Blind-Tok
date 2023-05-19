@@ -26,7 +26,7 @@ const App = () => {
     }
   },[]);
   
-  const user_id = "choichoichoi";
+  const user_id = "choochoochoo";
   const [user, setUser] = useState(getUser(user_id));
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

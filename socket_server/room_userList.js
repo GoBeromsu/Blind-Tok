@@ -1,46 +1,33 @@
 import {updateRoomList} from "./user_roomList.js";
 import {createData, getData, setData} from "./data.js";
 
-var data = [
-    {
-        room_id : 1,
-        room_name : "모임1",
-        min_num : 0,
-        max_num : 1,
-        user_list : [
-            {user_id:"gogogo", data_num: 0},
-            {user_id:"choichoichoi", data_num: 0},
-            {user_id:"choochoochoo", data_num: 0}
-        ]
-    },
-    {
-        room_id : 2,
-        room_name : "모임1",
-        min_num : 0,
-        max_num : 1,
-        user_list : [
-            {user_id:"choichoichoi", data_num: 0}
-        ]
-    },
-    {
-        room_id : 3,
-        room_name : "모임1",
-        min_num : 0,
-        max_num : 1,
-        user_list : [
-            {user_id:"choichoichoi", data_num: 0}
-        ]
-    },
+var data =[]
 
-];
+export function createRoom(room_id, user_list, room_name){
+    if(data.find((data)=>data.room_id === room_id)) {console.log("err(createRoom : room_id)"); return;}
+    let tmp = data;
+    // 같은 인원을 가진 방은 만들지 않는다.
+    for(let i = 0; i < user_list.length; i++){
+        tmp = tmp.filter((room)=>room.user_list.find((user)=> user.user_id === user_list[i].user_id) ? true : false)
+    }
+    if(tmp.length > 0) return tmp[0].room_id;
 
-export function createRoom(room_id, userList){
+    let str = user_list[0].user_id;
+    if(room_name == ""){
+        for(let i = 1; i < user_list.length; i++){
+            str += ", " + user_list[i].user_id;
+        }
+    }else str = room_name;
+
     let data_n = {
         room_id : room_id,
-        user_list : userList.map((user) => [{user_id : user.user_id, data_num : -1}]),
+        room_name : str,
+        min_num : 0,
+        max_num : 0,
+        user_list : user_list.map((user) => {return {user_id : user.user_id, data_num : 0}}),
     };
     data = [...data, data_n];
-    updataRoomList(room_id, userList);
+    updateRoomList(room_id, user_list);
     createData(room_id);
     console.log("success createRoom");
 }
@@ -105,8 +92,11 @@ export function removeUserList(room_id, user_id){
     data = data.map((data) => data.room_id === room_id ? room : data);
 };
 
-export function saveLocal(){
-
+export function getData_R(){
+    return data;
+}
+export function setData_R(data_r){
+    data = data_r;
 }
 
 export function getRoomData_name_user(room_id){

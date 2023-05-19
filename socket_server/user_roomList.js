@@ -1,11 +1,4 @@
-var data = [{
-    user_id : "choichoichoi",
-    room_list : [
-        {room_id:1},
-        {room_id:2},
-        {room_id:3}
-    ]
-}];
+var data =[]
 
 export function newUser(user_id){
     let data_n = {
@@ -15,12 +8,15 @@ export function newUser(user_id){
     data = [...data, data_n];
 }
 
-export function updateRoomList(room_id, userList){
-    for(let i = 0; userList.length; i++){
-        let index = data.findIndex((data) => data.user_id === userList[i].user_id);
-        if(index != -1){
-        data[index] = {user_id : user_id, room_list : [{room_id: room_id}, ...data[index].room_list]};
-        }else{ console.log("updataRoomList : not User")}
+export function updateRoomList(room_id, user_list){
+    if(user_list === []) return ;
+    console.log(user_list);
+    for(let i = 0; i < user_list.length; i++){
+        let index = data.findIndex((data) => data.user_id === user_list[i].user_id);
+        if(index == -1){ newUser(user_list[i].user_id); index = data.length-1; }
+        let tmp = data[index];
+        data[index] = {user_id : tmp.user_id, room_list : [{room_id: room_id}, ...tmp.room_list]};
+        
         console.log("updateRoomList : ");
         console.log(data);
     }
@@ -43,8 +39,11 @@ export function getUserRoomList(user_id){
     return user.room_list;
 }
 
-export function saveLocal(){
-
+export function getData_U(){
+    return data;
+}
+export function setData_U(data_r){
+    data = data_r;
 }
 
 // test
