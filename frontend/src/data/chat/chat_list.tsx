@@ -1,4 +1,4 @@
-﻿var chat_list = [{}];
+﻿var chat_list = new Array();
 
 export function setChatList(data:any){
     chat_list = data;

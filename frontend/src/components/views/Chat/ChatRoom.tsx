@@ -1,9 +1,11 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useSearchParams, Link } from "react-router-dom";
-import { getChat_list } from '@data/chat/chat_list';
+import { getChat_list } from '@data/Chat/chat_list';
 import { getFriendlist } from '@data/Friend/axios';
-import { getChatData } from '@data/chat/chat_data';
+import { getChatData } from '@data/Chat/chat_data';
 import { sendMessage } from '@socket/client';
+import {useRecoilState} from "recoil";
+import {userState} from "@data/user/state";
 
 export let updateChat: any = () => {};
 
@@ -12,7 +14,8 @@ interface User {
     nickname: any;
 }
 
-const ChatRoom: React.FC<{ user: User }> = ({user}) => {
+const ChatRoom: React.FC = () => {
+    const [loginUser, setLoginUser]: any = useRecoilState(userState);
     const myCSS ={
         display: "flex",
         alignItems: "flex-end",
@@ -73,8 +76,8 @@ const ChatRoom: React.FC<{ user: User }> = ({user}) => {
         minutes = minutes < 10 ? "0"+minutes : minutes; // 자릿수 맞추기
         const data = {
             room_id : chatRoom.room_id,
-            user_id : user.user_id,
-            user_nickname : user.nickname,
+            user_id : loginUser.userid,
+            user_nickname : loginUser.nickname,
             time : `${hours} : ${minutes}`,
             data_s : string,
         };
@@ -100,9 +103,9 @@ const ChatRoom: React.FC<{ user: User }> = ({user}) => {
                 <div style={{ width: `100%`, height:'90%' }}>
                     {chat_data.map((p:any) => (
                         <div key={p.num} className="text" style={{width:"800px"}}>
-                            <div style={user.user_id===p.user_id ? {...nameCSS, textAlign:"left"} : {...nameCSS, textAlign: "right"}}
+                            <div style={loginUser.userid===p.user_id ? {...nameCSS, textAlign:"left"} : {...nameCSS, textAlign: "right"}}
                             >{check_name(p.user_nickname) === 1 ? "" : p.user_nickname}</div>
-                            <div style={user.user_id===p.user_id ? myCSS : youCSS}>
+                            <div style={loginUser.userid===p.user_id ? myCSS : youCSS}>
                                 <div style={dataCSS}>{p.data_s}</div>
                                 <div style={{fontSize: "10px"}}>{p.time}</div>
                             </div>

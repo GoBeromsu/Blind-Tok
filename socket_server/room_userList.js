@@ -27,6 +27,9 @@ export function createRoom(room_id, user_list, room_name){
         user_list : user_list.map((user) => {return {user_id : user.user_id, data_num : 0}}),
     };
     data = [...data, data_n];
+    console.log("RoomData : ");
+    console.log(data);
+    
     updateRoomList(room_id, user_list);
     createData(room_id);
     console.log("success createRoom");

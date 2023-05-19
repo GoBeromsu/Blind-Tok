@@ -62,9 +62,8 @@ io.on('connection', socket=>{
     console.log(user_list);
     
     let list = getUserRoomList(user_id);
-
     // 유저가 속한 방에 연결
-    userJoin(socket, user_id);
+    userJoin(socket, list);
     console.log("join_room_init");
 
     // 오프라인 일때 들어온 데이터 갱신
@@ -84,7 +83,8 @@ io.on('connection', socket=>{
 
   socket.on("disconnect", (reason) => {
     let index = user_list.findIndex((user)=> user.socket_id === socket.id);
-    console.log("연결 종료 : " + user_list[index].user_id);
+    if(index == -1){console.log("err : disconnect"); return;};
+    console.log("연결 종료 : " + user_list[index].userid);
     user_list.splice(index,1);
     console.log("new user_list : " + user_list);
   })
@@ -102,7 +102,7 @@ io.on('connection', socket=>{
     io.to(socket.id).emit("rec_chatList", getUserRoomList(user_id));
   })
   socket.on("create_room", (data) => {
-    let tmp = [{user_id: data.user.user_id, nickname: data.user.nickname}, ...data.user_list]
+    let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list]
     console.log(data);
     createRoom(10,tmp,data.room_name)
   })

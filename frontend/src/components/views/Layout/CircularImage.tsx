@@ -4,7 +4,7 @@ import "../../style/CircularImage.css";
 interface CircularImageProps {
   src: string;
   alt: string;
-  size: number;
+  size: string;
 }
 
 const CircularImage: React.FC<CircularImageProps> = ({src, alt, size}) => {
