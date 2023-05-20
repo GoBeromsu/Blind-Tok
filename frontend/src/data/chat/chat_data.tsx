@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, {useState, useEffect} from "react";
 
 /*
 my Arr[
@@ -27,21 +27,17 @@ function getData(key: string): any {
 }
 
 // 데이터 수정 및 저장 / 단일 데이터
-export function rec(data: any): any {
-  let { room_id, ...rest } = data;
+export function updateChatData(data: any): any {
+  let {room_id, ...rest} = data;
   let tmp = getData("chatData");
   if (!tmp) {
-    updateData("chatData", [{ room_id: room_id, data: [rest] }]);
+    updateData("chatData", [{room_id: room_id, data: [rest]}]);
   } else {
     let tmp_f = tmp.find((p: any) => p.room_id === room_id);
     if (!tmp_f) {
-      tmp_f = [...tmp, { room_id: room_id, data: [rest] }];
+      tmp_f = [...tmp, {room_id: room_id, data: [rest]}];
     } else {
-      tmp_f = tmp.map((chat_data: any) =>
-        chat_data.room_id === room_id
-          ? { ...chat_data, data: [...tmp_f.data, rest] }
-          : chat_data
-      );
+      tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {...chat_data, data: [...tmp_f.data, rest]} : chat_data));
     }
     updateData("chatData", tmp_f);
   }
@@ -55,7 +51,7 @@ function updateData(key: string, data: any): void {
 
 // 여러 데이터 저장
 export function updateData_s(data: any): void {
-  let { room_id, ...rest } = data;
+  let {room_id, ...rest} = data;
   let tmp = getData("chatData");
   if (!tmp) {
     updateData("chatData", [data]);
@@ -65,11 +61,7 @@ export function updateData_s(data: any): void {
       console.log(data);
       tmp_f = [...tmp, data];
     } else {
-      tmp_f = tmp.map((chat_data: any) =>
-        chat_data.room_id === room_id
-          ? { room_id: room_id, data: [...tmp_f.data, ...rest] }
-          : chat_data
-      );
+      tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {room_id: room_id, data: [...tmp_f.data, ...rest]} : chat_data));
     }
     console.log(tmp_f);
     updateData("chatData", tmp_f);
@@ -114,13 +106,13 @@ export function getChatData(id: any): any {
   };
 
   if (!tmp) {
-    console.log({ id, data });
-    return { room_id: id, data: [data] };
+    console.log({id, data});
+    return {room_id: id, data: [data]};
   }
 
   let tmp_f = tmp.find((p: any) => p.room_id === id);
   if (!tmp_f) {
-    return { room_id: id, data: [data] };
+    return {room_id: id, data: [data]};
   } else {
     return tmp_f;
   }

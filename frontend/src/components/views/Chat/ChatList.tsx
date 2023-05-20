@@ -1,13 +1,12 @@
-﻿
-import React, {useState, useEffect} from "react";
+﻿import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
-import {getChat_list} from "@data/Chat/chat_list";
-import { createRoom } from '@socket/client';
 import {getFriendlist} from "@data/Friend/axios";
 import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
+import {getChat_list} from "@data/Chat/chat_list";
+import {createRoom} from "../../../socket";
 
 export let setList: any = () => {};
 
@@ -15,7 +14,7 @@ const ChatList: React.FC = () => {
   const [addFrendList, setAddFriendList]: any = useState([]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [chatList, setChatList] = useState<any>(getChat_list());
-  const [friendList, setFriendList] = useState<any>([]);// 수정 필요 
+  const [friendList, setFriendList] = useState<any>([]); // 수정 필요
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [W, setW] = useState<any>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
@@ -23,105 +22,134 @@ const ChatList: React.FC = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
     setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
-};
+  };
 
-setList = () =>{
-  setChatList(getChat_list());
-};
+  setList = () => {
+    setChatList(getChat_list());
+  };
 
-const M_style : any = {
+  const M_style: any = {
     overlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(255, 255, 255, 0.45)",
-        zIndex: 10,
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(255, 255, 255, 0.45)",
+      zIndex: 10,
     },
     content: {
-        display: "flex",
-        background: "#ffffff",
-        overflow: "auto",
-        inset: "100px 100px 100px 400px",
-        WebkitOverflowScrolling: "touch",
-        borderRadius: "14px",
-        outline: "none",
-        zIndex: 10,
-        flexDirection: "column",
-        flexWrap: "nowrap",
-        alignItems: "stretch",
-        justifyContent: "flex-start",
+      display: "flex",
+      background: "#ffffff",
+      overflow: "auto",
+      inset: "100px 100px 100px 400px",
+      WebkitOverflowScrolling: "touch",
+      borderRadius: "14px",
+      outline: "none",
+      zIndex: 10,
+      flexDirection: "column",
+      flexWrap: "nowrap",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
     },
-};
+  };
 
-const add_list = (friend_n:any) =>{
-    if(!addFrendList.find((friend:any)=>friend.id === friend_n.id)){
-        setAddFriendList([friend_n, ...addFrendList]);
-        //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
+  const add_list = (friend_n: any) => {
+    if (!addFrendList.find((friend: any) => friend.id === friend_n.id)) {
+      setAddFriendList([friend_n, ...addFrendList]);
+      //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
-};
-const sub_list = (friend_n:any) =>{
-    setAddFriendList(addFrendList.filter((friend:any) => friend.user_id !== friend_n.user_id));
+  };
+  const sub_list = (friend_n: any) => {
+    setAddFriendList(addFrendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);
-};
+  };
 
-const [search, setSearch] = useState('');
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-const handleSearchChange = (event:any) => {
+  const [search, setSearch] = useState("");
+
+  const handleSearchChange = (event: any) => {
     setSearch(event.target.value);
-};
+  };
 
-const filteredChatRoom = chatList.filter((chat:any) =>{
-    if(!chat.room_name) return;
-    return chat.room_name.toLowerCase().includes(search.toLowerCase())
-    }
-);
+  const filteredChatRoom = chatList.filter((chat: any) => {
+    if (!chat.room_name) return;
+    return chat.room_name.toLowerCase().includes(search.toLowerCase());
+  });
 
-const [search_f, setSearch_f] = useState('');
+  const [search_f, setSearch_f] = useState("");
 
-const SearchChange = (event:any) => {
+  const SearchChange = (event: any) => {
     setSearch_f(event.target.value);
-};
+  };
 
-const filteredFriends = friendList.filter((friend:any) =>
-    friend.nickname.toLowerCase().includes(search_f.toLowerCase())
-);
+  const filteredFriends = friendList.filter((friend: any) => friend.nickname.toLowerCase().includes(search_f.toLowerCase()));
 
-const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-return (
-    <div className="f_list" style={{ width: `${windowWidth - 300}px` }}>
-        <h1>Chating Room</h1>
-        <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{ position: 'sticky', top: '30px' }} />
-        <button onClick={() => setModalIsOpen(true)} > 추가</button>
-        <Modal isOpen={modalIsOpen} onRequestClose={() => {setModalIsOpen(false); setAddFriendList([]);}} style={M_style}>
-            <div className="f_itemd" >
-                {addFrendList.map((friend:any)=>(
-                    <div key={friend.id} style={{ width: `${W}px`, height:'50px' }} onClick={()=>{sub_list(friend)}}>
-                        {friend.nickname}
-                    </div>
-                ))}
-            </div>
-            <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{ position: 'sticky', top: '0px' }} />
-            <div className="f_item" >
-                {filteredFriends.map((friend:any) => (
-                    <div key={friend.id} className="friend-item" style={{ width: `${W}px`, height:'50px' }} onClick={()=>{add_list(friend)}}>
-                        {friend.nickname}
-                    </div>
-                ))}
-            </div>
-            <button onClick={() => {createRoom(loginUser, addFrendList); setModalIsOpen(false); setAddFriendList([]);}} style={{width:'50px', height:'50px'}}>확인</button>
-        </Modal>
-        <div className="f_item">
-          {filteredChatRoom.map((chat : any) => (
-            <div key={chat.room_id} className="friend-item" style={{width: `${W}px`, height: "50px"}}>
-              <Link to={`/ChatRoom/${chat.room_id}`}>{chat.room_name}</Link>
+  return (
+    <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
+      <h1>Chating Room</h1>
+      <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
+      <button onClick={() => setModalIsOpen(true)}> 추가</button>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+          setAddFriendList([]);
+        }}
+        style={M_style}>
+        <div className="f_itemd">
+          {addFrendList.map((friend: any) => (
+            <div
+              key={friend.id}
+              style={{width: `${W}px`, height: "50px"}}
+              onClick={() => {
+                sub_list(friend);
+              }}>
+              {friend.nickname}
             </div>
           ))}
+        </div>
+        <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
+        <div className="f_item">
+          {filteredFriends.map((friend: any) => (
+            <div
+              key={friend.id}
+              className="friend-item"
+              style={{width: `${W}px`, height: "50px"}}
+              onClick={() => {
+                add_list(friend);
+              }}>
+              {friend.nickname}
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => {
+            createRoom(loginUser, addFrendList);
+            setModalIsOpen(false);
+            setAddFriendList([]);
+          }}
+          style={{width: "50px", height: "50px"}}>
+          확인
+        </button>
+      </Modal>
+      <div className="f_item">
+        {filteredChatRoom.map((chat: any) => (
+          <div key={chat.room_id} className="friend-item" style={{width: `${W}px`, height: "50px"}}>
+            <Link to={`/ChatRoom/${chat.room_id}`}>{chat.room_name}</Link>
+          </div>
+        ))}
       </div>
     </div>
-);
+  );
 };
 
 export default ChatList;

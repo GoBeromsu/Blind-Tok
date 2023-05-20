@@ -1,6 +1,10 @@
 import React, {useEffect, useState, Component, Suspense} from "react";
 import "@style/App.css";
 import SideBar from "@views/Layout/SideBar";
+// import UserProfile from "./components/views/User/UserProfile";
+// import MainComponent from "./components/views/MainPage/MainComponent";
+// import FriendList from "./components/views/Friend/FriendList";
+//import ChatList from "./components/views/Chat/ChatList";
 
 import {BrowserRouter as Router, Route, Routes, Navigate, Outlet} from "react-router-dom";
 import {getAuthUserQuery, getUserInfoQuery} from "@data/user/query";
@@ -16,7 +20,7 @@ import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
-import {createSocket} from '@socket/client';
+import {createSocket} from "./socket";
 
 export default function App() {
   return (
@@ -37,8 +41,8 @@ function AppRoutes() {
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
+      createSocket("", data);
     }
-    createSocket("",data);
   }, [data]);
 
   if (isLoading) {
@@ -75,7 +79,6 @@ function AppRoutes() {
         </Route>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
-
         //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
         {/**/}
         {/*  <Route index element={<MainComponent />} />*/}

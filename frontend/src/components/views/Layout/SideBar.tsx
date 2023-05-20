@@ -3,13 +3,14 @@ import Button from "@views/Layout/Button";
 import C_Image from "@views/Layout/CircularImage";
 import "@style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
-//import BTlogo from "/image/BTlogo";
+import BTlogo from "@views/svgImg/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 
-
-const ChatBar = () => {
+const SideBar = () => {
   const handleClick = () => {};
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const defaultImg = "/image/l.png";
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,15 +28,15 @@ const ChatBar = () => {
     };
   }, []);
 
-  //const image = require("");
-
   return (
     <div style={{display: "flex"}}>
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
         <div className="test">
           <div className="sidebar_main">
-            {/*<img src={BTlogo} style={{display: "flex", alignItems: "center"}} alt="BT 로고" />*/}
-            {/*<C_Image src={image} alt="프로필 이미지" size="130" />*/}
+            <BTlogo />
+            <br />
+            <br />
+            <C_Image src={defaultImg} alt="프로필 이미지" size="130" />
             <br />
 
             {/*<MessageBox user={user} />*/}
@@ -79,4 +80,4 @@ const ChatBar = () => {
   );
 };
 
-export default ChatBar;
+export default SideBar;

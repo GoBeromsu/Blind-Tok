@@ -1,17 +1,17 @@
 import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
-import {addChat_list, setChatList} from "@data/Chat/chat_list";
-import {updateChatData, updateData_s} from "@data/Chat/chat_data";
+import {setChatList} from "@data/Chat/chat_list";
+import {rec, updateData_s} from "@data/Chat/chat_data";
 
 var socket: Socket = io("");
 
 export function createSocket(add: string = "", user: any) {
-  if (!user) {
+  if (user == null) {
     return;
   }
 
-  socket = add === "" ? io("http://localhost:4001") : io(add);
+  socket = add === "" ? io("http://localhost:4000") : io(add);
 
   socket.on("disconnect", reason => {
     socket = io("");
@@ -20,7 +20,7 @@ export function createSocket(add: string = "", user: any) {
 
   socket.on("receive_message", (data: any) => {
     console.log(data);
-    updateChat(updateChatData(data));
+    updateChat(rec(data));
   });
 
   socket.on("update_roomList", (data: any) => {
@@ -37,15 +37,10 @@ export function createSocket(add: string = "", user: any) {
   socket.on("rec_chatList", (data: any) => {
     setChatList(data);
     setList();
-  });
-
-  socket.on("rec_create_room", (data: any) => {
-    addChat_list(data);
-    setList();
+    console.log(data);
   });
 
   socket.emit("data_init", user.userid);
-  console.log(user.userid);
   console.log(socket);
 }
 
@@ -68,8 +63,4 @@ export function sendMessage(data: any) {
 
 export function getChatList(user_id: string) {
   socket.emit("get_UserRoomList", user_id);
-}
-
-export function leaveRoom() {
-  socket.emit("leave_room");
 }
