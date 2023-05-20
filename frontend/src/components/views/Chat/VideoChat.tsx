@@ -4,8 +4,8 @@ import {getAudio, getVideo, mergeStreams} from "../../../utils/MediaStream";
 const VideoChat: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [videoSource, setVideoSource] = useState<string | null>(null);
-  const [audioSource, setAudioSource] = useState<string | null>(null);
+  const [videoSource, setVideoSource] = useState<string>("");
+  const [audioSource, setAudioSource] = useState<string>("");
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [mute, setMute] = useState<boolean>(false);
 
