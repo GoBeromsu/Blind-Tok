@@ -34,8 +34,10 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("data_init", (user_id: string) => {
       let index = user_list.findIndex((user: any) => user.user_id === user_id);
+      if (!user_id) return;
       if (index != -1) user_list[index].socket_id = socket.id;
       else user_list.push({user_id: user_id, socket_id: socket.id});
+      console.log("connect - user_list : ");
       console.log(user_list);
 
       let list = getUserRoomList(user_id);
@@ -52,18 +54,17 @@ export default async function (fastify: FastifyInstance) {
       }
 
       // 유저가 속한 방 리스트
-      console.log(list);
-      console.log(make_RoomListData(list));
       fastify.io.to(socket.id).emit("rec_chatList", make_RoomListData(list));
     });
 
     socket.on("disconnect", (reason: any) => {
       let index = user_list.findIndex((user: any) => user.socket_id === socket.id);
       if (index == -1) {
-        console.log("err : disconnect");
         return;
       }
-      console.log("연결 종료 : " + user_list[index].userid);
+
+      console.log(user_list);
+      console.log("연결 종료 : " + user_list[index].user_id);
       user_list.splice(index, 1);
       console.log("new user_list : " + user_list);
     });
@@ -100,18 +101,12 @@ export default async function (fastify: FastifyInstance) {
     socket.on("show_data", () => {
       show();
     });
-    console.log("socket connected");
-
-    socket.on("disconnect", () => {
-      console.log("socket disconnected");
-    });
   });
 }
 
 var user_list: any = [];
 
 function userJoin(socket: any, list: any) {
-  console.log(list);
   for (let l = 0; l < list.length; l++) {
     socket.join(list[l].room_id);
   }
@@ -125,7 +120,9 @@ function route_createRoom(io: any, data: any) {
   data.user_list.map((user: any) => {
     let tmp = user_list.find((socket: any) => socket.user_id === user.user_id);
     if (tmp) io.to(tmp.socket_id).emit("rec_create_room", data);
+    console.log(data);
   });
+  console.log("route_createRoom");
 }
 
 // test

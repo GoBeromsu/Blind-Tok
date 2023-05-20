@@ -20,7 +20,7 @@ import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
-import {createSocket} from "./socket";
+import {createSocket} from "./socket/index";
 
 export default function App() {
   return (

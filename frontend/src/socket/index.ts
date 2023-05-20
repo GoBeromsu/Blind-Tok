@@ -1,16 +1,12 @@
 import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
-import {setChatList} from "@data/Chat/chat_list";
+import {setChatList, addChat_list} from "@data/Chat/chat_list";
 import {updateChatData, updateData_s} from "@data/Chat/chat_data";
 
 var socket: Socket = io("");
 
 export function createSocket(add: string = "", user: any) {
-  if (user == null) {
-    return;
-  }
-
   socket = add === "" ? io("http://localhost:4000/") : io(add);
 
   socket.on("disconnect", reason => {
@@ -36,6 +32,12 @@ export function createSocket(add: string = "", user: any) {
 
   socket.on("rec_chatList", (data: any) => {
     setChatList(data);
+    setList();
+    console.log(data);
+  });
+
+  socket.on("rec_create_room", (data: any) => {
+    addChat_list(data);
     setList();
     console.log(data);
   });
