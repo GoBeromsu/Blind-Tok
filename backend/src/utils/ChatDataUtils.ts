@@ -7,7 +7,7 @@ interface ChatData {
 // room_data 의 데이터 셋 추가 예정
 interface room_d {}
 
-var data: ChatData[];
+var data: ChatData[] = [];
 
 export function getData(room_id: string, data_num: number, opt: number) {
   let index: number = data.findIndex(data => data.room_id === room_id);

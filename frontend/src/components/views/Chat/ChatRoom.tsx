@@ -52,7 +52,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const params: any = useParams();
-  const chatRoom: any = getChatData(parseInt(params.room_id));
+  const chatRoom: any = getChatData(params.room_id);
   const location: any = useLocation();
 
   const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
@@ -63,6 +63,7 @@ const ChatRoom: React.FC = () => {
   let check_n = "";
 
   updateChat = (data: any) => {
+    console.log(data);
     let {room_id, ...rest} = data;
     if (room_id === chatRoom.room_id) {
       setChat_data([...chat_data, rest]);

@@ -51,6 +51,7 @@ function updateData(key: string, data: any): void {
 
 // 여러 데이터 저장
 export function updateData_s(data: any): void {
+  if (!data) return;
   let {room_id, ...rest} = data;
   let tmp = getData("chatData");
   if (!tmp) {

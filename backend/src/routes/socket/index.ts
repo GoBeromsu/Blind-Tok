@@ -2,8 +2,6 @@ import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import {checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData_name_user, setData_R, getData_R} from "@utils/ChatRoomUtils";
 import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getData_U} from "@utils/ChatUserUtils";
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
-import {createRequire} from "module";
-import {fileURLToPath} from "url";
 /*
 const job = schedule.scheduleJob("0 * * * * *", function () {
   save_Data();
@@ -75,21 +73,25 @@ export default async function (fastify: FastifyInstance) {
       removeRoomList(data.room_id, data.user_id);
       removeUserList(data.room_id, data.user_id);
     });
+
     socket.on("get_UserRoomList", (user_id: string) => {
       fastify.io.to(socket.id).emit("rec_chatList", getUserRoomList(user_id));
     });
+
     socket.on("create_room", (data: any) => {
       let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list];
       console.log(data);
       let temp = createRoom(tmp, data.room_name);
       if (temp) route_createRoom(fastify.io, temp);
     });
+
     socket.on("add_user", () => {});
+
     socket.on("send_message", (datas: any) => {
       console.log(datas);
       console.log(socket.id);
       let {room_id, ...rest} = datas.message;
-      let data = updateRoom(room_id, rest);
+      let data = updateRoom(room_id + "", rest);
       // socket.broadcast.emit("receive_message", data); // 1 대 다수
       socket.to(room_id).emit("receive_message", data); // 방 하나만
       fastify.io.to(socket.id).emit("receive_message", data); // 특정 인원에게 전달 가능
@@ -128,7 +130,10 @@ function route_createRoom(io: any, data: any) {
 
 // test
 export function show() {
+  console.log("Data");
   show_d();
+  console.log("Room");
   show_r();
+  console.log("User");
   show_u();
 }

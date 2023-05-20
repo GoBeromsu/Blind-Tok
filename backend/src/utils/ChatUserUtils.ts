@@ -6,7 +6,7 @@ interface room_l {
   room_id: string;
 }
 
-var data: ChatUserData[];
+var data: ChatUserData[] = [];
 
 export function newUser(user_id: string) {
   let data_n = {

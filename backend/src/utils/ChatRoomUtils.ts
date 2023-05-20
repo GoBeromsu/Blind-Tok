@@ -14,8 +14,8 @@ interface user_l {
   data_num: number;
 }
 
-var data: ChatRoomData[];
-var nextId: number;
+var data: ChatRoomData[] = [];
+var nextId: number = 1;
 
 export function createRoom(user_list: any, room_name: string) {
   let room_id: string = "" + nextId;

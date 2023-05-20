@@ -11,7 +11,7 @@ export function createSocket(add: string = "", user: any) {
     return;
   }
 
-  socket = add === "" ? io("http://localhost:4001") : io(add);
+  socket = add === "" ? io("http://localhost:4000/") : io(add);
 
   socket.on("disconnect", reason => {
     socket = io("");
@@ -20,7 +20,7 @@ export function createSocket(add: string = "", user: any) {
 
   socket.on("receive_message", (data: any) => {
     console.log(data);
-    updateChat(updateChat(data));
+    updateChat(updateChatData(data));
   });
 
   socket.on("update_roomList", (data: any) => {

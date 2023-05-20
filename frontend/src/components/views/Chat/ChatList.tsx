@@ -11,7 +11,7 @@ import {createRoom} from "../../../socket";
 export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
-  const [addFrendList, setAddFriendList]: any = useState([]);
+  const [addFrendList, setAddFriendList]: any = useState([{user_id: "21", user_nickname: "test"}]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [chatList, setChatList] = useState<any>(getChat_list());
   const [friendList, setFriendList] = useState<any>([]); // 수정 필요
