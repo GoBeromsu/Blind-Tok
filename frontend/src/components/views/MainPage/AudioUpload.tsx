@@ -1,6 +1,6 @@
 // AudioUploadPage.tsx
-import React, { ChangeEvent, useState } from "react";
-import axios from "@data/upload/axios";
+import React, {ChangeEvent, useState} from "react";
+import {postAudioFile, getAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/upload/state";
 
@@ -15,7 +15,8 @@ const AudioUploadPage: React.FC = () => {
   const handleFileUpload = async () => {
     if (selectedFile) {
       try {
-        const data = await axios.uploadFile(selectedFile, loginUser, '');
+        console.log(selectedFile);
+        const data = await postAudioFile(selectedFile, loginUser);
         console.log(data);
       } catch (error) {
         console.error("File upload failed:", error);
