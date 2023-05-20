@@ -32,7 +32,10 @@
     "typeorm": "^0.3.6",
     "typescript": "^5.0.2",
     "uuid": "^9.0.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+
+    "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git",
+    "kurento-utils": "^6.16.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.10",
