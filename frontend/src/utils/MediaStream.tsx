@@ -35,3 +35,22 @@ export const getVideo = async (videoDeviceId: string) => {
     console.log(err);
   }
 };
+// In MediaStream.tsx
+
+export const mergeStreams = (audioStream: MediaStream, videoStream: MediaStream) => {
+  const result = new MediaStream();
+
+  if (audioStream) {
+    audioStream.getAudioTracks().forEach(track => {
+      result.addTrack(track);
+    });
+  }
+
+  if (videoStream) {
+    videoStream.getVideoTracks().forEach(track => {
+      result.addTrack(track);
+    });
+  }
+
+  return result;
+};
