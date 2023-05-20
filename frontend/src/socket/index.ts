@@ -2,7 +2,7 @@ import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
 import {setChatList} from "@data/Chat/chat_list";
-import {rec, updateData_s} from "@data/Chat/chat_data";
+import {updateChatData, updateData_s} from "@data/Chat/chat_data";
 
 var socket: Socket = io("");
 
@@ -20,7 +20,7 @@ export function createSocket(add: string = "", user: any) {
 
   socket.on("receive_message", (data: any) => {
     console.log(data);
-    updateChat(rec(data));
+    updateChat(updateChatData(data));
   });
 
   socket.on("update_roomList", (data: any) => {

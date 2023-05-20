@@ -5,6 +5,7 @@ import "@style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
 import BTlogo from "@views/svgImg/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
+import UploadPage from "@views/MainPage/AudioUpload";
 
 const SideBar = () => {
   const handleClick = () => {};
@@ -47,6 +48,11 @@ const SideBar = () => {
               <br />
             </div>
             <br />
+            <div className="item">
+            <Link to="/upload">
+                <Button onClick={handleClick} label="영상 업로드" />
+              </Link>
+            </div>
             <br />
             <div className="item">
               <Button onClick={handleClick} label="검색" />

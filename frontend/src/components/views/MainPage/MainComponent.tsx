@@ -9,6 +9,7 @@ const MainComponent: React.FC = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const {isLoading, isError, data, error} = getUserListQuery();
 
+
   const debounce = (func: Function, wait: number) => {
     let timeout: NodeJS.Timeout;
     return (...args: any[]) => {
