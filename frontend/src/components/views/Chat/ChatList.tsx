@@ -5,10 +5,10 @@ import {getFriendlist} from "@data/Friend/axios";
 import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getChat_list} from "@data/chat/chat_list";
+import {getChat_list} from "@data/Chat/chat_list";
 import {createRoom} from "../../../socket";
 
-export const setList = () => {};
+export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const [addFrendList, setAddFriendList]: any = useState([]);
@@ -24,7 +24,7 @@ const ChatList: React.FC = () => {
     setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
   };
 
-  const setList = () => {
+  setList = () => {
     setChatList(getChat_list());
   };
 
