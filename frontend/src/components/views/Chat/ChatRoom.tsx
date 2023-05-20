@@ -5,7 +5,7 @@ import {getFriendlist} from "@data/Friend/axios";
 
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getChatData} from "@data/chat/chat_data";
+import {getChatData} from "@data/Chat/chat_data";
 import {sendMessage} from "../../../socket";
 
 export let updateChat: any = () => {};

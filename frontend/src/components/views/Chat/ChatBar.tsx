@@ -1,16 +1,14 @@
 ﻿import React, {useState, useEffect} from "react";
-import Button from "@views/Layout/Button";
-import C_Image from "@views/Layout/CircularImage";
-import "@style/SideBar.css";
+import Button from "../Layout/Button";
+import C_Image from "../Layout/CircularImage";
+import "../../style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
-import BTlogo from "@views/svgImg/BTlogo";
+//import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 
-const SideBar = () => {
+const ChatBar = () => {
   const handleClick = () => {};
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const defaultImg = "/image/l.png";
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,18 +26,13 @@ const SideBar = () => {
     };
   }, []);
 
+  //const image = require("");
+
   return (
     <div style={{display: "flex"}}>
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
         <div className="test">
           <div className="sidebar_main">
-            <BTlogo />
-            <br />
-            <br />
-            <C_Image src={defaultImg} alt="프로필 이미지" size="130" />
-            <br />
-
-            {/*<MessageBox user={user} />*/}
             <div className="item">
               <Link to="/friend">
                 <Button onClick={handleClick} label="친구 목록" />
@@ -53,7 +46,7 @@ const SideBar = () => {
             </div>
             <div className="item">
               <Link to="/chat">
-                <Button onClick={handleClick} label="채팅" />
+                <Button onClick={handleClick} label="추가" />
               </Link>
               <br />
             </div>
@@ -68,7 +61,7 @@ const SideBar = () => {
               <br />
             </div>
             <div className="item">
-              <Button onClick={handleClick} label="로그아웃" />
+              <Button onClick={handleClick} label="방 나가기" />
               <br />
             </div>
           </div>
@@ -80,4 +73,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default ChatBar;

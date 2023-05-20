@@ -18,6 +18,7 @@ import MainComponent from "@views/MainPage/MainComponent";
 import FriendList from "@views/Friend/FriendList";
 import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
+import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
 import {createSocket} from "./socket";
 
@@ -88,7 +89,7 @@ function AppRoutes() {
         {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
-        <Route path="/ChatRoom" element={Auth(SideBar, true, user)}>
+        <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
           <Route path=":room_id" element={Auth(ChatRoom, true, user)} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />

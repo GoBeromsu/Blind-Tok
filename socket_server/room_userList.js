@@ -2,15 +2,17 @@ import {updateRoomList} from "./user_roomList.js";
 import {createData, getData, setData} from "./data.js";
 
 var data =[]
+var nextId;
 
-export function createRoom(room_id, user_list, room_name){
+export function createRoom(user_list, room_name){
+    let room_id = nextId;
     if(data.find((data)=>data.room_id === room_id)) {console.log("err(createRoom : room_id)"); return;}
     let tmp = data;
     // 같은 인원을 가진 방은 만들지 않는다.
     for(let i = 0; i < user_list.length; i++){
         tmp = tmp.filter((room)=>room.user_list.find((user)=> user.user_id === user_list[i].user_id) ? true : false)
     }
-    if(tmp.length > 0) return tmp[0].room_id;
+    if(tmp.length > 0) return;
 
     let str = user_list[0].user_id;
     if(room_name == ""){
@@ -32,7 +34,9 @@ export function createRoom(room_id, user_list, room_name){
     
     updateRoomList(room_id, user_list);
     createData(room_id);
+    nextId = nextId +1;
     console.log("success createRoom");
+    return {room_id: data_n.room_id ,room_name: data_n.room_name, user_list: data_n.user_list};
 }
 /*
 export function checkData(room_id, user_id, data_num){
@@ -59,6 +63,8 @@ export function checkData(room_id, user_id, data_num){
 export function checkData(room_id, user_id){ 
     let index = data.findIndex((data) => data.room_id === room_id);
     let room_data = data[index];
+    console.log(data);
+    if(!room_data) room_data = data[index];
     let data_n;
     let min = room_data.min_num;
     let max = room_data.max_num;
@@ -100,6 +106,9 @@ export function getData_R(){
 }
 export function setData_R(data_r){
     data = data_r;
+    if(data == []) nextId = 1;
+    else nextId = data[data.length-1]+1;
+    console.log("nextId : " + nextId + data);
 }
 
 export function getRoomData_name_user(room_id){
