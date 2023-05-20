@@ -20,7 +20,7 @@ const Login: React.FC = () => {
 
     if (status == "REGISTER") {
       setGoogleAuth(data); //구글 sso 로그인 등록을 하기 위한, 정보를 state에 저장함
-
+      console.log(auth.ssoid);
       navigate("/register");
     } else {
       const {ssoid} = auth;

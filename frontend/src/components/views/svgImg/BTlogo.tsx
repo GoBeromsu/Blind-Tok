@@ -1,5 +1,5 @@
 import React from "react";
-import "../components/style/logo.css";
+import "@style/logo.css";
 const BTlogo = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.41 22.73">
