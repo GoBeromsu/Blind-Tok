@@ -1,11 +1,10 @@
 ﻿import React, {useState, useEffect} from "react";
-import Button from "@views/Layout/Button";
-import C_Image from "@views/Layout/CircularImage";
-import "@style/SideBar.css";
+import Button from "../Layout/Button";
+import C_Image from "../Layout/CircularImage";
+import "../../style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
 //import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
-
 
 const ChatBar = () => {
   const handleClick = () => {};
@@ -34,11 +33,6 @@ const ChatBar = () => {
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
         <div className="test">
           <div className="sidebar_main">
-            {/*<img src={BTlogo} style={{display: "flex", alignItems: "center"}} alt="BT 로고" />*/}
-            {/*<C_Image src={image} alt="프로필 이미지" size="130" />*/}
-            <br />
-
-            {/*<MessageBox user={user} />*/}
             <div className="item">
               <Link to="/friend">
                 <Button onClick={handleClick} label="친구 목록" />
@@ -52,7 +46,7 @@ const ChatBar = () => {
             </div>
             <div className="item">
               <Link to="/chat">
-                <Button onClick={handleClick} label="채팅" />
+                <Button onClick={handleClick} label="추가" />
               </Link>
               <br />
             </div>
@@ -67,7 +61,7 @@ const ChatBar = () => {
               <br />
             </div>
             <div className="item">
-              <Button onClick={handleClick} label="로그아웃" />
+              <Button onClick={handleClick} label="방 나가기" />
               <br />
             </div>
           </div>

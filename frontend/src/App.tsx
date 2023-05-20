@@ -1,11 +1,6 @@
 import React, {useEffect, useState, Component, Suspense} from "react";
 import "@style/App.css";
 import SideBar from "@views/Layout/SideBar";
-// import UserProfile from "./components/views/User/UserProfile";
-// import MainComponent from "./components/views/MainPage/MainComponent";
-// import FriendList from "./components/views/Friend/FriendList";
-//import ChatList from "./components/views/Chat/ChatList";
-
 
 import {BrowserRouter as Router, Route, Routes, Navigate, Outlet} from "react-router-dom";
 import {getAuthUserQuery, getUserInfoQuery} from "@data/user/query";
@@ -19,6 +14,7 @@ import MainComponent from "@views/MainPage/MainComponent";
 import FriendList from "@views/Friend/FriendList";
 import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
+import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
 import {createSocket} from '@socket/client';
 
@@ -41,9 +37,8 @@ function AppRoutes() {
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
-      createSocket("",data);
     }
-    
+    createSocket("",data);
   }, [data]);
 
   if (isLoading) {
@@ -91,7 +86,7 @@ function AppRoutes() {
         {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
-        <Route path="/ChatRoom" element={Auth(SideBar, true, user)}>
+        <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
           <Route path=":room_id" element={Auth(ChatRoom, true, user)} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />

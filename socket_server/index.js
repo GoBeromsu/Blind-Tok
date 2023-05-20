@@ -53,12 +53,15 @@ const io = require('socket.io')(server,{
 
 var user_list = [];
 
+load_Data();
+
 io.on('connection', socket=>{
   console.log(`User Connected: ${socket.id}`);
-  load_Data();
   
   socket.on("data_init", (user_id)=>{
-    user_list.push({user_id: user_id, socket_id: socket.id});
+    let index = user_list.findIndex((user) => user.user_id === user_id);
+    if(index != -1) user_list[index].socket_id = socket.id;
+    else user_list.push({user_id: user_id, socket_id: socket.id});
     console.log(user_list);
     
     let list = getUserRoomList(user_id);
@@ -104,7 +107,8 @@ io.on('connection', socket=>{
   socket.on("create_room", (data) => {
     let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list]
     console.log(data);
-    createRoom(10,tmp,data.room_name)
+    let temp = createRoom(tmp,data.room_name);
+    if(temp) route_createRoom(temp);
   })
   socket.on("add_user", ()=>{
 
@@ -134,6 +138,13 @@ function userJoin(socket, list){
 
 function make_RoomListData(list){
   return list.map((data) => getRoomData_name_user(data.room_id));
+}
+
+function route_createRoom(data){
+  data.user_list.map((user)=>{
+    let tmp = user_list.find((socket) => socket.user_id === user.user_id);
+    if(tmp) io.to(tmp.socket_id).emit("rec_create_room", data);
+  });
 }
 
 

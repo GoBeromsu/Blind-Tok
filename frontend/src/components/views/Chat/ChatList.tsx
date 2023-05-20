@@ -9,7 +9,7 @@ import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 
-export const setList = () => {};
+export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const [addFrendList, setAddFriendList]: any = useState([]);
@@ -25,9 +25,9 @@ const ChatList: React.FC = () => {
     setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
 };
 
-const setList = () =>{
+setList = () =>{
   setChatList(getChat_list());
-}
+};
 
 const M_style : any = {
     overlay: {
@@ -65,13 +65,6 @@ const sub_list = (friend_n:any) =>{
     setAddFriendList(addFrendList.filter((friend:any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);
 };
-
-useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-        window.removeEventListener('resize', handleResize);
-    };
-}, []);
 
 const [search, setSearch] = useState('');
 
