@@ -19,7 +19,7 @@ import FriendList from "@views/Friend/FriendList";
 import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import UserProfile from "@views/User/UserProfile";
-import {createSocket} from "@socket/client";
+import {createSocket} from "./socket";
 
 export default function App() {
   return (
