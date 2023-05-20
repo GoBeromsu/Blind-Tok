@@ -10,6 +10,7 @@ export const getMedia = async () => {
   }
 };
 // mediaStream.tsx
+// mediaStream.tsx
 export const getAudio = async (audioDeviceId: string) => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -19,7 +20,8 @@ export const getAudio = async (audioDeviceId: string) => {
     });
     return stream;
   } catch (err: any) {
-    console.log(err);
+    console.error(err); // 에러를 적절히 처리하도록 수정
+    throw err; // 에러를 다시 throw하여 상위 컴포넌트에서 처리할 수 있도록 함
   }
 };
 
@@ -32,10 +34,10 @@ export const getVideo = async (videoDeviceId: string) => {
     });
     return stream;
   } catch (err: any) {
-    console.log(err);
+    console.error(err); // 에러를 적절히 처리하도록 수정
+    throw err; // 에러를 다시 throw하여 상위 컴포넌트에서 처리할 수 있도록 함
   }
 };
-// In MediaStream.tsx
 
 export const mergeStreams = (audioStream: MediaStream, videoStream: MediaStream) => {
   const result = new MediaStream();
