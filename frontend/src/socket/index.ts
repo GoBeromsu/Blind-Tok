@@ -3,6 +3,8 @@ import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
 import {setChatList} from "@data/Chat/chat_list";
 import {rec, updateData_s} from "@data/Chat/chat_data";
+import {setChatList} from "@data/chat/chat_list";
+import {updateData_s} from "@data/chat/chat_data";
 
 var socket: Socket = io("");
 
@@ -18,9 +20,19 @@ export function createSocket(add: string = "", user: any) {
     console.log("socket : disconnect");
   });
 
+  socket.on("message", (message: any) => {
+    switch (message.id) {
+      case "registered":
+        console.log(message.data);
+        break;
+      default:
+        console.log("Unrecognized message", message);
+    }
+  });
   socket.on("receive_message", (data: any) => {
     console.log(data);
     updateChat(rec(data));
+    updateChat(updateData_s(data));
   });
 
   socket.on("update_roomList", (data: any) => {
@@ -59,6 +71,7 @@ export function addUser(user_id: string) {
 export function sendMessage(data: any) {
   socket.emit("send_message", {message: data});
   socket.emit("show_data"); // test
+  socket.emit("send_message", data);
 }
 
 export function getChatList(user_id: string) {
