@@ -2,7 +2,7 @@
 import React, {ChangeEvent, useState} from "react";
 import {postAudioFile, getAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
-import {userState} from "@data/upload/state";
+import {userState} from "@data/user/state";
 
 const AudioUploadPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
