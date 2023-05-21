@@ -21,7 +21,7 @@ import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
 import {createSocket} from "./socket";
-import UploadPage from "@views/MainPage/AudioUpload";
+import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
 
 export default function App() {
@@ -39,7 +39,6 @@ function AppRoutes() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [sidebarWidth, setSidebarWidth] = useState(windowWidth <= 768 ? 50 : 200);
   const [contentWidth, setContentWidth] = useState(windowWidth - sidebarWidth);
-
 
   useEffect(() => {
     if (loginUser == null && data != null) {
@@ -64,8 +63,8 @@ function AppRoutes() {
           <Route path="/friend" element={Auth(FriendList, true, user)}></Route>
           <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
           {/*<Route path="/User" element={Auth(UserProfile, true, user)}></Route>*/}
-          <Route path="/upload" element={Auth(UploadPage, true, user)}></Route>
-  </Route>
+          <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
+        </Route>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
         //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
@@ -81,7 +80,6 @@ function AppRoutes() {
         {/*</Route>*/}
         <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
           <Route path=":room_id" element={Auth(ChatRoom, true, user)} />
-          
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
