@@ -21,7 +21,7 @@ export default class UserRelation extends BaseEntity {
   friend: User[];
 
   //TODO: enum 값 상수로 빼야 한다
-  @Column({type: "enum", enum: ["normal", "ban"], default: "normal"})
+  @Column({type: "enum", enum: ["normal", "ban", "wait"], default: "normal"})
   status: string;
 
   @CreateDateColumn()

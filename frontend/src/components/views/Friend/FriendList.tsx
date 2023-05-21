@@ -2,7 +2,7 @@
 import {Link} from "react-router-dom";
 import {userState} from "@data/user/state";
 import {useRecoilValue} from "recoil";
-import {getUserInfoQuery} from "@data/Friend/state";
+import {getFriendListQuery} from "@data/Friend/state";
 
 interface Friend {
   id: number;
@@ -11,7 +11,7 @@ interface Friend {
 
 const FriendList = () => {
   const loginUser: any = useRecoilValue(userState);
-  const {isLoading, isError, data, error} = getUserInfoQuery(1);
+  const {isLoading, isError, data, error} = getFriendListQuery(1);
   const [friendList, setFriendList] = useState<Friend[]>([]);
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);

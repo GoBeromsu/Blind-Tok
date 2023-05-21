@@ -1,37 +1,24 @@
 import {Socket} from "socket.io";
 
-interface Media {
-  addIceCandidate: (candidate: any) => void;
-}
-
-interface CandidateData {
-  sender: string;
-  [key: string]: any;
-}
-
-interface QueueItem {
-  data: CandidateData;
-  candidate: any;
-}
-
-class UserSession {
+export default class {
   id: string;
-  socket: Socket;
-  outgoingMedia: Media | null;
-  incomingMedia: {[id: string]: Media};
-  iceCandidateQueue: {[id: string]: QueueItem[]};
-  roomName?: string;
   name: string;
-
-  constructor(id: string, socket: Socket) {
+  socket: Socket;
+  outgoingMedia: any;
+  incomingMedia: any;
+  iceCandidateQueue: any;
+  roomName: any;
+  constructor(id: string, name: string, socket: Socket) {
     this.id = id;
+    this.name = name;
     this.socket = socket;
     this.outgoingMedia = null;
     this.incomingMedia = {};
     this.iceCandidateQueue = {};
+    this.roomName = null;
   }
 
-  addIceCandidate(data: CandidateData, candidate: any) {
+  addIceCandidate(data: any, candidate: any) {
     if (data.sender === this.id) {
       if (this.outgoingMedia) {
         console.log(" add candidate to self : " + data.sender);
@@ -68,9 +55,7 @@ class UserSession {
     this.socket.emit("message", data);
   }
 
-  setRoomName(roomName: string) {
+  setRoomName(roomName: any) {
     this.roomName = roomName;
   }
 }
-
-export default UserSession;
