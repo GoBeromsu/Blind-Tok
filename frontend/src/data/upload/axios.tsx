@@ -2,8 +2,9 @@
 import axios from "axios";
 import {api, axiosProcess, server} from "../constant";
 
-export const getAudioFile = (file: any, userid: number) => api.get(`/audio/${file}`);
+export const getAudioFile = (file: any, userid: number) => api.get(`/file/${file}`);
 
+// 오디오 파일 서버에 보내기 및 에러 처리
 export function postAudioFile(audio: any, userid: any) {
   try{
   const formData = new FormData();

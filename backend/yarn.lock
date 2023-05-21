@@ -1604,7 +1604,7 @@ reconnect-core@KurentoForks/reconnect-core:
   dependencies:
     backoff "~2.3.0"
 
-"reconnect-ws@github:KurentoForks/reconnect-ws#master":
+reconnect-ws@KurentoForks/reconnect-ws#master:
   version "0.0.0"
   resolved "https://codeload.github.com/KurentoForks/reconnect-ws/tar.gz/f287385d75861654528c352e60221f95c9209f8a"
   dependencies:

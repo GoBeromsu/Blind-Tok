@@ -1,18 +1,20 @@
 .container {
-  display: flex;
+    display: flex;
 }
+
 
 /* Sidebar styles */
-.sidebar {
-  flex-shrink: 0;
-  background-color: #f5f5f5;
 
-  /* box-sizing: border-box; */
+.sidebar {
+    flex-shrink: 0;
+    background-color: #f5f5f5;
+    /* box-sizing: border-box; */
 }
 
-/* Main content styles */
-.content {
-  flex-grow: 1;
 
-  /* box-sizing: border-box; */
+/* Main content styles */
+
+.content {
+    flex-grow: 1;
+    /* box-sizing: border-box; */
 }
