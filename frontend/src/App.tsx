@@ -37,11 +37,12 @@ function AppRoutes() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [sidebarWidth, setSidebarWidth] = useState(windowWidth <= 768 ? 50 : 200);
   const [contentWidth, setContentWidth] = useState(windowWidth - sidebarWidth);
-
+  
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
       createSocket("", data);
+      console.log();
     }
   }, [data]);
 
