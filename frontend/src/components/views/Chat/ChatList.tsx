@@ -13,9 +13,9 @@ export let setList: any = () => {};
 
 
 const ChatList: React.FC = () => {
-  const {isLoading, isError, data, error} = getFriendListQuery(20);
-  const [addFrendList, setAddFriendList]: any = useState([{user_id: "21", user_nickname: "test"}]);
+  const [addFrendList, setAddFriendList]: any = useState([]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
+  const {isLoading, isError, data, error} = getFriendListQuery(loginUser.userid);
   const [chatList, setChatList] = useState<any>(getChat_list());
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
@@ -69,11 +69,10 @@ const ChatList: React.FC = () => {
   };
 
   const add_list = (friend_n: any) => {
-    if (!addFrendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
+    if(!addFrendList.find((friend: any)=>friend.user_id === friend_n.user_id)){
       setAddFriendList([friend_n, ...addFrendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
-    console.log("click add");
   };
   const sub_list = (friend_n: any) => {
     setAddFriendList(addFrendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
@@ -120,11 +119,11 @@ const ChatList: React.FC = () => {
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div style={{}}>
+        <div className= 'f' style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFrendList.map((friend: any) => (
             <div
               key={friend.user_id}
-              style={{width: `${W}px`, height: "50px"}}
+              style={{height: "50px"}}
               onClick={() => {
                 sub_list(friend);
               }}>

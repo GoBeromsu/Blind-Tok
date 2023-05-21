@@ -18,7 +18,10 @@ export function make_RoomListData(list: any) {
 export function route_createRoom(io: any, data: any) {
   data.user_list.map((user: any) => {
     let tmp = user_list.find((socket: any) => socket.user_id === user.user_id);
-    if (tmp) io.to(tmp.socket_id).emit("rec_create_room", data);
+    if (tmp) {
+      io.to(tmp.socket.id).emit("rec_create_room", data);
+      tmp.socket.join(data.room_id);
+    }
   });
 }
 

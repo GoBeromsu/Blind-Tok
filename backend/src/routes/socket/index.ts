@@ -12,8 +12,8 @@ export default async function (fastify: FastifyInstance) {
     socket.on("data_init", (user_id: string) => {
       let index = user_list.findIndex((user: any) => user.user_id === user_id);
       if (!user_id) return;
-      if (index != -1) user_list[index].socket_id = socket.id;
-      else user_list.push({user_id: user_id, socket_id: socket.id});
+      if (index != -1) user_list[index] = socket;
+      else user_list.push({user_id: user_id, socket: socket});
       console.log("connect - user_list : ");
       console.log(user_list);
 
@@ -62,7 +62,10 @@ export default async function (fastify: FastifyInstance) {
       let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list];
       console.log(data);
       let temp = createRoom(tmp, data.room_name);
-      if (temp) route_createRoom(fastify.io, temp);
+      if (temp) {
+        route_createRoom(fastify.io, temp);
+        socket.join(temp.room_id);
+      }
     });
 
     socket.on("add_user", (data: any) => {});

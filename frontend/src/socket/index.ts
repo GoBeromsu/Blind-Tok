@@ -77,8 +77,6 @@ export function leaveRoom(room_id: string) {
 
 export function sendMessage(data: any) {
   socket.emit("send_message", {message: data});
-  socket.emit("show_data"); // test
-  socket.emit("send_message", data);
 }
 
 export function getChatList(user_id: string) {
