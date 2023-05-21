@@ -25,7 +25,7 @@
     "fastify-socket.io": "^4.0.0",
     "google-auth-library": "^8.8.0",
     "jsonwebtoken": "^9.0.0",
-    "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git",
+    "Kurento": "git+https://github.com/Kurento/kurento-client-js.git#v6.16",
     "kurento-utils": "^6.16.0",
     "nodemon": "^2.0.22",
     "pg": "^8.10.0",
