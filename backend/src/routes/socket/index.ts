@@ -2,51 +2,9 @@ import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import {checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData_name_user, setData_R, getData_R} from "@utils/ChatRoomUtils";
 import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getData_U} from "@utils/ChatUserUtils";
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
-import {createRequire} from "module";
-import {fileURLToPath} from "url";
-import {Socket} from "socket.io";
-import UserSession from "@utils/UserSession";
-import {KURENTO_URI} from "@config/adam.config";
-import kurento from "kurento-client";
-/*
-const job = schedule.scheduleJob("0 * * * * *", function () {
-  save_Data();
-  console.log("------------saveData----------");
-});
+import {make_RoomListData, route_createRoom, show, user_list, userJoin} from "./chat";
+import {register} from "./video";
 
-const path_chatData = "";
-const path_userData = "";
-const path_roomData = "";
-
-function save_Data() {
-  fs.writeFileSync(path_chatData, JSON.stringify(getData_D()));
-  fs.writeFileSync(path_userData, JSON.stringify(getData_U()));
-  fs.writeFileSync(path_roomData, JSON.stringify(getData_R()));
-}
-
-function load_Data() {
-  let data_chatData = fs.readFileSync(path_chatData);
-  let data_userData = fs.readFileSync(path_userData);
-  let data_roomData = fs.readFileSync(path_roomData);
-  setData_D(JSON.parse(data_chatData));
-  setData_U(JSON.parse(data_userData));
-  setData_R(JSON.parse(data_roomData));
-}
-*/
-var user_list: any = [];
-interface Room {
-  name: string;
-  pipeline: any; // Replace 'any' with the actual type of pipeline
-  participants: any; // Replace 'any' with the actual type of participants
-  kurentoClient: any; // Replace 'any' with the actual type of kurentoClient
-}
-
-interface User {
-  id: string;
-  name: string;
-}
-const rooms: Record<string, Room> = {};
-let userSessionList: any = {};
 export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
     console.log(`User Connected: ${socket.id}`);
@@ -124,17 +82,13 @@ export default async function (fastify: FastifyInstance) {
     });
     console.log("socket connected");
 
-    socket.on("disconnect", () => {
-      console.log("socket disconnected");
-    });
-
     socket.on("message", (message: any) => {
       console.log(`Connection: ${socket.id} receive message: ${message.id}`);
 
       switch (message.id) {
         case "register":
           console.log(`Server: Register ${socket.id}`);
-          register(socket, message.name || "", () => {});
+          register(socket, message?.name || "", () => {});
           break;
         case "joinRoom":
           console.log(`Server: ${socket.id} joinRoom: ${message.roomName}`);
@@ -156,156 +110,4 @@ export default async function (fastify: FastifyInstance) {
       }
     });
   });
-}
-/**
- * Register user to server
- * @param socket
- * @param name
- * @param callback
- */
-function register(socket: Socket, name: string, callback: () => void) {
-  const userSession = new UserSession(socket.id, name, socket);
-  userSessionList[socket.id] = userSession;
-  userSession.sendMessage({
-    id: "registered",
-    data: `Server: Successfully registered ${socket.id}`,
-  });
-}
-function joinRoom(socket: Socket, roomName: string, callback: (error: any, user?: any) => void) {
-  const room = getRoom(roomName, (error: any, room: any) => {
-    if (error) {
-      callback(error);
-    }
-  });
-  join(socket, room, (error: Error | null, user: any) => {
-    console.log("join success : " + user.id);
-  });
-}
-function getRoom(roomName: string, callback: (error: any, room?: any) => void) {
-  let room = rooms[roomName];
-
-  if (room == null) {
-    console.log("create new room : " + roomName);
-    const kurentoClient = getKurentoClient(function (error: any, kurentoClient: any) {
-      if (error) {
-        return callback(error);
-      }
-      // create pipeline for room
-      kurentoClient.create("MediaPipeline", (error: any, pipeline: any) => {
-        if (error) {
-          return callback(error);
-        }
-        pipeline.setLatencyStats();
-
-        rooms[roomName] = room;
-        callback(null, room);
-      });
-    });
-  } else {
-    console.log("get existing room : " + roomName);
-    callback(null, room);
-  }
-
-  return room;
-}
-function join(socket: Socket, room: Room, callback: (error: any, user?: any) => void) {
-  // create user session
-  const userSession = userSessionList(socket.id);
-  console.log("userSession is " + userSession);
-  userSession.setRoomName(room.name);
-
-  const outgoingMedia = room.pipeline.create("WebRtcEndpoint", (error: any, outgoingMedia: any) => {
-    if (error) {
-      console.error("no participant in room");
-      // no participants in room yet, release pipeline
-      if (Object.keys(room.participants).length == 0) {
-        room.pipeline.release();
-      }
-      return callback(error);
-    }
-  });
-  outgoingMedia.setMaxVideoSendBandwidth(10000);
-  outgoingMedia.setMinVideoSendBandwidth(10000);
-  userSession.outgoingMedia = outgoingMedia;
-
-  // handle pre-established candidates before endpoint creation
-  getIcecandidateBeforeEstablished(userSession, socket);
-
-  userSession.outgoingMedia.on("OnIceCandidate", function (event: any) {
-    console.log("generate outgoing candidate: " + userSession.id);
-    // @ts-ignore
-    const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
-    userSession.sendMessage({
-      id: "iceCandidate",
-      sessionId: userSession.id,
-      candidate: candidate,
-    });
-  });
-
-  // notify other users that a new user is joining
-  const usersInRoom = room.participants;
-  const data = {
-    id: "newParticipantArrived",
-    new_user_id: userSession.id,
-  };
-
-  // notify existing users
-  for (const userId in usersInRoom) {
-    usersInRoom[userId].sendMessage(data);
-  }
-
-  const existingUserIds = Object.keys(room.participants);
-  // send the list of current users in the room to the current participant
-  userSession.sendMessage({
-    id: "existingParticipants",
-    data: existingUserIds,
-    roomName: room.name,
-  });
-
-  // register user to room
-  room.participants[userSession.id] = userSession;
-}
-function getIcecandidateBeforeEstablished(userSession: UserSession, socket: Socket) {
-  // add ice candidates that were sent before the endpoint is established
-  const iceCandidateQueue = userSession.iceCandidateQueue[socket.id];
-  if (iceCandidateQueue) {
-    while (iceCandidateQueue.length) {
-      const message = iceCandidateQueue.shift();
-      console.error("user: " + userSession.id + " collect candidate for outgoing media");
-      console.log("icecandidate per message: " + message);
-      userSession.outgoingMedia.addIceCandidate(message.candidate);
-    }
-  }
-}
-function getKurentoClient(callback: any) {
-  return kurento(KURENTO_URI);
-}
-
-function userJoin(socket: any, list: any) {
-  for (let l = 0; l < list.length; l++) {
-    socket.join(list[l].room_id);
-  }
-}
-
-function make_RoomListData(list: any) {
-  return list.map((data: any) => getRoomData_name_user(data.room_id));
-}
-
-function route_createRoom(io: any, data: any) {
-  data.user_list.map((user: any) => {
-    let tmp = user_list.find((socket: any) => socket.user_id === user.user_id);
-    if (tmp) io.to(tmp.socket_id).emit("rec_create_room", data);
-    console.log(data);
-  });
-  console.log("route_createRoom");
-}
-
-// test
-export function show() {
-  console.log("Data");
-  show_d();
-  console.log("Room");
-  show_r();
-  console.log("User");
-  show_u();
 }

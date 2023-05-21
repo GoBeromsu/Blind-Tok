@@ -1,7 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
-import {getFriendListQuery, getFriendList} from "@data/Friend/state";
+import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
@@ -10,12 +10,14 @@ import {createRoom} from "../../../socket";
 
 export let setList: any = () => {};
 
+
+
 const ChatList: React.FC = () => {
   const {isLoading, isError, data, error} = getFriendListQuery(20);
   const [addFrendList, setAddFriendList]: any = useState([{user_id: "21", user_nickname: "test"}]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [chatList, setChatList] = useState<any>(getChat_list());
-  const [friendList, setFriendList] = useState<any>(data); // 수정 필요
+  const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [W, setW] = useState<any>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
@@ -28,6 +30,17 @@ const ChatList: React.FC = () => {
   setList = () => {
     setChatList(getChat_list());
   };
+
+  const getFriendList = (data:any) => {
+    let temp = data;
+    if(temp){
+      temp = temp.map((data:any) => {
+        return {user_id: data.friendid}; 
+      });
+      console.log(temp);
+      setFriendList(temp);
+    }
+  }
 
   const M_style: any = {
     overlay: {
@@ -56,10 +69,11 @@ const ChatList: React.FC = () => {
   };
 
   const add_list = (friend_n: any) => {
-    if (!addFrendList.find((friend: any) => friend.id === friend_n.id)) {
+    if (!addFrendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
       setAddFriendList([friend_n, ...addFrendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
+    console.log("click add");
   };
   const sub_list = (friend_n: any) => {
     setAddFriendList(addFrendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
@@ -90,7 +104,7 @@ const ChatList: React.FC = () => {
     setSearch_f(event.target.value);
   };
 
-  // const filteredFriends = friendList.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
+  const filteredFriends = friendList;//.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -98,7 +112,7 @@ const ChatList: React.FC = () => {
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
       <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <button onClick={() => setModalIsOpen(true)}> 추가</button>
+      <button onClick={() => {setModalIsOpen(true);getFriendList(data)}}> 추가</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
@@ -106,26 +120,31 @@ const ChatList: React.FC = () => {
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className="f_itemd">
+        <div style={{}}>
           {addFrendList.map((friend: any) => (
             <div
-              key={friend.id}
+              key={friend.user_id}
               style={{width: `${W}px`, height: "50px"}}
               onClick={() => {
                 sub_list(friend);
               }}>
-              {friend.nickname}
+              {friend.user_id}
             </div>
           ))}
         </div>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
-        <div className="f_item"></div>
+        <div className="f_item" >
+          {filteredFriends.map((friend:any) => (
+            <div key={friend.user_id} style={{ width: `${W}px`, height:'50px' }} onClick={()=>{add_list(friend)}}>
+              {friend.user_id}
+            </div>
+          ))}
+        </div>
         <button
           onClick={() => {
             createRoom(loginUser, addFrendList);
             setModalIsOpen(false);
             setAddFriendList([]);
-            console.log(data);
           }}
           style={{width: "50px", height: "50px"}}>
           확인
