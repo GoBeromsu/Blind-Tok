@@ -4,9 +4,9 @@ import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getD
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
 import {createRequire} from "module";
 import {fileURLToPath} from "url";
-import { Socket } from "socket.io";
+import {Socket} from "socket.io";
 import UserSession from "@utils/UserSession";
-import { KURENTO_URI } from "@config/adam.config";
+import {KURENTO_URI} from "@config/adam.config";
 import kurento from "kurento-client";
 /*
 const job = schedule.scheduleJob("0 * * * * *", function () {
@@ -33,7 +33,7 @@ function load_Data() {
   setData_R(JSON.parse(data_roomData));
 }
 */
-
+var user_list: any = [];
 interface Room {
   name: string;
   pipeline: any; // Replace 'any' with the actual type of pipeline
@@ -51,23 +51,22 @@ export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
     console.log(`User Connected: ${socket.id}`);
 
-    socket.on("data_init", (user_id: string) => {
-      let index = user_list.findIndex((user: any) => user.user_id === user_id);
+    socket.on("data_init", (userid: string) => {
+      let index = user_list.findIndex((user: any) => user.user_id === userid);
       if (index != -1) user_list[index].socket_id = socket.id;
-      else user_list.push({user_id: user_id, socket_id: socket.id});
-      console.log(user_list);
+      else user_list.push({user_id: userid, socket_id: socket.id});
 
-      let list = getUserRoomList(user_id);
+      let list = getUserRoomList(userid);
       // 유저가 속한 방에 연결
       userJoin(socket, list);
       console.log("join_room_init");
 
       // 오프라인 일때 들어온 데이터 갱신
       for (let i = 0; i < list.length; i++) {
-        let room_id = list[i].room_id;
-        let data = checkData(room_id, user_id);
-        fastify.io.to(socket.id).emit("rec_chatData", {room_id: room_id, data: data});
-        console.log("rec_chatData : " + room_id + data);
+        let roomid = list[i].room_id;
+        let data = checkData(roomid, userid);
+        fastify.io.to(socket.id).emit("rec_chatData", {room_id: roomid, data: data});
+        console.log("rec_chatData : " + roomid + data);
       }
 
       // 유저가 속한 방 리스트
@@ -272,8 +271,7 @@ function getIcecandidateBeforeEstablished(userSession: UserSession, socket: Sock
 }
 function getKurentoClient(callback: any) {
   return kurento(KURENTO_URI);
-
-var user_list: any = [];
+}
 
 function userJoin(socket: any, list: any) {
   console.log(list);

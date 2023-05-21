@@ -6,7 +6,7 @@ interface room_l {
   room_id: string;
 }
 
-var data: ChatUserData[];
+let data: ChatUserData[];
 
 export function newUser(user_id: string) {
   let data_n = {
@@ -16,13 +16,14 @@ export function newUser(user_id: string) {
   data = [...data, data_n];
 }
 
-export function updateRoomList(room_id: string, user_list: any) {
-  if (!user_list) return;
-  console.log(user_list);
-  for (let i = 0; i < user_list.length; i++) {
-    let index = data.findIndex(data => data.user_id === user_list[i].user_id);
+export function updateRoomList(room_id: string, userList: any) {
+  if (!userList) return;
+  console.log(userList);
+
+  for (let i = 0; i < userList.length; i++) {
+    let index = data.findIndex(user => user.user_id === userList[i].user_id);
     if (index == -1) {
-      newUser(user_list[i].user_id);
+      newUser(userList[i].user_id);
       index = data.length - 1;
     }
     let tmp = data[index];
@@ -34,7 +35,13 @@ export function updateRoomList(room_id: string, user_list: any) {
 }
 
 export function removeRoomList(room_id: string, user_id: string) {
-  let user = data.find(data => data.user_id === user_id);
+  if (!Array.isArray(data)) {
+    console.error("Data is undefined or not an array");
+    return;
+  }
+  let user = data.find(data => {
+    data.user_id === user_id;
+  });
   if (typeof user === "undefined") return;
   user.room_list = user.room_list.filter(room => room.room_id != room_id);
   //data = data.map(data => (data.user_id === user_id ? user : data));
@@ -43,6 +50,10 @@ export function removeRoomList(room_id: string, user_id: string) {
 }
 
 export function getUserRoomList(user_id: string) {
+  if (!Array.isArray(data)) {
+    console.error("Data is undefined or not an array");
+    return [];
+  }
   let user = data.find(data => data.user_id === user_id);
   if (!user) {
     newUser(user_id);
