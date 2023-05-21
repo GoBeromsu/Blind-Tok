@@ -1,9 +1,13 @@
 import {useQuery} from "react-query";
 import {getUserInfo} from "@data/user/axios";
 import {options} from "@data/constant";
-import {getFriendlist} from "@data/Friend/axios";
+import {addFriend, getFriendlist} from "@data/Friend/axios";
 
-export const getUserInfoQuery = (userid: number) => {
+export const getFriendListQuery = (userid: number) => {
   const {isLoading, isError, data, error} = useQuery("getFriendlist", () => getFriendlist(userid), options);
   return {isLoading, isError, data: data?.data, error};
+};
+export const addFriendQuery = (userid: number, friendid: number) => {
+  const {isLoading, isError, data, error} = useQuery("addFriend", () => addFriend(userid, friendid), options);
+  return {isLoading, isError, data: data, error};
 };
