@@ -3,6 +3,7 @@ import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
 import {setChatList} from "@data/Chat/chat_list";
 import {updateChatData, updateData_s} from "@data/Chat/chat_data";
+import {SOCKET_URL} from "../consonants";
 
 var socket: Socket = io("");
 
@@ -11,7 +12,7 @@ export function createSocket(add: string = "", user: any) {
     return;
   }
 
-  socket = add === "" ? io("http://localhost:4001") : io(add);
+  socket = add === "" ? io(SOCKET_URL) : io(add);
 
   socket.on("disconnect", reason => {
     socket = io("");
