@@ -1,5 +1,4 @@
-﻿import React, {useState, useEffect} from "react";
-
+﻿import {setListMessage} from './chat_list';
 /*
 my Arr[
     {
@@ -29,6 +28,7 @@ function getData(key: string): any {
 // 데이터 수정 및 저장 / 단일 데이터
 export function updateChatData(data: any): any {
   let {room_id, ...rest} = data;
+  setListMessage(room_id, data.data_s);
   let tmp = getData("chatData");
   if (!tmp) {
     updateData("chatData", [{room_id: room_id, data: [rest]}]);
@@ -53,6 +53,7 @@ function updateData(key: string, data: any): void {
 export function updateData_s(data: any): void {
   if (!data) return;
   let {room_id, ...rest} = data;
+  setListMessage(room_id, rest.data[-1].data_s);
   let tmp = getData("chatData");
   if (!tmp) {
     updateData("chatData", [data]);

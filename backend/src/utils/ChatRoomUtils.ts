@@ -28,6 +28,7 @@ export function createRoom(user_list: any, room_name: string) {
   for (let i = 0; i < user_list.length; i++) {
     tmp = tmp.filter(room => (room.user_list.find(user => user.user_id === user_list[i].user_id) ? true : false));
   }
+  tmp = tmp.filter(room => room.user_list.length == user_list.length ? true : false);
   if (tmp.length > 0) return;
 
   let str: string = user_list[0].user_id;

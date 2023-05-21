@@ -47,6 +47,7 @@ export function createSocket(add: string = "", user: any) {
   });
 
   socket.on("rec_create_room", (data: any) => {
+    console.log("rec_c");
     addChat_list(data);
     setList();
     console.log(data);
