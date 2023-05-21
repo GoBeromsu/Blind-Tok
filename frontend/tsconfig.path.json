@@ -7,8 +7,7 @@
       "@loading/*": ["components/loading/*"],
       "@views/*": ["components/views/*"],
       "@data/*": ["data/*"],
-      "@errors/*": ["components/errors/*"],
-      "@socket/*": ["socket/*"],
+      "@socket/*": ["components/socket/*"],
       "@style/*": ["components/style/*"],
       "@image/*": ["image/*"],
       "@errors/*": ["components/errors/*"]

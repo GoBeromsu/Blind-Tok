@@ -4,9 +4,9 @@ import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getD
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
 import {createRequire} from "module";
 import {fileURLToPath} from "url";
-import { Socket } from "socket.io";
+import {Socket} from "socket.io";
 import UserSession from "@utils/UserSession";
-import { KURENTO_URI } from "@config/adam.config";
+import {KURENTO_URI} from "@config/adam.config";
 import kurento from "kurento-client";
 /*
 const job = schedule.scheduleJob("0 * * * * *", function () {
@@ -33,7 +33,7 @@ function load_Data() {
   setData_R(JSON.parse(data_roomData));
 }
 */
-
+var user_list: any = [];
 interface Room {
   name: string;
   pipeline: any; // Replace 'any' with the actual type of pipeline
@@ -66,10 +66,10 @@ export default async function (fastify: FastifyInstance) {
 
       // 오프라인 일때 들어온 데이터 갱신
       for (let i = 0; i < list.length; i++) {
-        let room_id = list[i].room_id;
-        let data = checkData(room_id, user_id);
-        fastify.io.to(socket.id).emit("rec_chatData", {room_id: room_id, data: data});
-        console.log("rec_chatData : " + room_id + data);
+        let roomid = list[i].room_id;
+        let data = checkData(roomid, user_id);
+        fastify.io.to(socket.id).emit("rec_chatData", {room_id: roomid, data: data});
+        console.log("rec_chatData : " + roomid + data);
       }
 
       // 유저가 속한 방 리스트
@@ -280,7 +280,6 @@ function getIcecandidateBeforeEstablished(userSession: UserSession, socket: Sock
 function getKurentoClient(callback: any) {
   return kurento(KURENTO_URI);
 }
-var user_list: any = [];
 
 function userJoin(socket: any, list: any) {
   for (let l = 0; l < list.length; l++) {
