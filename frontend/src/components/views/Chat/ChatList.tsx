@@ -2,17 +2,17 @@
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendlist} from "@data/Friend/axios";
-import {getUserInfoQuery} from "@data/Friend/state";
+import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getChat_list} from "@data/Chat/chat_list";
+import {getChat_list} from "@data/chat/chat_list";
 import {createRoom} from "../../../socket";
 
 export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
-  const {isLoading, isError, data, error} = getUserInfoQuery(20);
+  const {isLoading, isError, data, error} = getFriendListQuery(20);
   const [addFrendList, setAddFriendList]: any = useState([{user_id: "21", user_nickname: "test"}]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [chatList, setChatList] = useState<any>(getChat_list());

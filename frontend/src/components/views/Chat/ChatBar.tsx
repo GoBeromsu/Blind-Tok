@@ -6,7 +6,7 @@ import MessageBox from "../MainPage/MessageBox";
 //import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate, useParams} from "react-router-dom";
 import {leaveRoom} from "../../../socket";
-import {subChat_list} from "@data/Chat/chat_list";
+import {subChat_list} from "@data/chat/chat_list";
 
 const ChatBar: React.FC = () => {
   const {room_id} = useParams();
