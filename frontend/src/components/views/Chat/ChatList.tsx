@@ -1,8 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
-import {getFriendlist} from "@data/Friend/axios";
-import {getFriendListQuery} from "@data/Friend/state";
+import {getFriendListQuery, getFriendList} from "@data/Friend/state";
 import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
