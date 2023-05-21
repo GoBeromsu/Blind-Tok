@@ -37,7 +37,7 @@ export function removeRoomList(room_id: string, user_id: string) {
   let user = data.find(data => data.user_id === user_id);
   if (typeof user === "undefined") return;
   user.room_list = user.room_list.filter(room => room.room_id != room_id);
-  //data = data.map(data => (data.user_id === user_id ? user : data));
+  data = data.map((data: any) => (data.user_id === user_id ? user : data));
   console.log("removeRoomList : ");
   console.log(data);
 }

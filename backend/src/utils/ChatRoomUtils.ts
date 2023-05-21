@@ -102,12 +102,7 @@ export function removeUserList(room_id: string, user_id: string) {
     return;
   }
   room.user_list = room.user_list.filter(user => user.user_id != user_id);
-  let tmp = data.map(data => (data.room_id === room_id ? room : data));
-  if (typeof tmp === "undefined") {
-    console.log("reomveUserList : room_id not Found");
-    return;
-  }
-  //data = tmp;
+  data = data.map((data: any) => (data.room_id === room_id ? room : data));
 }
 
 export function getData_R() {

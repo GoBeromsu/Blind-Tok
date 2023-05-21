@@ -143,8 +143,12 @@ const ChatList: React.FC = () => {
       </Modal>
       <div className="f_item">
         {filteredChatRoom.map((chat: any) => (
-          <div key={chat.room_id} className="friend-item" style={{width: `${W}px`, height: "50px"}}>
-            <Link to={`/ChatRoom/${chat.room_id}`}>{chat.room_name}</Link>
+          <div key={chat.room_id}>
+            <Link to={`/ChatRoom/${chat.room_id}`}>
+              <div className="friend-item" style={{width: `${W}px`, height: "50px"}}>
+                {chat.room_name}
+              </div>
+            </Link>
           </div>
         ))}
       </div>

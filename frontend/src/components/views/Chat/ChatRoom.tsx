@@ -1,8 +1,6 @@
 ﻿import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
-
 import {getFriendlist} from "@data/Friend/axios";
-
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {getChatData} from "@data/Chat/chat_data";
