@@ -35,18 +35,18 @@
          working-directory: ./frontend
          run: yarn dev & sleep 5; pkill -f "node ."
 
-       - name: Generate Environment Variables File for adam.json
-         run: |
-           echo "ADAMJSON" >> ./backend/config/adam.json
+#        - name: Generate Environment Variables File for adam.json
+#          run: |
+#            echo "ADAMJSON" >> ./backend/config/adam.json
 
-       - name: Generate Environment Variables File for ormconfig.dev.json
-         run: |
-           echo "ORMCONFIGDEVJSON" >> ./backend/config/ormconfig.dev.json
+#        - name: Generate Environment Variables File for ormconfig.dev.json
+#          run: |
+#            echo "ORMCONFIGDEVJSON" >> ./backend/config/ormconfig.dev.json
 
-       - name: Install dependencies for backend
-         working-directory: ./backend
-         run: yarn install
+#        - name: Install dependencies for backend
+#          working-directory: ./backend
+#          run: yarn install
 
-       - name: Run backend
-         working-directory: ./backend
-         run: yarn dev & sleep 5; pkill -f "node ."
+#        - name: Run backend
+#          working-directory: ./backend
+#          run: yarn dev & sleep 5; pkill -f "node ."
