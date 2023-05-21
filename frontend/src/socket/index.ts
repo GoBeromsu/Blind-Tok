@@ -2,7 +2,7 @@ import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
 import {setChatList, addChat_list, subChat_list} from "@data/chat/chat_list";
-import {updateChatData, updateData_s} from "@data/chat/chat_data";
+import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 
 var socket: Socket = io("");
 var user_id: string;
@@ -72,8 +72,9 @@ export function addUser(user_list: any) {
 
 export function leaveRoom(room_id: string) {
   subChat_list(room_id, user_id);
+  subData(room_id, user_id);
   setList();
-  socket.emit("leave_room", room_id);
+  socket.emit("leave_room", room_id, user_id);
 }
 
 export function sendMessage(data: any) {

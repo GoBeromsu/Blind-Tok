@@ -3,6 +3,7 @@
 my Arr[
     {
         room_id: 1,
+        last_massage: "",
         data: [{
             num : 1,
             user_id : "choichoichoi",
@@ -117,5 +118,21 @@ export function getChatData(id: any): any {
     return {room_id: id, data: [data]};
   } else {
     return tmp_f;
+  }
+}
+export function subData(room_id:string, user_id:string){
+  let tmp = getData("chatData");
+  let temp;
+  if (!tmp) {
+    return;
+  } else {
+    let index = tmp.findIndex((p: any) => p.room_id === room_id);
+    if (index == -1) {
+      return;
+    } else {
+      temp = tmp.splice(index,1);
+    }
+    console.log("delete data : " + temp);
+    updateData("chatData", tmp);
   }
 }

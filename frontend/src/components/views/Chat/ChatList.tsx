@@ -154,7 +154,7 @@ const ChatList: React.FC = () => {
           <div key={chat.room_id}>
             <Link to={`/ChatRoom/${chat.room_id}`}>
               <div className="friend-item" style={{width: `${W}px`, height: "50px"}}>
-                {chat.room_name}
+              {chat.room_name}<br/>{chat.last_Message}
               </div>
             </Link>
           </div>

@@ -46,12 +46,11 @@ export default async function (fastify: FastifyInstance) {
       console.log("new user_list : " + user_list);
     });
 
-    socket.on("leave_room", (room_id: string) => {
+    socket.on("leave_room", (room_id: string, user_id: string) => {
       socket.leave(room_id);
-      let tmp = user_list.find((user: any) => user.socket_id === socket.id);
-      removeRoomList(room_id, tmp.user_id);
-      removeUserList(room_id, tmp.user_id);
-      console.log("success leave / room : " + room_id + " / user : " + tmp.user_id);
+      removeRoomList(room_id, user_id);
+      removeUserList(room_id, user_id);
+      console.log("success leave / room : " + room_id + " / user : " + user_id);
     });
 
     socket.on("get_UserRoomList", (user_id: string) => {

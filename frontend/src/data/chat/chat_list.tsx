@@ -25,8 +25,7 @@ export function subChat_list(room_id: string, user_id: string) {
 
 export function setListMessage(room_id:string, message:any){
   let temp : any = chat_list.splice(chat_list.findIndex((data:any) => data.room_id === room_id),1);
-  temp.last_Message = message;
-  chat_list.unshift(temp);
+  temp[0].last_Message = message;
+  chat_list = [temp[0], ...chat_list];
   setList();
-  console.log("setListMe");
 }
