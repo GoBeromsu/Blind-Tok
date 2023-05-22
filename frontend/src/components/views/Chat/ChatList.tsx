@@ -1,4 +1,5 @@
-﻿import React, {useState, useEffect} from "react";
+﻿// 필요한 모듈들을 임포트합니다.
+import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
@@ -10,40 +11,55 @@ import {createRoom, createSocket} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 
+// 외부에서 접근 가능한 함수를 선언합니다. 초기에는 아무것도 하지 않는 함수로 설정합니다.
 export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
+  // Recoil로부터 사용자 상태를 가져옵니다.
   const loginUser: any = useRecoilValue(userState);
+
+  // loginUser가 아직 로드되지 않았다면 로딩 화면을 반환합니다.
   if (!loginUser) {
-    // loginUser not loaded yet, can return a loading screen or null
     return <Loading />;
   }
+
+  // 친구 목록을 불러옵니다.
   const {isLoading, isError, data, error, refetch} = getFriendListQuery(loginUser?.userid);
+
+  // 여러 상태를 선언합니다. 이들은 대화방, 친구목록, 창 크기 등을 관리합니다.
   const [addFriendList, setAddFriendList]: any = useState([]);
   const [chatList, setChatList] = useState<any>(getChat_list());
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [W, setW] = useState<any>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+  const [search, setSearch] = useState("");
+  const [search_f, setSearch_f] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  // useEffect를 사용해 로그인 사용자가 변경될 때마다 친구 목록을 다시 불러옵니다.
   useEffect(() => {
     if (!data) {
       refetch();
     }
   }, [loginUser, data]);
+
+  // 에러가 발생했다면 에러 컴포넌트를 반환합니다.
   if (isError) {
     return <Error error={error}></Error>;
   }
 
+  // 창 크기가 변경될 때마다 상태를 업데이트하는 함수입니다.
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
     setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
   };
 
+  // 채팅방 목록을 업데이트하는 함수입니다.
   setList = () => {
     setChatList(getChat_list());
   };
-
   const getFriendList = (data: any) => {
     let temp = data;
     if (temp) {
@@ -99,8 +115,6 @@ const ChatList: React.FC = () => {
     };
   }, []);
 
-  const [search, setSearch] = useState("");
-
   const handleSearchChange = (event: any) => {
     setSearch(event.target.value);
   };
@@ -110,15 +124,11 @@ const ChatList: React.FC = () => {
     return chat.room_name.toLowerCase().includes(search.toLowerCase());
   });
 
-  const [search_f, setSearch_f] = useState("");
-
   const SearchChange = (event: any) => {
     setSearch_f(event.target.value);
   };
 
   const filteredFriends = friendList; //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   return (
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
