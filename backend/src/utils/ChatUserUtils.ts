@@ -6,7 +6,7 @@ interface room_l {
   room_id: string;
 }
 
-let data: ChatUserData[];
+var data: ChatUserData[] = [];
 
 export function newUser(user_id: string) {
   let data_n = {
@@ -44,7 +44,7 @@ export function removeRoomList(room_id: string, user_id: string) {
   });
   if (typeof user === "undefined") return;
   user.room_list = user.room_list.filter(room => room.room_id != room_id);
-  //data = data.map(data => (data.user_id === user_id ? user : data));
+  data = data.map((data: any) => (data.user_id === user_id ? user : data));
   console.log("removeRoomList : ");
   console.log(data);
 }

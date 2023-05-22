@@ -2,7 +2,7 @@ import {getRoomData_name_user, show_r} from "@utils/ChatRoomUtils";
 import {show_d} from "@utils/ChatDataUtils";
 import {show_u} from "@utils/ChatUserUtils";
 
-export let user_list: any = [];
+export var user_list: any = [];
 
 export function userJoin(socket: any, list: any) {
   console.log(list);
@@ -18,7 +18,10 @@ export function make_RoomListData(list: any) {
 export function route_createRoom(io: any, data: any) {
   data.user_list.map((user: any) => {
     let tmp = user_list.find((socket: any) => socket.user_id === user.user_id);
-    if (tmp) io.to(tmp.socket_id).emit("rec_create_room", data);
+    if (tmp) {
+      io.to(tmp.socket.id).emit("rec_create_room", data);
+      tmp.socket.join(data.room_id);
+    }
   });
 }
 

@@ -1,9 +1,9 @@
-﻿import React, {useState, useEffect} from "react";
-
+﻿import {setListMessage} from './chat_list';
 /*
 my Arr[
     {
         room_id: 1,
+        last_massage: "",
         data: [{
             num : 1,
             user_id : "choichoichoi",
@@ -29,6 +29,7 @@ function getData(key: string): any {
 // 데이터 수정 및 저장 / 단일 데이터
 export function updateChatData(data: any): any {
   let {room_id, ...rest} = data;
+  setListMessage(room_id, data.data_s);
   let tmp = getData("chatData");
   if (!tmp) {
     updateData("chatData", [{room_id: room_id, data: [rest]}]);
@@ -51,7 +52,9 @@ function updateData(key: string, data: any): void {
 
 // 여러 데이터 저장
 export function updateData_s(data: any): void {
+  if (!data) return;
   let {room_id, ...rest} = data;
+  setListMessage(room_id, rest.data[-1].data_s);
   let tmp = getData("chatData");
   if (!tmp) {
     updateData("chatData", [data]);
@@ -115,5 +118,21 @@ export function getChatData(id: any): any {
     return {room_id: id, data: [data]};
   } else {
     return tmp_f;
+  }
+}
+export function subData(room_id:string, user_id:string){
+  let tmp = getData("chatData");
+  let temp;
+  if (!tmp) {
+    return;
+  } else {
+    let index = tmp.findIndex((p: any) => p.room_id === room_id);
+    if (index == -1) {
+      return;
+    } else {
+      temp = tmp.splice(index,1);
+    }
+    console.log("delete data : " + temp);
+    updateData("chatData", tmp);
   }
 }

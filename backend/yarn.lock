@@ -812,7 +812,7 @@ fastq@^1.6.1:
   dependencies:
     reusify "^1.0.4"
 
-filelist@^1.0.4:
+filelist@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/filelist/-/filelist-1.0.4.tgz#f78978a1e944775ff9e62e744424f215e58352b5"
   integrity sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==
@@ -1062,8 +1062,8 @@ jake@^10.8.5:
   dependencies:
     async "^3.2.3"
     chalk "^4.0.2"
-    filelist "^1.0.4"
-    minimatch "^3.1.2"
+    filelist "^1.0.1"
+    minimatch "^3.0.4"
 
 joi@^17.6.4:
   version "17.9.2"
@@ -1242,7 +1242,7 @@ mime-types@^2.1.12, mime-types@~2.1.34:
   dependencies:
     mime-db "1.52.0"
 
-minimatch@^3.1.2:
+minimatch@^3.0.4, minimatch@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.1.2.tgz#19cd194bfd3e428f049a70817c038d89ab4be35b"
   integrity sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==

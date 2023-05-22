@@ -1,18 +1,14 @@
 import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
-import {setChatList} from "@data/Chat/chat_list";
-import {updateChatData, updateData_s} from "@data/Chat/chat_data";
-import {SOCKET_URL} from "../consonants";
+import {setChatList, addChat_list, subChat_list} from "@data/chat/chat_list";
+import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 
 var socket: Socket = io("");
+var user_id: string;
 
 export function createSocket(add: string = "", user: any) {
-  if (user == null) {
-    return;
-  }
-
-  socket = add === "" ? io(SOCKET_URL) : io(add);
+  socket = add === "" ? io("http://localhost:4000/") : io(add);
 
   socket.on("disconnect", reason => {
     socket = io("");
@@ -30,7 +26,7 @@ export function createSocket(add: string = "", user: any) {
   });
   socket.on("receive_message", (data: any) => {
     console.log(data);
-    updateChat(updateChat(data));
+    updateChat(updateChatData(data));
   });
 
   socket.on("update_roomList", (data: any) => {
@@ -50,7 +46,15 @@ export function createSocket(add: string = "", user: any) {
     console.log(data);
   });
 
+  socket.on("rec_create_room", (data: any) => {
+    console.log("rec_c");
+    addChat_list(data);
+    setList();
+    console.log(data);
+  });
+
   socket.emit("data_init", user.userid);
+  user_id = user.userid;
   console.log(socket);
 }
 
@@ -62,14 +66,19 @@ export function createRoom(user: any, user_list: any[], room_name: string = "") 
   socket.emit("create_room", {user, user_list, room_name});
 }
 
-export function addUser(user_id: string) {
-  socket.emit("add_user", {user_id});
+export function addUser(user_list: any) {
+  socket.emit("add_user", user_list);
+}
+
+export function leaveRoom(room_id: string) {
+  subChat_list(room_id, user_id);
+  subData(room_id, user_id);
+  setList();
+  socket.emit("leave_room", room_id, user_id);
 }
 
 export function sendMessage(data: any) {
   socket.emit("send_message", {message: data});
-  socket.emit("show_data"); // test
-  socket.emit("send_message", data);
 }
 
 export function getChatList(user_id: string) {

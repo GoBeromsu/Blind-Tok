@@ -45,6 +45,7 @@ function AppRoutes() {
     if (loginUser == null && data != null) {
       setLoginUser(data);
       createSocket("", data);
+      console.log();
     }
   }, [data]);
 

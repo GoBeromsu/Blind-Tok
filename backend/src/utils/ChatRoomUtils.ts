@@ -14,8 +14,8 @@ interface user_l {
   data_num: number;
 }
 
-var data: ChatRoomData[];
-var nextId: number;
+var data: ChatRoomData[] = [];
+var nextId: number = 1;
 
 export function createRoom(user_list: any, room_name: string) {
   let room_id: string = "" + nextId;
@@ -28,6 +28,7 @@ export function createRoom(user_list: any, room_name: string) {
   for (let i = 0; i < user_list.length; i++) {
     tmp = tmp.filter(room => (room.user_list.find(user => user.user_id === user_list[i].user_id) ? true : false));
   }
+  tmp = tmp.filter(room => room.user_list.length == user_list.length ? true : false);
   if (tmp.length > 0) return;
 
   let str: string = user_list[0].user_id;
@@ -102,12 +103,7 @@ export function removeUserList(room_id: string, user_id: string) {
     return;
   }
   room.user_list = room.user_list.filter(user => user.user_id != user_id);
-  let tmp = data.map(data => (data.room_id === room_id ? room : data));
-  if (typeof tmp === "undefined") {
-    console.log("reomveUserList : room_id not Found");
-    return;
-  }
-  //data = tmp;
+  data = data.map((data: any) => (data.room_id === room_id ? room : data));
 }
 
 export function getData_R() {

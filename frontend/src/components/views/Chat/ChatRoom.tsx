@@ -1,11 +1,9 @@
 ﻿import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
-
 import {getFriendlist} from "@data/Friend/axios";
-
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getChatData} from "@data/Chat/chat_data";
+import {getChatData} from "@data/chat/chat_data";
 import {sendMessage} from "../../../socket";
 
 export let updateChat: any = () => {};
@@ -52,7 +50,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const params: any = useParams();
-  const chatRoom: any = getChatData(parseInt(params.room_id));
+  const chatRoom: any = getChatData(params.room_id);
   const location: any = useLocation();
 
   const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
@@ -63,6 +61,7 @@ const ChatRoom: React.FC = () => {
   let check_n = "";
 
   updateChat = (data: any) => {
+    console.log(data);
     let {room_id, ...rest} = data;
     if (room_id === chatRoom.room_id) {
       setChat_data([...chat_data, rest]);
