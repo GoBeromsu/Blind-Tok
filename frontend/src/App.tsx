@@ -20,9 +20,10 @@ import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
-import {createSocket, dataInit} from "./socket";
+
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
+import {dataInit} from "./socket";
 
 export default function App() {
   return (
@@ -43,16 +44,15 @@ function AppRoutes() {
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
-      createSocket("", data);
     }
   }, [data]);
 
   if (isLoading) {
     return <Loading />;
   }
+
   dataInit(loginUser?.userid);
   const user = loginUser || data;
-  console.log(user);
   return (
     <div className="container">
       <Routes>

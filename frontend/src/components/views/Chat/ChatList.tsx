@@ -7,7 +7,7 @@ import "@style/ChatList.css";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import {getChat_list} from "@data/chat/chat_list";
-import {createRoom, createSocket} from "../../../socket";
+import {createRoom} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 
