@@ -3,22 +3,37 @@ import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import {getChat_list} from "@data/chat/chat_list";
 import {createRoom, createSocket} from "../../../socket";
+import Loading from "@loading/Loading";
+import Error from "@views/Error/Error";
 
 export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
-  const [addFrendList, setAddFriendList]: any = useState([]);
-  const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
+  const loginUser: any = useRecoilValue(userState);
+  if (!loginUser) {
+    // loginUser not loaded yet, can return a loading screen or null
+    return <Loading />;
+  }
+  const {isLoading, isError, data, error, refetch} = getFriendListQuery(loginUser?.userid);
+  const [addFriendList, setAddFriendList]: any = useState([]);
   const [chatList, setChatList] = useState<any>(getChat_list());
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [W, setW] = useState<any>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+  useEffect(() => {
+    if (!data) {
+      refetch();
+    }
+  }, [loginUser, data]);
+  if (isError) {
+    return <Error error={error}></Error>;
+  }
+
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
@@ -67,21 +82,16 @@ const ChatList: React.FC = () => {
   };
 
   const add_list = (friend_n: any) => {
-    if (!addFrendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
-      setAddFriendList([friend_n, ...addFrendList]);
+    if (!addFriendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
+      setAddFriendList([friend_n, ...addFriendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
   };
   const sub_list = (friend_n: any) => {
-    setAddFriendList(addFrendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
+    setAddFriendList(addFriendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);
   };
-  useEffect(() => {
-    if (loginUser == null && data != null) {
-      setLoginUser(data);
-      createSocket("", data);
-    }
-  });
+
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {
@@ -130,7 +140,7 @@ const ChatList: React.FC = () => {
         }}
         style={M_style}>
         <div className="f" style={{display: "flex", overflow: "auto", gap: "30px"}}>
-          {addFrendList.map((friend: any, index: number) => (
+          {addFriendList.map((friend: any, index: number) => (
             <div
               key={index}
               style={{height: "50px"}}
@@ -156,7 +166,7 @@ const ChatList: React.FC = () => {
         </div>
         <button
           onClick={() => {
-            createRoom(loginUser, addFrendList);
+            createRoom(loginUser, addFriendList);
             setModalIsOpen(false);
             setAddFriendList([]);
           }}
