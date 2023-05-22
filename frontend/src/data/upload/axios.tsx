@@ -24,7 +24,7 @@ export function postAudioFile(audio: any, userid: any) {
         "Content-Type": "multipart/form-data",
       },
     });
-    // console.log(res);
+    return res;
   } catch (error: any) {
     if (error.response) {
       // The request was made and the server responded with a status code

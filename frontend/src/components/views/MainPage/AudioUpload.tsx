@@ -23,9 +23,7 @@ const AudioUploadPage: React.FC = () => {
   const handleFileUpload = async () => {
     if (selectedFile) {
       try {
-        const data = await postAudioFile(selectedFile, loginUser);
-        
-        // console.log(data);
+        await postAudioFile(selectedFile, loginUser);
         // 파일 업로드 후 오디오 파일 리스트 갱신
         fetchAudioList();
       } catch (error) {
@@ -34,14 +32,14 @@ const AudioUploadPage: React.FC = () => {
     }
   };
 
-  // 유저의 업로드 된 파일 조회
+  // 유저의 업로드된 파일 조회
   const fetchAudioList = async () => {
-    if (loginUser) { // loginUser가 존재하는지 확인
+    if (loginUser) {
       try {
         const audioFiles = await getAudioFile(loginUser.userid);
-        // console.log(loginUser.userid)
-        // console.log("THis is my files "+JSON.stringify(audioFiles));
+        console.log(audioFiles.data);
         setAudioList(audioFiles.data);
+        // console.log("This is  audioList : " + audioList);
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
       }
