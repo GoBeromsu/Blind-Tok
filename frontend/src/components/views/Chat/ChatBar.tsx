@@ -7,14 +7,17 @@ import MessageBox from "../MainPage/MessageBox";
 import {Link, Outlet, useNavigate, useParams} from "react-router-dom";
 import {leaveRoom} from "../../../socket";
 import {subChat_list} from "@data/chat/chat_list";
+import {useRecoilValue} from "recoil";
+import {userState} from "@data/user/state";
 
 const ChatBar: React.FC = () => {
   const {room_id} = useParams();
   const navigate = useNavigate();
+  const loginUser: any = useRecoilValue(userState);
   const handleClick = () => {};
   const leave = () => {
     if (room_id) {
-      leaveRoom(room_id);
+      leaveRoom(room_id, loginUser?.userid);
       navigate("/chat");
     } else "leaveRoom error : room_id undefined";
   };
