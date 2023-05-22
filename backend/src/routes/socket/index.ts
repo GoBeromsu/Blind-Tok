@@ -14,8 +14,6 @@ export default async function (fastify: FastifyInstance) {
       if (!user_id) return;
       if (index != -1) user_list[index] = socket;
       else user_list.push({user_id: user_id, socket: socket});
-      console.log("connect - user_list : ");
-      console.log(user_list);
 
       let list = getUserRoomList(user_id);
       // 유저가 속한 방에 연결
@@ -69,9 +67,7 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("add_user", (data: any) => {});
 
-    socket.on("send_message", (datas: any) => {
-      console.log(datas);
-      console.log(socket.id);
+    socket.on("message", (datas: any) => {
       let {room_id, ...rest} = datas.message;
       let data = updateRoom(room_id + "", rest);
       // socket.broadcast.emit("receive_message", data); // 1 대 다수

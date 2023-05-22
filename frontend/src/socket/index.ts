@@ -3,14 +3,12 @@ import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
 import {setChatList, addChat_list, subChat_list} from "@data/chat/chat_list";
 import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
+import {SOCKET_URL} from "../consonants";
 
-var socket: Socket = io("");
+const socket: Socket = io(SOCKET_URL);
 
-export function createSocket(add: string = "", user: any) {
-  socket = add === "" ? io("http://localhost:4000/") : io(add);
-
+export function createSocket() {
   socket.on("disconnect", reason => {
-    socket = io("");
     console.log("socket : disconnect");
   });
 
@@ -66,7 +64,7 @@ export function leaveRoom(room_id: string, user_id: string) {
 }
 
 export function sendMessage(data: any) {
-  socket.emit("send_message", {message: data});
+  socket.emit("message", data);
 }
 
 export function getChatList(user_id: string) {

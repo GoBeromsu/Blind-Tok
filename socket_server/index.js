@@ -109,7 +109,7 @@ io.on("connection", socket => {
     if (temp) route_createRoom(temp);
   });
   socket.on("add_user", () => {});
-  socket.on("send_message", datas => {
+  socket.on("message", datas => {
     console.log(datas);
     console.log(socket.id);
     let {room_id, ...rest} = datas.message;
