@@ -4,8 +4,8 @@ import {options} from "@data/constant";
 import {addFriend, getFriendlist} from "@data/Friend/axios";
 
 export const getFriendListQuery = (userid: number) => {
-  const {isLoading, isError, data, error} = useQuery("getFriendlist", () => getFriendlist(userid), options);
-  return {isLoading, isError, data: data?.data, error};
+  const {isLoading, isError, data, error, refetch} = useQuery("getFriendlist", () => getFriendlist(userid), options);
+  return {isLoading, isError, data: data?.data, error, refetch};
 };
 export const addFriendQuery = (userid: number, friendid: number) => {
   const {isLoading, isError, data, error} = useQuery("addFriend", () => addFriend(userid, friendid), options);

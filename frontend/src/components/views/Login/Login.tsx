@@ -2,11 +2,11 @@ import {useRecoilState, useSetRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {useNavigate} from "react-router-dom";
 import {useGoogleLogin} from "@react-oauth/google";
-import {userGoogleAuthState} from "@data/Login/state";
-import {getGoogleInfoAxios, getToken} from "@data/Login/axios";
 import React from "react";
 import GoogleButton from "react-google-button";
-import {createSocket} from "../../../socket";
+
+import {getGoogleInfoAxios, getToken} from "@data/login/axios";
+import {userGoogleAuthState} from "@data/login/state";
 
 const Login: React.FC = () => {
   const [googleAuth, setGoogleAuth] = useRecoilState(userGoogleAuthState);
@@ -31,7 +31,7 @@ const Login: React.FC = () => {
       setUser(user); // loginUser, #user 통채로 저장하지 않고, access_token으로 가져오도록 수정
       setGoogleAuth(null); //혹시나 유저 정보가 들어있을지 모르니까 비운다
       console.log(data);
-      createSocket("", user);
+
       navigate("/");
     }
   };

@@ -5,7 +5,7 @@ import {show_u} from "@utils/ChatUserUtils";
 export var user_list: any = [];
 
 export function userJoin(socket: any, list: any) {
-  console.log(list);
+  console.log("userJoin : ", list);
   for (let l = 0; l < list.length; l++) {
     socket.join(list[l].room_id);
   }
