@@ -4,8 +4,8 @@ import {api, axiosProcess, server} from "../constant";
 
 export async function getAudioFile(userid: any) {
   try {
-    const getData = await api.get(`/file/${userid}`);
-    return getData.data;
+    const getData = await api.get(`file/user/${userid}`);
+    return getData;
   } catch (error) {
     throw new Error("Failed to fetch audio files");
   }
@@ -24,7 +24,7 @@ export function postAudioFile(audio: any, userid: any) {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(res);
+    // console.log(res);
   } catch (error: any) {
     if (error.response) {
       // The request was made and the server responded with a status code

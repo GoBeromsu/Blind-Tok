@@ -44,7 +44,7 @@ function AppRoutes() {
     if (loginUser == null && data != null) {
       setLoginUser(data);
       createSocket("", data);
-      console.log();
+      // console.log();
     }
   }, [data]);
 
@@ -53,7 +53,7 @@ function AppRoutes() {
   }
 
   const user = loginUser || data;
-  console.log(user);
+  // console.log(user);
   return (
     <div className="container">
       <Routes>
