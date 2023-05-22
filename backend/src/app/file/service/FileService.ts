@@ -7,6 +7,9 @@ export async function getFileInfo(fileid: string) {
 export async function getFilesInfo() {
   return await File.find({relations: {user: true}});
 }
+export async function getFilesByUser(userid: number) {
+  return await File.find({where: {userid}, relations: {user: true}});
+}
 export async function addFile(file: {
   userid: number;
   fileid: string;

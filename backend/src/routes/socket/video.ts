@@ -135,3 +135,195 @@ export function joinRoom(socket: Socket, roomName: string, callback: (error: any
     console.log("join success : " + user.id);
   });
 }
+function leaveRoom(sessionId: any, callback: any) {
+  const userSession = userSessionList[sessionId];
+
+  if (!userSession) {
+    return;
+  }
+
+  let room = rooms[userSession.roomName];
+
+  if (!room) {
+    return;
+  }
+
+  console.log("notify all user that " + userSession.id + " is leaving the room " + room.name);
+  let usersInRoom = room.participants;
+  delete usersInRoom[userSession.id];
+  userSession.outgoingMedia.release();
+  // release incoming media for the leaving user
+  for (let i in userSession.incomingMedia) {
+    userSession.incomingMedia[i].release();
+    delete userSession.incomingMedia[i];
+  }
+
+  var data = {
+    id: "participantLeft",
+    sessionId: userSession.id,
+  };
+  for (let i in usersInRoom) {
+    let user = usersInRoom[i];
+    // release viewer from this
+    user.incomingMedia[userSession.id].release();
+    delete user.incomingMedia[userSession.id];
+
+    // notify all user in the room
+    user.sendMessage(data);
+  }
+
+  // Release pipeline and delete room when room is empty
+  if (Object.keys(room.participants).length == 0) {
+    room.pipeline.release();
+    delete rooms[userSession.roomName];
+  }
+  delete userSession.roomName;
+}
+/**
+ * Unregister user
+ * @param sessionId
+ */
+// function stop(sessionId:any) {
+// userRegistry.unregister(sessionId);
+// }
+/**
+ * Retrieve sdpOffer from other user, required for WebRTC calls
+ * @param socket
+ * @param senderId
+ * @param sdpOffer
+ * @param callback
+ */
+function receiveVideoFrom(socket: Socket, senderId: any, sdpOffer: any, callback: any) {
+  let userSession = userSessionList[socket.id];
+  let sender = userSessionList[socket.id];
+
+  getEndpointForUser(userSession, sender, function (error: any, endpoint: any) {
+    if (error) {
+      callback(error);
+    }
+
+    endpoint.processOffer(sdpOffer, function (error: any, sdpAnswer: any) {
+      console.log("process offer from : " + senderId + " to " + userSession.id);
+      if (error) {
+        return callback(error);
+      }
+      var data = {
+        id: "receiveVideoAnswer",
+        sessionId: sender.id,
+        sdpAnswer: sdpAnswer,
+      };
+      userSession.sendMessage(data);
+
+      endpoint.gatherCandidates(function (error: any) {
+        if (error) {
+          return callback(error);
+        }
+      });
+      return callback(null, sdpAnswer);
+    });
+  });
+}
+
+/**
+ * Get user WebRTCEndPoint, Required for WebRTC calls
+ * @param userSession
+ * @param sender
+ * @param callback
+ */
+function getEndpointForUser(userSession: any, sender: any, callback: any) {
+  // request for self media
+  if (userSession.id === sender.id) {
+    callback(null, userSession.outgoingMedia);
+    return;
+  }
+
+  var incoming = userSession.incomingMedia[sender.id];
+  if (incoming == null) {
+    // console.log(
+    //   "user : " +
+    //   userSession.id +
+    //   " create endpoint to receive video from : " +
+    //   sender.id
+    // );
+    getRoom(userSession.roomName, function (error, room) {
+      if (error) {
+        return callback(error);
+      }
+      room.pipeline.create("WebRtcEndpoint", (error: any, incomingMedia: any) => {
+        if (error) {
+          // no participants in room yet release pipeline
+          if (Object.keys(room.participants).length == 0) {
+            room.pipeline.release();
+          }
+          return callback(error);
+        }
+        // console.log(
+        //   "user : " + userSession.id + " successfully created pipeline"
+        // );
+
+        incomingMedia.getStats("AUDIO", (error: any, statsMap: any) => {
+          if (error) {
+            return callback(error);
+          } else {
+            console.log(statsMap);
+          }
+        });
+        incomingMedia.setMaxVideoSendBandwidth(100);
+        incomingMedia.setMinVideoSendBandwidth(100);
+        userSession.incomingMedia[sender.id] = incomingMedia;
+
+        // add ice candidate the get sent before endpoint is established
+        let iceCandidateQueue = userSession.iceCandidateQueue[sender.id];
+        if (iceCandidateQueue) {
+          while (iceCandidateQueue.length) {
+            let message = iceCandidateQueue.shift();
+            console.log("user : " + userSession.id + " collect candidate for : " + message.data.sender);
+            incomingMedia.addIceCandidate(message.candidate);
+          }
+        }
+
+        incomingMedia.on("OnIceCandidate", function (event: any) {
+          console.log("generate incoming media candidate : " + userSession.id + " from " + sender.id);
+          //@ts-ignore
+          let candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
+          userSession.sendMessage({
+            id: "iceCandidate",
+            sessionId: sender.id,
+            candidate: candidate,
+          });
+        });
+        sender.outgoingMedia.connect(incomingMedia, function (error: any) {
+          if (error) {
+            callback(error);
+          }
+          callback(null, incomingMedia);
+        });
+      });
+    });
+  } else {
+    console.log("user : " + userSession.id + " get existing endpoint to receive video from : " + sender.id);
+    sender.outgoingMedia.connect(incoming, function (error: any) {
+      if (error) {
+        callback(error);
+      }
+      callback(null, incoming);
+    });
+  }
+}
+
+/**
+ * Add ICE candidate, required for WebRTC calls
+ * @param socket
+ * @param message
+ */
+function addIceCandidate(socket: any, message: any) {
+  let user = userSessionList[socket.id];
+  if (user != null) {
+    // assign type to IceCandidate
+    // @ts-ignore
+    let candidate = kurento.register.complexTypes.IceCandidate(message.candidate);
+    user.addIceCandidate(message, candidate);
+  } else {
+    console.error("ice candidate with no user receive : " + socket.id);
+  }
+}

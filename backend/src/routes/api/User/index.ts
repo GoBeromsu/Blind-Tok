@@ -6,7 +6,6 @@ import friend from "./friend";
 export default async function (fastify: FastifyInstance) {
   fastify.register(friend, {prefix: "/friend"});
   fastify.get("/", async (req: FastifyRequest, reply: FastifyReply) => {
-    console.log("api called");
     const users = await getUsersInfo();
     reply.send(users);
   });
