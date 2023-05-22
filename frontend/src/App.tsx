@@ -20,7 +20,7 @@ import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
-import {createSocket} from "./socket";
+import {createSocket, dataInit} from "./socket";
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
 
@@ -44,14 +44,13 @@ function AppRoutes() {
     if (loginUser == null && data != null) {
       setLoginUser(data);
       createSocket("", data);
-      console.log();
     }
   }, [data]);
 
   if (isLoading) {
     return <Loading />;
   }
-
+  dataInit(loginUser?.userid);
   const user = loginUser || data;
   console.log(user);
   return (

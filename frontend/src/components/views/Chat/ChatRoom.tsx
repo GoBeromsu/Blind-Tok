@@ -101,12 +101,12 @@ const ChatRoom: React.FC = () => {
     <div>
       <div style={{width: `100%`, height: "100%"}}>
         <div style={{width: `100%`, height: "90%"}}>
-          {chat_data.map((p: any) => (
-            <div key={p.num} className="text" style={{width: "800px"}}>
-              <div style={loginUser.userid === p.user_id ? {...nameCSS, textAlign: "left"} : {...nameCSS, textAlign: "right"}}>
+          {chat_data.map((p: any, index: number) => (
+            <div key={index} className="text" style={{width: "800px"}}>
+              <div style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "left"} : {...nameCSS, textAlign: "right"}}>
                 {check_name(p.user_nickname) === 1 ? "" : p.user_nickname}
               </div>
-              <div style={loginUser.userid === p.user_id ? myCSS : youCSS}>
+              <div style={loginUser?.userid === p?.user_id ? myCSS : youCSS}>
                 <div style={dataCSS}>{p.data_s}</div>
                 <div style={{fontSize: "10px"}}>{p.time}</div>
               </div>

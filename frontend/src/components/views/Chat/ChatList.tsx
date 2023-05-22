@@ -6,16 +6,14 @@ import "@style/ChatList.css";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {getChat_list} from "@data/chat/chat_list";
-import {createRoom} from "../../../socket";
+import {createRoom, createSocket} from "../../../socket";
 
 export let setList: any = () => {};
-
-
 
 const ChatList: React.FC = () => {
   const [addFrendList, setAddFriendList]: any = useState([]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const {isLoading, isError, data, error} = getFriendListQuery(loginUser.userid);
+  const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   const [chatList, setChatList] = useState<any>(getChat_list());
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
@@ -31,16 +29,16 @@ const ChatList: React.FC = () => {
     setChatList(getChat_list());
   };
 
-  const getFriendList = (data:any) => {
+  const getFriendList = (data: any) => {
     let temp = data;
-    if(temp){
-      temp = temp.map((data:any) => {
-        return {user_id: data.friendid}; 
+    if (temp) {
+      temp = temp.map((data: any) => {
+        return {user_id: data.friendid};
       });
       console.log(temp);
       setFriendList(temp);
     }
-  }
+  };
 
   const M_style: any = {
     overlay: {
@@ -69,7 +67,7 @@ const ChatList: React.FC = () => {
   };
 
   const add_list = (friend_n: any) => {
-    if(!addFrendList.find((friend: any)=>friend.user_id === friend_n.user_id)){
+    if (!addFrendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
       setAddFriendList([friend_n, ...addFrendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
@@ -78,13 +76,18 @@ const ChatList: React.FC = () => {
     setAddFriendList(addFrendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);
   };
-
+  useEffect(() => {
+    if (loginUser == null && data != null) {
+      setLoginUser(data);
+      createSocket("", data);
+    }
+  });
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  },[]);
+  }, []);
 
   const [search, setSearch] = useState("");
 
@@ -103,7 +106,7 @@ const ChatList: React.FC = () => {
     setSearch_f(event.target.value);
   };
 
-  const filteredFriends = friendList;//.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
+  const filteredFriends = friendList; //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -111,7 +114,14 @@ const ChatList: React.FC = () => {
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
       <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <button onClick={() => {setModalIsOpen(true);getFriendList(data);}}> 추가</button>
+      <button
+        onClick={() => {
+          setModalIsOpen(true);
+          getFriendList(data);
+        }}>
+        {" "}
+        추가
+      </button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
@@ -119,10 +129,10 @@ const ChatList: React.FC = () => {
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className= 'f' style={{display: "flex", overflow: "auto", gap: "30px"}}>
-          {addFrendList.map((friend: any) => (
+        <div className="f" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+          {addFrendList.map((friend: any, index: number) => (
             <div
-              key={friend.user_id}
+              key={index}
               style={{height: "50px"}}
               onClick={() => {
                 sub_list(friend);
@@ -132,9 +142,14 @@ const ChatList: React.FC = () => {
           ))}
         </div>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
-        <div className="f_item" >
-          {filteredFriends.map((friend:any) => (
-            <div key={friend.user_id} style={{ width: `${W}px`, height:'50px' }} onClick={()=>{add_list(friend)}}>
+        <div className="f_item">
+          {filteredFriends.map((friend: any, index: number) => (
+            <div
+              key={index}
+              style={{width: `${W}px`, height: "50px"}}
+              onClick={() => {
+                add_list(friend);
+              }}>
               {friend.user_id}
             </div>
           ))}
@@ -150,11 +165,13 @@ const ChatList: React.FC = () => {
         </button>
       </Modal>
       <div className="f_item">
-        {filteredChatRoom.map((chat: any) => (
-          <div key={chat.room_id}>
+        {filteredChatRoom.map((chat: any, index: number) => (
+          <div key={index}>
             <Link to={`/ChatRoom/${chat.room_id}`}>
               <div className="friend-item" style={{width: `${W}px`, height: "50px"}}>
-              {chat.room_name}<br/>{chat.last_Message}
+                {chat.room_name}
+                <br />
+                {chat.last_Message}
               </div>
             </Link>
           </div>

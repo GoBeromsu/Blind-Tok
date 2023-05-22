@@ -5,7 +5,6 @@ import {setChatList, addChat_list, subChat_list} from "@data/chat/chat_list";
 import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 
 var socket: Socket = io("");
-var user_id: string;
 
 export function createSocket(add: string = "", user: any) {
   socket = add === "" ? io("http://localhost:4000/") : io(add);
@@ -25,7 +24,6 @@ export function createSocket(add: string = "", user: any) {
     }
   });
   socket.on("receive_message", (data: any) => {
-    console.log(data);
     updateChat(updateChatData(data));
   });
 
@@ -36,32 +34,22 @@ export function createSocket(add: string = "", user: any) {
   socket.on("rec_chatData", (data: any) => {
     if (data.data !== 0) {
       updateData_s(data);
-      console.log(data);
     }
   });
 
   socket.on("rec_chatList", (data: any) => {
     setChatList(data);
     setList();
-    console.log(data);
   });
 
   socket.on("rec_create_room", (data: any) => {
     console.log("rec_c");
-    addChat_list(data);
     setList();
-    console.log(data);
   });
-
-  socket.emit("data_init", user.userid);
-  user_id = user.userid;
-  console.log(socket);
 }
-
-export function getSocket(): Socket {
-  return socket;
+export function dataInit(user_id: string) {
+  socket.emit("data_init", user_id);
 }
-
 export function createRoom(user: any, user_list: any[], room_name: string = "") {
   socket.emit("create_room", {user, user_list, room_name});
 }
@@ -70,7 +58,7 @@ export function addUser(user_list: any) {
   socket.emit("add_user", user_list);
 }
 
-export function leaveRoom(room_id: string) {
+export function leaveRoom(room_id: string, user_id: string) {
   subChat_list(room_id, user_id);
   subData(room_id, user_id);
   setList();
