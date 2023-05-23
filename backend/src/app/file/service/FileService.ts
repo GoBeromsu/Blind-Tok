@@ -53,7 +53,7 @@ export async function editFile({
     });
   });
 }
-export async function removeFile(fileid: string) {
+export async function deleteFile(fileid: string) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(File);
     return await repository.delete(fileid);
