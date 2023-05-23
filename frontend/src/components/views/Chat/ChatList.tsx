@@ -11,6 +11,8 @@ import {createRoom} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 
+Modal.setAppElement('#root') 
+
 // 외부에서 접근 가능한 함수를 선언합니다. 초기에는 아무것도 하지 않는 함수로 설정합니다.
 export let setList: any = () => {};
 
@@ -142,14 +144,14 @@ const ChatList: React.FC = () => {
         {" "}
         추가
       </button>
-      <Modal
+      <Modal 
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className="f" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+        <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
             <div
               key={index}

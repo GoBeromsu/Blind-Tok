@@ -61,7 +61,7 @@ const ChatRoom: React.FC = () => {
   let check_n = "";
 
   updateChat = (data: any) => {
-    console.log(data);
+    //console.log(data);
     let {room_id, ...rest} = data;
     if (room_id === chatRoom.room_id) {
       setChat_data([...chat_data, rest]);

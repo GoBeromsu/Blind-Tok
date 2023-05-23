@@ -43,7 +43,7 @@ export function updateChatData(data: any): any {
       tmp_n[0].data.push(rest);
       tmp.unshift(tmp_n[0]);
     }
-    console.log(tmp);
+    //console.log(tmp);
     updateData("chatData", tmp);
   }
   return data;
@@ -70,7 +70,7 @@ export function updateData_s(data: any): void {
     } else {
       tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {room_id: room_id, data: [...tmp_f.data, ...rest]} : chat_data));
     }
-    console.log(tmp_f);
+    //console.log(tmp_f);
     updateData("chatData", tmp_f);
   }
 }
