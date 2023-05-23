@@ -55,7 +55,7 @@ load_Data();
 
 io.on("connection", socket => {
   console.log(`User Connected: ${socket.id}`);
-
+  socket.emit();
   socket.on("data_init", user_id => {
     let index = user_list.findIndex(user => user.user_id === user_id);
     if (index != -1) user_list[index].socket_id = socket.id;
@@ -109,7 +109,7 @@ io.on("connection", socket => {
     if (temp) route_createRoom(temp);
   });
   socket.on("add_user", () => {});
-  socket.on("send_message", datas => {
+  socket.on("message", datas => {
     console.log(datas);
     console.log(socket.id);
     let {room_id, ...rest} = datas.message;
