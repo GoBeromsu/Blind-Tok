@@ -2,7 +2,7 @@ import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import {checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData_name_user, setData_R, getData_R} from "@utils/ChatRoomUtils";
 import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getData_U} from "@utils/ChatUserUtils";
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
-import {make_RoomListData, route_createRoom, show, user_list, userJoin} from "./chat";
+import {make_RoomListData, route_createRoom, show, user_list, userJoin, add_user, route} from "./chat";
 import {register} from "./video";
 
 export default async function (fastify: FastifyInstance) {
@@ -47,10 +47,13 @@ export default async function (fastify: FastifyInstance) {
       console.log("new user_list : " + user_list);
     });
 
-    socket.on("leave_room", (room_id: string, user_id: string) => {
+    socket.on("leave_room", (room_id: string) => {
       socket.leave(room_id);
+      let user_id = user_list.find((user:any)=> user.socket === socket).user_id;
       removeRoomList(room_id, user_id);
       removeUserList(room_id, user_id);
+      let list = getRoomData_name_user(room_id).user_list;
+      if(list) route(fastify.io, list , "rec_leave_room", {room_id, user_id})
       console.log("success leave / room : " + room_id + " / user : " + user_id);
     });
 
@@ -60,15 +63,16 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("create_room", (data: any) => {
       let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list];
-      console.log(data);
+      //console.log(data);
       let temp = createRoom(tmp, data.room_name);
       if (temp) {
         route_createRoom(fastify.io, temp);
-        socket.join(temp.room_id);
       }
     });
 
-    socket.on("add_user", (data: any) => {});
+    socket.on("add_user", (data: any) => {
+      add_user(fastify.io, data);
+    });
 
     socket.on("message", (datas: any) => {
       let {room_id, ...rest} = datas;

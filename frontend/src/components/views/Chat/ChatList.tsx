@@ -99,12 +99,14 @@ const ChatList: React.FC = () => {
     },
   };
 
+  // 초대할 목록에 인원을 추가하는 함수
   const add_list = (friend_n: any) => {
     if (!addFriendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
       setAddFriendList([friend_n, ...addFriendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
   };
+  // 초대할 목록에서 인원을 뺄 함수
   const sub_list = (friend_n: any) => {
     setAddFriendList(addFriendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);

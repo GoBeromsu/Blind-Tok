@@ -128,6 +128,12 @@ export function getRoomData_name_user(room_id: string) {
   };
 }
 
+export function roomAddUser(room_id:string, user_id:string){
+  let index:number = data.findIndex((data) => data.room_id === room_id);
+  data[index].user_list.push({user_id: user_id, data_num: data[index].max_num});
+  console.log(data);
+}
+
 // test
 export function show_r() {
   console.log("room_userList : ");

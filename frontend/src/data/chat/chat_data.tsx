@@ -124,7 +124,7 @@ export function getChatData(id: any): any {
     return tmp_f;
   }
 }
-export function subData(room_id:string, user_id:string){
+export function subData(room_id:string){
   let tmp = getData("chatData");
   let temp;
   if (!tmp) {

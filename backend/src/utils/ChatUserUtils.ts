@@ -11,7 +11,7 @@ var data: ChatUserData[] = [];
 export function newUser(user_id: string) {
   let data_n = {
     user_id: user_id,
-    room_list: [],
+    room_list: new Array(),
   };
   data = [...data, data_n];
 }
@@ -60,6 +60,16 @@ export function getUserRoomList(user_id: string) {
     return [];
   }
   return user.room_list;
+}
+
+export function userAddRoom(room_id:string, user_id:string){
+  let index = data.findIndex((data)=> data.user_id === user_id);
+  if(index == -1) {
+    newUser(user_id)
+    index = data.length-1;
+  };
+  data[index].room_list.push({room_id : room_id});
+  console.log(data[index]);
 }
 
 export function getData_U() {

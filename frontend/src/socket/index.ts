@@ -1,7 +1,7 @@
 import {Socket, io} from "socket.io-client";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
-import {setChatList, addChat_list, subChat_list} from "@data/chat/chat_list";
+import {setChatList, addChat_list, removeChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {SOCKET_URL} from "../consonants";
 
@@ -20,6 +20,7 @@ socket.on("message", (message: any) => {
   }
 });
 socket.on("receive_message", (data: any) => {
+  console.log(data);
   updateChat(updateChatData(data));
 });
 
@@ -44,24 +45,37 @@ socket.on("rec_create_room", (data: any) => {
   setList();
 });
 
+socket.on("rec_leave_room", (data: any)=>{
+  console.log(data);
+})
+
+socket.on("rec_add_user", (data: any)=>{
+  console.log(data);
+})
+
+socket.on("rec_add_room", (data:any)=>{
+  addChat_list(data);
+  setList();
+})
+
 export function dataInit(user_id: string) {
   console.log(user_id);
   socket.emit("data_init", user_id);
 }
 export function createRoom(user: any, user_list: any[], room_name: string = "") {
-  console.log("cccc");
+  //console.log("cccc");
   socket.emit("create_room", {user, user_list, room_name});
 }
 
-export function addUser(user_list: any) {
-  socket.emit("add_user", user_list);
+export function addUser(room_id:any, user_list: any[]) {
+  socket.emit("add_user",{room_id, user_list});
 }
 
-export function leaveRoom(room_id: string, user_id: string) {
-  subChat_list(room_id, user_id);
-  subData(room_id, user_id);
+export function leaveRoom(room_id: string) {
+  removeChat_list(room_id);
+  subData(room_id);
   setList();
-  socket.emit("leave_room", room_id, user_id);
+  socket.emit("leave_room", room_id);
 }
 
 export function sendMessage(data: any) {

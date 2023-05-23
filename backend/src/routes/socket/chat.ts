@@ -1,6 +1,6 @@
-import {getRoomData_name_user, show_r} from "@utils/ChatRoomUtils";
+import {getRoomData_name_user, roomAddUser, show_r} from "@utils/ChatRoomUtils";
+import {show_u, userAddRoom} from "@utils/ChatUserUtils";
 import {show_d} from "@utils/ChatDataUtils";
-import {show_u} from "@utils/ChatUserUtils";
 
 export var user_list: any = [];
 
@@ -23,6 +23,29 @@ export function route_createRoom(io: any, data: any) {
       tmp.socket.join(data.room_id);
     }
   });
+}
+
+export function route(io: any, list: any, opt: string, data: any) {
+  list.map((user: any) => {
+    let tmp = user_list.find((socket: any) => socket.user_id === user.user_id);
+    if (tmp) {
+      io.to(tmp.socket.id).emit(opt, data);
+    }
+  });
+}
+
+export function add_user(io: any, data:any){
+  if(!data.user_list)return;
+  //if(!tmp.user_list?.find((user) => data.user.userid === user.user_id))return;
+  data.user_list.map((user:any) => {
+    roomAddUser(data.room_id, user.user_id);
+    userAddRoom(data.room_id, user.user_id);
+    user_list.find((socket:any)=>socket.user_id === user.user_id).socket.join(data.room_id);
+  })
+  let tmp = getRoomData_name_user(data.room_id);
+  route(io,tmp.user_list,"rec_add_user", data);
+  route(io,data.user_list,"rec_add_room", tmp);
+  console.log("add_user");
 }
 
 // test
