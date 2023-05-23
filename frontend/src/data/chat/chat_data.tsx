@@ -34,13 +34,17 @@ export function updateChatData(data: any): any {
   if (!tmp) {
     updateData("chatData", [{room_id: room_id, data: [rest]}]);
   } else {
-    let tmp_f = tmp.find((p: any) => p.room_id === room_id);
-    if (!tmp_f) {
-      tmp_f = [...tmp, {room_id: room_id, data: [rest]}];
+    let index = tmp.findIndex((p: any) => p.room_id === room_id);
+    let tmp_n;
+    if (index == -1) {
+      tmp = [{room_id: room_id, data: [rest]}, ...tmp];
     } else {
-      tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {...chat_data, data: [...tmp_f.data, rest]} : chat_data));
+      tmp_n = tmp.splice(index,1);
+      tmp_n[0].data.unshift(rest);
+      tmp.unshift(tmp_n[0]);
     }
-    updateData("chatData", tmp_f);
+    console.log(tmp);
+    updateData("chatData", tmp);
   }
   return data;
 }
