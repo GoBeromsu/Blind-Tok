@@ -5,7 +5,7 @@ import {pipeline, Readable} from "stream";
 import util from "util";
 import {format} from "date-fns";
 import {generatedUUID} from "@utils/UUIDUtils";
-import {addFile, editFile, getFileInfo, getFilesByUser, getFilesInfo} from "@file/service/FileService";
+import {addFile, deleteFile, editFile, getFileInfo, getFilesByUser, getFilesInfo} from "@file/service/FileService";
 import * as path from "path";
 const pump = util.promisify(pipeline);
 
@@ -56,7 +56,11 @@ export default async function (fastify: FastifyInstance) {
     fileresult.push(fileid);
     reply.send({files: fileresult, filetype});
   });
-
+  fastify.delete("/:fileid", async (req: FastifyRequest<{Params: {fileid: string}}>, reply: FastifyReply) => {
+    const {fileid} = req.params;
+    const result = await deleteFile(fileid);
+    reply.send(result);
+  });
   async function makefile(userid: any, part: any, filename: string, filetype: string) {
     const mimetype = part.mimetype;
     const fileid = generatedUUID();

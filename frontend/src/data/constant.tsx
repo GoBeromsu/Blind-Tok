@@ -5,7 +5,7 @@ export const options = {
   retry: 0,
   onSuccess: (result: any) => {
     //api 호출 성공
-    console.log("onSuccess >>", result?.data);
+    // console.log("onSuccess >>", result?.data);
   },
   onError: (error: any) => {
     //api 호출 실패
