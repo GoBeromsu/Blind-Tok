@@ -12,13 +12,16 @@ export default async function (fastify: FastifyInstance) {
     socket.on("data_init", (user_id: string) => {
       let index = user_list.findIndex((user: any) => user.user_id === user_id);
       if (!user_id) return;
-      if (index != -1) user_list[index] = socket;
-      else user_list.push({user_id: user_id, socket: socket});
+      if (index != -1) {
+        if(user_list[index].socket === socket) return;
+        user_list[index].socket = socket;
+      } else user_list.push({user_id: user_id, socket: socket});
 
       let list = getUserRoomList(user_id);
       // 유저가 속한 방에 연결
       userJoin(socket, list);
       console.log("join_room_init");
+      //console.log(user_list);
 
       // 오프라인 일때 들어온 데이터 갱신
       for (let i = 0; i < list.length; i++) {
@@ -68,7 +71,7 @@ export default async function (fastify: FastifyInstance) {
     socket.on("add_user", (data: any) => {});
 
     socket.on("message", (datas: any) => {
-      let {room_id, ...rest} = datas.message;
+      let {room_id, ...rest} = datas;
       let data = updateRoom(room_id + "", rest);
       // socket.broadcast.emit("receive_message", data); // 1 대 다수
       socket.to(room_id).emit("receive_message", data); // 방 하나만

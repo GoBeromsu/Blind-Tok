@@ -40,7 +40,7 @@ export function updateChatData(data: any): any {
       tmp = [{room_id: room_id, data: [rest]}, ...tmp];
     } else {
       tmp_n = tmp.splice(index,1);
-      tmp_n[0].data.unshift(rest);
+      tmp_n[0].data.push(rest);
       tmp.unshift(tmp_n[0]);
     }
     console.log(tmp);
