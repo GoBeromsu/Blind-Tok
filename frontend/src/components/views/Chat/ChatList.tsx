@@ -11,6 +11,8 @@ import {createRoom} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 
+Modal.setAppElement('#root') 
+
 // 외부에서 접근 가능한 함수를 선언합니다. 초기에는 아무것도 하지 않는 함수로 설정합니다.
 export let setList: any = () => {};
 
@@ -97,12 +99,14 @@ const ChatList: React.FC = () => {
     },
   };
 
+  // 초대할 목록에 인원을 추가하는 함수
   const add_list = (friend_n: any) => {
     if (!addFriendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
       setAddFriendList([friend_n, ...addFriendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
   };
+  // 초대할 목록에서 인원을 뺄 함수
   const sub_list = (friend_n: any) => {
     setAddFriendList(addFriendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
     //setFriendList([friend_n, ...friendList]);
@@ -142,14 +146,14 @@ const ChatList: React.FC = () => {
         {" "}
         추가
       </button>
-      <Modal
+      <Modal 
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className="f" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+        <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
             <div
               key={index}

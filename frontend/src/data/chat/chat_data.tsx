@@ -34,13 +34,17 @@ export function updateChatData(data: any): any {
   if (!tmp) {
     updateData("chatData", [{room_id: room_id, data: [rest]}]);
   } else {
-    let tmp_f = tmp.find((p: any) => p.room_id === room_id);
-    if (!tmp_f) {
-      tmp_f = [...tmp, {room_id: room_id, data: [rest]}];
+    let index = tmp.findIndex((p: any) => p.room_id === room_id);
+    let tmp_n;
+    if (index == -1) {
+      tmp = [{room_id: room_id, data: [rest]}, ...tmp];
     } else {
-      tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {...chat_data, data: [...tmp_f.data, rest]} : chat_data));
+      tmp_n = tmp.splice(index,1);
+      tmp_n[0].data.push(rest);
+      tmp.unshift(tmp_n[0]);
     }
-    updateData("chatData", tmp_f);
+    //console.log(tmp);
+    updateData("chatData", tmp);
   }
   return data;
 }
@@ -66,7 +70,7 @@ export function updateData_s(data: any): void {
     } else {
       tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {room_id: room_id, data: [...tmp_f.data, ...rest]} : chat_data));
     }
-    console.log(tmp_f);
+    //console.log(tmp_f);
     updateData("chatData", tmp_f);
   }
 }
@@ -120,7 +124,7 @@ export function getChatData(id: any): any {
     return tmp_f;
   }
 }
-export function subData(room_id:string, user_id:string){
+export function subData(room_id:string){
   let tmp = getData("chatData");
   let temp;
   if (!tmp) {

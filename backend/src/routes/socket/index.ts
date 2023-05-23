@@ -2,7 +2,7 @@ import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import {checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData_name_user, setData_R, getData_R} from "@utils/ChatRoomUtils";
 import {getUserRoomList, removeRoomList, updateRoomList, show_u, setData_U, getData_U} from "@utils/ChatUserUtils";
 import {show_d, setData_D, getData_D} from "@utils/ChatDataUtils";
-import {make_RoomListData, route_createRoom, show, user_list, userJoin} from "./chat";
+import {make_RoomListData, route_createRoom, show, user_list, userJoin, add_user, route} from "./chat";
 import {register} from "./video";
 
 export default async function (fastify: FastifyInstance) {
@@ -12,13 +12,16 @@ export default async function (fastify: FastifyInstance) {
     socket.on("data_init", (user_id: string) => {
       let index = user_list.findIndex((user: any) => user.user_id === user_id);
       if (!user_id) return;
-      if (index != -1) user_list[index] = socket;
-      else user_list.push({user_id: user_id, socket: socket});
+      if (index != -1) {
+        if(user_list[index].socket === socket) return;
+        user_list[index].socket = socket;
+      } else user_list.push({user_id: user_id, socket: socket});
 
       let list = getUserRoomList(user_id);
       // 유저가 속한 방에 연결
       userJoin(socket, list);
       console.log("join_room_init");
+      //console.log(user_list);
 
       // 오프라인 일때 들어온 데이터 갱신
       for (let i = 0; i < list.length; i++) {
@@ -44,10 +47,13 @@ export default async function (fastify: FastifyInstance) {
       console.log("new user_list : " + user_list);
     });
 
-    socket.on("leave_room", (room_id: string, user_id: string) => {
+    socket.on("leave_room", (room_id: string) => {
       socket.leave(room_id);
+      let user_id = user_list.find((user:any)=> user.socket === socket).user_id;
       removeRoomList(room_id, user_id);
       removeUserList(room_id, user_id);
+      let list = getRoomData_name_user(room_id).user_list;
+      if(list) route(fastify.io, list , "rec_leave_room", {room_id, user_id})
       console.log("success leave / room : " + room_id + " / user : " + user_id);
     });
 
@@ -57,18 +63,19 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("create_room", (data: any) => {
       let tmp = [{user_id: data.user.userid, nickname: data.user.nickname}, ...data.user_list];
-      console.log(data);
+      //console.log(data);
       let temp = createRoom(tmp, data.room_name);
       if (temp) {
         route_createRoom(fastify.io, temp);
-        socket.join(temp.room_id);
       }
     });
 
-    socket.on("add_user", (data: any) => {});
+    socket.on("add_user", (data: any) => {
+      add_user(fastify.io, data);
+    });
 
     socket.on("message", (datas: any) => {
-      let {room_id, ...rest} = datas.message;
+      let {room_id, ...rest} = datas;
       let data = updateRoom(room_id + "", rest);
       // socket.broadcast.emit("receive_message", data); // 1 대 다수
       socket.to(room_id).emit("receive_message", data); // 방 하나만

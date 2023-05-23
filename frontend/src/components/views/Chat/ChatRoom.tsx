@@ -61,7 +61,7 @@ const ChatRoom: React.FC = () => {
   let check_n = "";
 
   updateChat = (data: any) => {
-    console.log(data);
+    //console.log(data);
     let {room_id, ...rest} = data;
     if (room_id === chatRoom.room_id) {
       setChat_data([...chat_data, rest]);
@@ -103,7 +103,7 @@ const ChatRoom: React.FC = () => {
         <div style={{width: `100%`, height: "90%"}}>
           {chat_data.map((p: any, index: number) => (
             <div key={index} className="text" style={{width: "800px"}}>
-              <div style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "left"} : {...nameCSS, textAlign: "right"}}>
+              <div style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
                 {check_name(p.user_nickname) === 1 ? "" : p.user_nickname}
               </div>
               <div style={loginUser?.userid === p?.user_id ? myCSS : youCSS}>
