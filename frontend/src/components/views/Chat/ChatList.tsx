@@ -11,7 +11,7 @@ import {createRoom} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 
-Modal.setAppElement('#root') 
+Modal.setAppElement("#root");
 
 // 외부에서 접근 가능한 함수를 선언합니다. 초기에는 아무것도 하지 않는 함수로 설정합니다.
 export let setList: any = () => {};
@@ -62,15 +62,11 @@ const ChatList: React.FC = () => {
   setList = () => {
     setChatList(getChat_list());
   };
+
   const getFriendList = (data: any) => {
-    let temp = data;
-    if (temp) {
-      temp = temp.map((data: any) => {
-        return {user_id: data.friendid};
-      });
-      console.log(temp);
-      setFriendList(temp);
-    }
+    let friendIdList = data.map((user: any) => ({user_id: user.friendid}));
+    console.log("getFriendList : ", friendIdList);
+    setFriendList(friendIdList);
   };
 
   const M_style: any = {
@@ -146,7 +142,7 @@ const ChatList: React.FC = () => {
         {" "}
         추가
       </button>
-      <Modal 
+      <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);

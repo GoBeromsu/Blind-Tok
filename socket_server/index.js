@@ -60,7 +60,6 @@ io.on("connection", socket => {
     let index = user_list.findIndex(user => user.user_id === user_id);
     if (index != -1) user_list[index].socket_id = socket.id;
     else user_list.push({user_id: user_id, socket_id: socket.id});
-    console.log(user_list);
 
     let list = getUserRoomList(user_id);
     // 유저가 속한 방에 연결

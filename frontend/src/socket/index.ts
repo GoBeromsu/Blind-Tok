@@ -45,21 +45,21 @@ socket.on("rec_create_room", (data: any) => {
   setList();
 });
 
-socket.on("rec_leave_room", (data: any)=>{
+socket.on("rec_leave_room", (data: any) => {
   console.log(data);
-})
+});
 
-socket.on("rec_add_user", (data: any)=>{
+socket.on("rec_add_user", (data: any) => {
   console.log(data);
-})
+});
 
-socket.on("rec_add_room", (data:any)=>{
+socket.on("rec_add_room", (data: any) => {
   addChat_list(data);
   setList();
-})
+});
 
 export function dataInit(user_id: string) {
-  console.log(user_id);
+  console.log("data init called user : ", user_id);
   socket.emit("data_init", user_id);
 }
 export function createRoom(user: any, user_list: any[], room_name: string = "") {
@@ -67,8 +67,8 @@ export function createRoom(user: any, user_list: any[], room_name: string = "") 
   socket.emit("create_room", {user, user_list, room_name});
 }
 
-export function addUser(room_id:any, user_list: any[]) {
-  socket.emit("add_user",{room_id, user_list});
+export function addUser(room_id: any, user_list: any[]) {
+  socket.emit("add_user", {room_id, user_list});
 }
 
 export function leaveRoom(room_id: string) {
