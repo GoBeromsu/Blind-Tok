@@ -5,6 +5,7 @@ import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {getChatData} from "@data/chat/chat_data";
 import {sendMessage} from "../../../socket";
+import {Box, Button, Input} from "@mui/material";
 
 export let updateChat: any = () => {};
 
@@ -98,27 +99,27 @@ const ChatRoom: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{width: `100%`, height: "100%"}}>
-        <div style={{width: `100%`, height: "90%"}}>
+    <Box>
+      <Box style={{width: `100%`, height: "100%"}}>
+        <Box style={{width: `100%`, height: "90%"}}>
           {chat_data.map((p: any, index: number) => (
-            <div key={index} className="text" style={{width: "800px"}}>
-              <div style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
+            <Box key={index} className="text" style={{width: "800px"}}>
+              <Box style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
                 {check_name(p.user_nickname) === 1 ? "" : p.user_nickname}
-              </div>
-              <div style={loginUser?.userid === p?.user_id ? myCSS : youCSS}>
-                <div style={dataCSS}>{p.data_s}</div>
-                <div style={{fontSize: "10px"}}>{p.time}</div>
-              </div>
-            </div>
+              </Box>
+              <Box style={loginUser?.userid === p?.user_id ? myCSS : youCSS}>
+                <Box style={dataCSS}>{p.data_s}</Box>
+                <Box style={{fontSize: "10px"}}>{p.time}</Box>
+              </Box>
+            </Box>
           ))}
-        </div>
-        <div>
-          <input type="text" placeholder="" value={string} onChange={textChange} style={{width: `93%`, height: "9%"}} />
-          <button onClick={click}>확인</button>
-        </div>
-      </div>
-    </div>
+        </Box>
+        <Box>
+          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `93%`, height: "9%"}} />
+          <Button onClick={click}>확인</Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

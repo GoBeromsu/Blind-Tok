@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import {userState} from "@data/user/state";
 import {useRecoilValue} from "recoil";
 import {getFriendListQuery} from "@data/Friend/state";
+import {Box, Input} from "@mui/material";
 
 interface Friend {
   id: number;
@@ -39,17 +40,17 @@ const FriendList = () => {
   const filteredFriends = friendList.filter(friend => friend.nickname.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Friend List</h1>
-      <input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <div className="f_item">
+      <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
+      <Box className="f_item">
         {filteredFriends.map(friend => (
-          <div key={friend.id} className="friend-item" style={{width: `${W}px`, height: "50px"}}>
+          <Box key={friend.id} className="friend-item" style={{width: `${W}px`, height: "50px"}}>
             <Link to={`/friend_s/${friend.id}`}>{friend.nickname}</Link>
-          </div>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

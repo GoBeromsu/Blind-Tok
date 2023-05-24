@@ -10,6 +10,7 @@ import {useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
+import {Box} from "@mui/material";
 
 const ChatBar: React.FC = () => {
   const {room_id} = useParams();
@@ -101,39 +102,39 @@ const ChatBar: React.FC = () => {
   //const image = require("");
 
   return (
-    <div style={{display: "flex"}}>
-      <Modal 
+    <Box style={{display: "flex"}}>
+      <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+        <Box className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
-            <div
+            <Box
               key={index}
               style={{height: "50px"}}
               onClick={() => {
                 sub_list(friend);
               }}>
               {friend.user_id}
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
-        <div className="f_item">
+        <Box className="f_item">
           {filteredFriends.map((friend: any, index: number) => (
-            <div
+            <Box
               key={index}
               style={{width: `30px`, height: "50px"}}
               onClick={() => {
                 add_list(friend);
               }}>
               {friend.user_id}
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
         <button
           onClick={() => {
             addUser(room_id, addFriendList);
@@ -144,48 +145,50 @@ const ChatBar: React.FC = () => {
           확인
         </button>
       </Modal>
-      <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
-        <div className="test">
-          <div className="sidebar_main">
-            <div className="item">
+      <Box className={`sidebar${sidebarOpen ? "" : " closed"}`}>
+        <Box className="test">
+          <Box className="sidebar_main">
+            <Box className="item">
               <Link to="/friend">
                 <Button onClick={handleClick} label="친구 목록" />
               </Link>
               <br />
-            </div>
+            </Box>
             <br />
             <br />
-            <div className="item">
+            <Box className="item">
               <Button onClick={handleClick} label="검색" />
-            </div>
-            <div className="item">
-              <Button onClick={() => {
-                setModalIsOpen(true);
-                getFriendList(data);
-              }} label="추가" />
+            </Box>
+            <Box className="item">
+              <Button
+                onClick={() => {
+                  setModalIsOpen(true);
+                  getFriendList(data);
+                }}
+                label="추가"
+              />
               <br />
-            </div>
-            <div className="item">
+            </Box>
+            <Box className="item">
               <Button onClick={handleClick} label="알림" />
               <br />
-            </div>
-            <div className="item">
+            </Box>
+            <Box className="item">
               <Link to="/User">
                 <Button onClick={handleClick} label="설정" />
               </Link>
               <br />
-            </div>
-            <div className="item">
+            </Box>
+            <Box className="item">
               <Button onClick={leave} label="방 나가기" />
               <br />
-            </div>
-          </div>
-        </div>
-      </div>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
 
       <Outlet />
-    </div>
+    </Box>
   );
 };
-
 export default ChatBar;
