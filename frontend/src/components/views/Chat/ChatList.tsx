@@ -123,7 +123,7 @@ const ChatList: React.FC = () => {
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
       <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <button onClick={() => setModalIsOpen(true)}> 추가</button>
+      <button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
@@ -133,13 +133,8 @@ const ChatList: React.FC = () => {
         style={M_style}>
         <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
-            <div
-              key={index}
-              style={{height: "50px"}}
-              onClick={() => {
-                sub_list(friend);
-              }}>
-              {friend.userid}
+            <div key={index} style={{height: "50px"}} onClick={() => sub_list(friend)}>
+              선택 된 친구의 id : {friend.userid}
             </div>
           ))}
         </div>
@@ -152,7 +147,7 @@ const ChatList: React.FC = () => {
               onClick={() => {
                 add_list(friend);
               }}>
-              {friend.userid}
+              친구의 id : {friend.userid}
             </div>
           ))}
         </div>
