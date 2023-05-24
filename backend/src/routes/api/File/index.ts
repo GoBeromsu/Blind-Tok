@@ -56,11 +56,14 @@ export default async function (fastify: FastifyInstance) {
     fileresult.push(fileid);
     reply.send({files: fileresult, filetype});
   });
+
   fastify.delete("/:fileid", async (req: FastifyRequest<{Params: {fileid: string}}>, reply: FastifyReply) => {
+    console.log(req.params)
     const {fileid} = req.params;
     const result = await deleteFile(fileid);
     reply.send(result);
   });
+
   async function makefile(userid: any, part: any, filename: string, filetype: string) {
     const mimetype = part.mimetype;
     const fileid = generatedUUID();
