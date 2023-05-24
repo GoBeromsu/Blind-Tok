@@ -17,17 +17,13 @@ Modal.setAppElement("#root");
 export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
-  // Recoil로부터 사용자 상태를 가져옵니다.
   const loginUser: any = useRecoilValue(userState);
 
-  // loginUser가 아직 로드되지 않았다면 로딩 화면을 반환합니다.
   if (!loginUser) {
     return <Loading />;
   }
 
-  // 친구 목록을 불러옵니다.
-  const {isLoading, isError, data, error, refetch} = getFriendListQuery(loginUser?.userid);
-
+  const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   // 여러 상태를 선언합니다. 이들은 대화방, 친구목록, 창 크기 등을 관리합니다.
   const [addFriendList, setAddFriendList]: any = useState([]);
   const [chatList, setChatList] = useState<any>(getChat_list());
@@ -41,10 +37,8 @@ const ChatList: React.FC = () => {
 
   // useEffect를 사용해 로그인 사용자가 변경될 때마다 친구 목록을 다시 불러옵니다.
   useEffect(() => {
-    if (!data) {
-      refetch();
-    } else {
-      let friendIdList = data.map((user: any) => ({user_id: user.friendid}));
+    if (data) {
+      let friendIdList = data.map((user: any) => ({userid: user.friendid}));
       setFriendList(friendIdList);
     }
   }, [loginUser, data]);
@@ -94,14 +88,14 @@ const ChatList: React.FC = () => {
 
   // 초대할 목록에 인원을 추가하는 함수
   const add_list = (friend_n: any) => {
-    if (!addFriendList.find((friend: any) => friend.user_id === friend_n.user_id)) {
+    if (!addFriendList.find((friend: any) => friend.userid === friend_n.userid)) {
       setAddFriendList([friend_n, ...addFriendList]);
       //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
   };
   // 초대할 목록에서 인원을 뺄 함수
   const sub_list = (friend_n: any) => {
-    setAddFriendList(addFriendList.filter((friend: any) => friend.user_id !== friend_n.user_id));
+    setAddFriendList(addFriendList.filter((friend: any) => friend.userid !== friend_n.userid));
     //setFriendList([friend_n, ...friendList]);
   };
 
@@ -125,8 +119,6 @@ const ChatList: React.FC = () => {
     setSearch_f(event.target.value);
   };
 
-  const filteredFriends = friendList; //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
-
   return (
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
@@ -147,20 +139,20 @@ const ChatList: React.FC = () => {
               onClick={() => {
                 sub_list(friend);
               }}>
-              {friend.user_id}
+              {friend.userid}
             </div>
           ))}
         </div>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
         <div className="f_item">
-          {filteredFriends.map((friend: any, index: number) => (
+          {friendList.map((friend: any, index: number) => (
             <div
               key={index}
               style={{width: `${W}px`, height: "50px"}}
               onClick={() => {
                 add_list(friend);
               }}>
-              {friend.user_id}
+              {friend.userid}
             </div>
           ))}
         </div>
