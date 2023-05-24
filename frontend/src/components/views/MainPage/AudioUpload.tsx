@@ -4,9 +4,11 @@ import { useRecoilState } from "recoil";
 import { userState } from "@data/user/state";
 
 const AudioUploadPage: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [loginUser, setLoginUser]:any = useRecoilState(userState);
+  const [selectedAudio, setSelectedAudio] :any= useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
+  const [comment, setComment] = useState<string>("");
 
   useEffect(() => {
     if (loginUser) {
@@ -14,33 +16,46 @@ const AudioUploadPage: React.FC = () => {
     }
   }, [loginUser]);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleAudioChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
-    setSelectedFile(file);
+    setSelectedAudio(file);
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    setSelectedImage(file);
+  };
+
+  const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
   };
 
   const handleFileUpload = async () => {
-    if (selectedFile) {
-      try {
-        await postAudioFile(selectedFile, loginUser);
-        fetchAudioList();
-      } catch (error) {
-        console.error("File upload failed:", error);
+    try {
+      const formData = new FormData();
+      formData.append("audio", selectedAudio);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
       }
+      formData.append("comment", comment);
+
+      await postAudioFile(formData, loginUser);
+      fetchAudioList();
+    } catch (error) {
+      console.error("File upload failed:", error);
     }
   };
 
-  // 해당 오디오파일을 리스트에서 삭제했을때 처리하는 메소드
-  // const handleDeleteAudio = async (audioFile: any) => {
-  //   try {
-  //     if(loginUser){
-  //     await deleteAudioFile(audioFile, loginUser);
-  //     fetchAudioList();
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to delete audio file:", error);
-  //   }
-  // };
+  const handleDeleteAudio = async (audioFile: any) => {
+    try {
+      if (loginUser) {
+        await deleteAudioFile(audioFile, loginUser);
+        fetchAudioList();
+      }
+    } catch (error) {
+      console.error("Failed to delete audio file:", error);
+    }
+  };
 
   const fetchAudioList = async () => {
     if (loginUser) {
@@ -57,15 +72,27 @@ const AudioUploadPage: React.FC = () => {
     <>
       <div>
         <h2>Upload your audio file</h2>
-        <input type="file" accept="audio/*" onChange={handleFileChange} />
+        <input type="file" accept="audio/*" onChange={handleAudioChange} />
+        <h2>Upload your image file (optional)</h2>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+        <input
+          type="text"
+          value={comment}
+          onChange={handleCommentChange}
+          placeholder="Enter comment"
+        />
         <button onClick={handleFileUpload}>Upload</button>
         <h2>My audio list</h2>
         {audioList.length > 0 ? (
           <ul>
             {audioList.map((audioFile, index) => (
               <li key={index}>
-                {audioFile.filename}
-                <button /*onClick={() => handleDeleteAudio(audioFile)}*/>Delete</button>
+                <div>
+                  <h3>{audioFile.filename}</h3>
+                  <p>Comment: {audioFile.comment}</p>
+                  {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+                  <button onClick={() => handleDeleteAudio(audioFile)}>Delete</button>
+                </div>
               </li>
             ))}
           </ul>

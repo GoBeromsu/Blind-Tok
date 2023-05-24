@@ -11,14 +11,14 @@ export async function getAudioFile(userid: any) {
   }
 }
 
+  // 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
 export function deleteAudioFile(audioFile: any, loginUser: any){
   try{
-      const res = api.post(`/file`, audioFile.fileid)
+      const res = api.delete(`/file/${audioFile.fileid}`)
       return res;
   }catch(error){
     throw new Error("Failed to delete audio files");
   }
-  // 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
 }
 
 // 오디오 파일 서버에 보내기 및 에러 처리
