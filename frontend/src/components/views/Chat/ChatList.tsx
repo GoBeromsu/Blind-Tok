@@ -10,6 +10,7 @@ import {getChat_list} from "@data/chat/chat_list";
 import {createRoom} from "../../../socket";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
+import {Box, Button, Input} from "@mui/material";
 
 Modal.setAppElement("#root");
 
@@ -120,10 +121,10 @@ const ChatList: React.FC = () => {
   };
 
   return (
-    <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
-      <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</button>
+      <Input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
+      <Button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</Button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
@@ -131,27 +132,27 @@ const ChatList: React.FC = () => {
           setAddFriendList([]);
         }}
         style={M_style}>
-        <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+        <Box className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
-            <div key={index} style={{height: "50px"}} onClick={() => sub_list(friend)}>
+            <Box key={index} style={{height: "50px"}} onClick={() => sub_list(friend)}>
               선택 된 친구의 id : {friend.userid}
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
-        <div className="f_item">
+        <Box className="f_item">
           {friendList.map((friend: any, index: number) => (
-            <div
+            <Box
               key={index}
               style={{width: `${W}px`, height: "50px"}}
               onClick={() => {
                 add_list(friend);
               }}>
               친구의 id : {friend.userid}
-            </div>
+            </Box>
           ))}
-        </div>
-        <button
+        </Box>
+        <Button
           onClick={() => {
             createRoom(loginUser, addFriendList);
             setModalIsOpen(false);
@@ -159,22 +160,22 @@ const ChatList: React.FC = () => {
           }}
           style={{width: "50px", height: "50px"}}>
           확인
-        </button>
+        </Button>
       </Modal>
-      <div className="f_item">
+      <Box className="f_item">
         {filteredChatRoom.map((chat: any, index: number) => (
-          <div key={index}>
+          <Box key={index}>
             <Link to={`/ChatRoom/${chat.room_id}`}>
-              <div className="friend-item" style={{width: `${W}px`, height: "50px"}}>
+              <Box className="friend-item" style={{width: `${W}px`, height: "50px"}}>
                 {chat.room_name}
                 <br />
                 {chat.last_Message}
-              </div>
+              </Box>
             </Link>
-          </div>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
