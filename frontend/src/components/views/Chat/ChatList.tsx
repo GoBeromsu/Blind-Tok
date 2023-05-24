@@ -43,6 +43,9 @@ const ChatList: React.FC = () => {
   useEffect(() => {
     if (!data) {
       refetch();
+    } else {
+      let friendIdList = data.map((user: any) => ({user_id: user.friendid}));
+      setFriendList(friendIdList);
     }
   }, [loginUser, data]);
 
@@ -61,12 +64,6 @@ const ChatList: React.FC = () => {
   // 채팅방 목록을 업데이트하는 함수입니다.
   setList = () => {
     setChatList(getChat_list());
-  };
-
-  const getFriendList = (data: any) => {
-    let friendIdList = data.map((user: any) => ({user_id: user.friendid}));
-    console.log("getFriendList : ", friendIdList);
-    setFriendList(friendIdList);
   };
 
   const M_style: any = {
@@ -134,14 +131,7 @@ const ChatList: React.FC = () => {
     <div className="f_list" style={{width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
       <input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <button
-        onClick={() => {
-          setModalIsOpen(true);
-          getFriendList(data);
-        }}>
-        {" "}
-        추가
-      </button>
+      <button onClick={() => setModalIsOpen(true)}> 추가</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
