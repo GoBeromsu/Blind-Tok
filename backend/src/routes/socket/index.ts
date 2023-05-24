@@ -13,14 +13,13 @@ export default async function (fastify: FastifyInstance) {
       let index = user_list.findIndex((user: any) => user.user_id === user_id);
       if (!user_id) return;
       if (index != -1) {
-        if(user_list[index].socket === socket) return;
+        if (user_list[index].socket === socket) return;
         user_list[index].socket = socket;
       } else user_list.push({user_id: user_id, socket: socket});
 
       let list = getUserRoomList(user_id);
       // 유저가 속한 방에 연결
       userJoin(socket, list);
-      console.log("join_room_init");
       //console.log(user_list);
 
       // 오프라인 일때 들어온 데이터 갱신
@@ -49,11 +48,11 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("leave_room", (room_id: string) => {
       socket.leave(room_id);
-      let user_id = user_list.find((user:any)=> user.socket === socket).user_id;
+      let user_id = user_list.find((user: any) => user.socket === socket).user_id;
       removeRoomList(room_id, user_id);
       removeUserList(room_id, user_id);
       let list = getRoomData_name_user(room_id).user_list;
-      if(list) route(fastify.io, list , "rec_leave_room", {room_id, user_id})
+      if (list) route(fastify.io, list, "rec_leave_room", {room_id, user_id});
       console.log("success leave / room : " + room_id + " / user : " + user_id);
     });
 
