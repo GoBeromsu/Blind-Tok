@@ -1,21 +1,23 @@
-﻿import {setListMessage} from './chat_list';
-/*
-my Arr[
-    {
-        room_id: 1,
-        last_massage: "",
-        data: [{
-            num : 1,
-            user_id : "choichoichoi",
-            user_nickname : "최승주",
-            time : "00-00-00",
-            data_s : "안녕하세요.안녕하세요.안녕하세요.",
-        }],
-    },
+﻿/*
+chatData에 저장된 데이터의 셋
+[
+  {
+    roomid: string,
+    lastMassage: string,
+    data: [{
+      num : number,
+      userid : string,
+      usernickname : string,
+      time : string,
+      data_s : string,
+    }],
+  },
 ]
 */
 
 // 지역저장소에서 데이터 가져오기
+// key값을 통해 저장된 데이터를 불러오고
+// 불러온 데이터가 string이기 때문에 parse를 통해 전환해줘야된다.
 function getData(key: string): any {
   let myArr: any = localStorage.getItem(key);
   if (myArr == null) {
@@ -27,26 +29,31 @@ function getData(key: string): any {
 }
 
 // 데이터 수정 및 저장 / 단일 데이터
-export function updateChatData(data: any): any {
-  let {room_id, ...rest} = data;
-  setListMessage(room_id, data.data_s);
-  let tmp = getData("chatData");
-  if (!tmp) {
-    updateData("chatData", [{room_id: room_id, data: [rest]}]);
+// 데이터를 roomid 와 나머지 rest로 나누어 다룬다.
+// 만일 key = 'chatData'로 저장된 데이터가 없다면
+// 현재 데이터를 로컬 저장소에 저장한다.
+// 만일 데이터가 존재하지만 해당 방에 대한 정보가 없다면
+// 해당 방의 정보를 가장 앞에 추가한다. => 방을 시간 순서로 정렬
+// 마지막으로 데이터가 존재하면서 해당 방의 정보도 있다면
+// 해당 방의 정보를 가져와서 받은 데이터를 추가하고 다시 저장한다.
+export function updateChatData(datas: any): any {
+  let {roomid, ...rest} = datas;
+  let savedata = getData("chatData");
+  if (!savedata) {
+    updateData("chatData", [{roomid: roomid, data: [rest]}]);
   } else {
-    let index = tmp.findIndex((p: any) => p.room_id === room_id);
-    let tmp_n;
+    let index = savedata.findIndex((p: any) => p.roomid === roomid);
+    let data_n;
     if (index == -1) {
-      tmp = [{room_id: room_id, data: [rest]}, ...tmp];
+      savedata = [{roomid: roomid, data: [rest]}, ...savedata];
     } else {
-      tmp_n = tmp.splice(index,1);
-      tmp_n[0].data.push(rest);
-      tmp.unshift(tmp_n[0]);
+      data_n = savedata.splice(index, 1);
+      data_n[0].data.push(rest);
+      savedata.unshift(data_n[0]);
     }
-    //console.log(tmp);
-    updateData("chatData", tmp);
+    updateData("chatData", savedata);
   }
-  return data;
+  return datas;
 }
 
 // 지역 저장소에 데이터 저장
@@ -55,28 +62,37 @@ function updateData(key: string, data: any): void {
 }
 
 // 여러 데이터 저장
-export function updateData_s(data: any): void {
-  if (!data) return;
-  let {room_id, ...rest} = data;
-  setListMessage(room_id, rest.data[-1].data_s);
-  let tmp = getData("chatData");
-  if (!tmp) {
-    updateData("chatData", [data]);
+// updateChatData와 동일하게 경우를 나누고 똑같이 진행
+// 다만 데이터가 한개가 아닌 여러개를 가진 배열을 저장하는 것임으로 저장 부분만 다르다.
+export function updateData_s(datas: any): void {
+  if (!datas) return;
+  console.log(datas);
+  let {roomid, data} = datas;
+  let savedata = getData("chatData");
+  if (!savedata) {
+    updateData("chatData", [{roomid: roomid, data: data}]);
   } else {
-    let tmp_f = tmp.find((p: any) => p.room_id === room_id);
-    if (!tmp_f) {
-      console.log(data);
-      tmp_f = [...tmp, data];
+    let index = savedata.findIndex((p: any) => p.roomid === roomid);
+    if (index == -1) {
+      savedata = [{roomid: roomid, data: data}, ...savedata];
     } else {
-      tmp_f = tmp.map((chat_data: any) => (chat_data.room_id === room_id ? {room_id: room_id, data: [...tmp_f.data, ...rest]} : chat_data));
+      savedata[index].data = [...savedata[index].data, ...data];
     }
     //console.log(tmp_f);
-    updateData("chatData", tmp_f);
+    updateData("chatData", savedata);
   }
 }
 
-export function getChatData(id: any): any {
-  let tmp = getData("chatData");
+// 해당 방의 데이터를 가져오는 함수
+// 날짜와 data 변수는 삭제 예정
+// 이는 처음 방만들때 서버에서 data 변수가 자동으로 생성 저장되고 이를 클라이언트에 뿌려야됨 / 현재는 그냥 임시용
+// 로컬 저장소에서 데이터를 찾고 없을 때
+// 데이터는 있지만 방에 대한 정보가 없을 때
+// 데이터도 있고 방에 대한 정보도 있을 때로 나누어 진행
+// 이도 수정이 필요, 서버가 data 변수를 방만들때 뿌리면 데이터가 없을 수가 없음
+// 마지막 경우만 처리하면됨. / data 변수란 이 함수에 있는 data 변수를 의미함
+export function getChatData(roomid: any): any {
+  let savedata = getData("chatData");
   let today = new Date();
   let year = today.getFullYear();
   let month = today.getMonth() + 1;
@@ -106,37 +122,41 @@ export function getChatData(id: any): any {
   }
   let data: any = {
     num: 0,
-    user_id: "",
-    user_nickname: "",
+    userid: "",
+    usernickname: "",
     time: "",
     data_s: `${year}년 ${month}월 ${date}일 ${day}요일`,
   };
 
-  if (!tmp) {
-    console.log({id, data});
-    return {room_id: id, data: [data]};
+  if (!savedata) {
+    console.log({roomid, data});
+    return {roomid: roomid, data: [data]};
   }
 
-  let tmp_f = tmp.find((p: any) => p.room_id === id);
-  if (!tmp_f) {
-    return {room_id: id, data: [data]};
+  savedata = savedata.find((p: any) => p.roomid === roomid);
+  if (!savedata) {
+    return {roomid: roomid, data: [data]};
   } else {
-    return tmp_f;
+    return savedata;
   }
 }
-export function subData(room_id:string){
-  let tmp = getData("chatData");
-  let temp;
-  if (!tmp) {
+
+// 방을 나갈 때 해당 방의 데이터를 삭제하는 함수
+// 로컬 저장소에서 데이터를 가져온다.
+// 해당 방의 정보를 찾는다. 없으면 종료
+// 찾으면 해당 데이터 삭제, 그후 다시 저장
+export function subData(roomid: string) {
+  let savedata = getData("chatData");
+  if (!savedata) {
     return;
   } else {
-    let index = tmp.findIndex((p: any) => p.room_id === room_id);
+    let index = savedata.findIndex((p: any) => p.roomid === roomid);
     if (index == -1) {
       return;
     } else {
-      temp = tmp.splice(index,1);
+      savedata.splice(index, 1);
     }
-    console.log("delete data : " + temp);
-    updateData("chatData", tmp);
+    console.log("delete data : " + roomid);
+    updateData("chatData", savedata);
   }
 }
