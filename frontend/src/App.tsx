@@ -79,7 +79,7 @@ function AppRoutes() {
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
         <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
-          <Route path=":room_id" element={Auth(ChatRoom, true, user)} />
+          <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

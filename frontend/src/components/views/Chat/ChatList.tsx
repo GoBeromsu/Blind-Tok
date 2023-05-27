@@ -6,8 +6,7 @@ import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
-import {getChat_list} from "@data/chat/chat_list";
-import {createRoom} from "../../../socket";
+import {createRoom, init_list} from "@utils/ChattingController";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 import {Box, Button, Input} from "@mui/material";
@@ -26,14 +25,20 @@ const ChatList: React.FC = () => {
 
   const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   // 여러 상태를 선언합니다. 이들은 대화방, 친구목록, 창 크기 등을 관리합니다.
+  // 방 생성에 있어 초대될 유저의 목록을 저장할 변수
   const [addFriendList, setAddFriendList]: any = useState([]);
-  const [chatList, setChatList] = useState<any>(getChat_list());
+  // 유저가 속한 방의 목록을 저장하는 변수
+  // init_list를 통해 유저의 chat_list에 저장된 방 목록을 초기값으로 설정한다.
+  const [chatList, setChatList] = useState<any>(init_list());
+  // 방 생성할 때 친구를 추가할 수 있게 유저의 친구목록을 저장하는 변수
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [W, setW] = useState<any>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+  // 검색을 위한 변수
   const [search, setSearch] = useState("");
   const [search_f, setSearch_f] = useState("");
+  // 모달의 on/off를 위한 변수
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // useEffect를 사용해 로그인 사용자가 변경될 때마다 친구 목록을 다시 불러옵니다.
@@ -57,8 +62,8 @@ const ChatList: React.FC = () => {
   };
 
   // 채팅방 목록을 업데이트하는 함수입니다.
-  setList = () => {
-    setChatList(getChat_list());
+  setList = (list: any) => {
+    setChatList(list);
   };
 
   const M_style: any = {
@@ -88,16 +93,15 @@ const ChatList: React.FC = () => {
   };
 
   // 초대할 목록에 인원을 추가하는 함수
+  // 초대 목록에 이미있는 인원이면 추가하지 않는다.
   const add_list = (friend_n: any) => {
     if (!addFriendList.find((friend: any) => friend.userid === friend_n.userid)) {
       setAddFriendList([friend_n, ...addFriendList]);
-      //setFriendList(friendList.filter((friend)=>friend.id !== friend_n.id));
     }
   };
   // 초대할 목록에서 인원을 뺄 함수
   const sub_list = (friend_n: any) => {
     setAddFriendList(addFriendList.filter((friend: any) => friend.userid !== friend_n.userid));
-    //setFriendList([friend_n, ...friendList]);
   };
 
   useEffect(() => {
@@ -111,9 +115,10 @@ const ChatList: React.FC = () => {
     setSearch(event.target.value);
   };
 
+  // 검색을 위한 필터
   const filteredChatRoom = chatList.filter((chat: any) => {
-    if (!chat.room_name) return;
-    return chat.room_name.toLowerCase().includes(search.toLowerCase());
+    if (!chat.roomname) return;
+    return chat.roomname.toLowerCase().includes(search.toLowerCase());
   });
 
   const SearchChange = (event: any) => {
@@ -165,11 +170,11 @@ const ChatList: React.FC = () => {
       <Box className="f_item">
         {filteredChatRoom.map((chat: any, index: number) => (
           <Box key={index}>
-            <Link to={`/ChatRoom/${chat.room_id}`}>
+            <Link to={`/ChatRoom/${chat.roomid}`}>
               <Box className="friend-item" style={{width: `${W}px`, height: "50px"}}>
-                {chat.room_name}
+                {chat.roomname}
                 <br />
-                {chat.last_Message}
+                {chat.lastMessage}
               </Box>
             </Link>
           </Box>

@@ -1,46 +1,46 @@
 import {type} from "os";
 
 interface ChatData {
-  room_id: string;
-  room_data: any;
+  roomid: string;
+  roomdata: any;
 }
 // room_data 의 데이터 셋 추가 예정
 interface room_d {}
 
 var data: ChatData[] = [];
 
-export function getData(room_id: string, data_num: number, opt: number) {
-  let index: number = data.findIndex(data => data.room_id === room_id);
+export function getData(roomid: string, datanum: number, opt: number) {
+  let index: number = data.findIndex(data => data.roomid === roomid);
   let data_t: any;
   if (opt == 1) {
-    data_t = data[index].room_data;
-    data[index].room_data = data_t.filter((data: any) => data.num <= data_num);
+    data_t = data[index].roomdata;
+    data[index].roomdata = data_t.filter((data: any) => data.num <= datanum);
   } else {
-    data_t = data[index].room_data.filter((data: any) => data.num > data_num);
+    data_t = data[index].roomdata.filter((data: any) => data.num > datanum);
   }
   console.log("getData");
   return data_t;
 }
 
-export function createData(room_id: string) {
-  if (data.find(data => data.room_id === room_id)) return;
-  let data_n: ChatData = {room_id: room_id, room_data: []};
+export function createData(roomid: string) {
+  if (data.find(data => data.roomid === roomid)) return;
+  let data_n: ChatData = {roomid: roomid, roomdata: []};
   data = [...data, data_n];
   console.log("createData : ");
   console.log(data);
 }
 
-export function setData(room_id: string, data_t: any) {
-  let index: number = data.findIndex(data => data.room_id === room_id);
+export function setData(roomid: string, data_t: any) {
+  let index: number = data.findIndex(data => data.roomid === roomid);
   if (index === -1) {
-    createData(room_id);
+    createData(roomid);
     index = data.length - 1;
   }
-  let room_data_n: any;
+  let roomdata_n: any;
   if (typeof data === "undefined" || data === null) data = [];
-  else room_data_n = data[index].room_data;
+  else roomdata_n = data[index].roomdata;
 
-  data[index] = {room_id: room_id, room_data: [...room_data_n, data_t]};
+  data[index] = {roomid: roomid, roomdata: [...roomdata_n, data_t]};
   console.log("setData : ");
   console.log(data);
 }
