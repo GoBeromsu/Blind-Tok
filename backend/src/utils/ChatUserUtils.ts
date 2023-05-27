@@ -8,6 +8,7 @@ interface room_l {
 
 var data: ChatUserData[] = [];
 
+// 새로운 유저 생성
 export function newUser(userid: string) {
   let data_n = {
     userid: userid,
@@ -16,6 +17,9 @@ export function newUser(userid: string) {
   data = [...data, data_n];
 }
 
+// 해당 유저의 roomlist에 방을 추가하는 함수
+// 유저를 찾아서 없으면 유저를 생성해준다.
+// 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: string, userList: any) {
   if (!userList) return;
   console.log(userList);
@@ -26,15 +30,17 @@ export function updateRoomList(roomid: string, userList: any) {
       newUser(userList[i].userid);
       index = data.length - 1;
     }
-    let tmp = data[index];
-    data[index] = {userid: tmp.userid, roomlist: [{roomid: roomid}, ...tmp.roomlist]};
+    data[index] = {userid: data[index].userid, roomlist: [{roomid: roomid}, ...data[index].roomlist]};
 
     console.log("updateRoomList : ");
     console.log(data);
   }
 }
 
+// 해당 유저의 roomlist에서 해당 방을 삭제하는 함수
+// 해당 유저를 찾고 방 목록에서 방을 빼고 이를 다시 저장한다.
 export function removeRoomList(roomid: string, userid: string) {
+  // 예외 처리
   if (!Array.isArray(data)) {
     console.error("Data is undefined or not an array");
     return;
@@ -49,6 +55,8 @@ export function removeRoomList(roomid: string, userid: string) {
   console.log(data);
 }
 
+// 유저가 속한 방 리스트를 가져오는 함수
+// 유저를 찾아서 roomlist를 반환한다.
 export function getUserRoomList(userid: string) {
   if (!Array.isArray(data)) {
     console.error("Data is undefined or not an array");
@@ -62,21 +70,15 @@ export function getUserRoomList(userid: string) {
   return user.roomlist;
 }
 
-export function userAddRoom(roomid:string, userid:string){
-  let index = data.findIndex((data)=> data.userid === userid);
-  if(index == -1) {
-    newUser(userid)
-    index = data.length-1;
-  };
-  data[index].roomlist.push({roomid : roomid});
+// updateRoomList와 동일하지만 이는 단일 유저에게 적용되는 함수
+export function userAddRoom(roomid: string, userid: string) {
+  let index = data.findIndex(data => data.userid === userid);
+  if (index == -1) {
+    newUser(userid);
+    index = data.length - 1;
+  }
+  data[index].roomlist.push({roomid: roomid});
   console.log(data[index]);
-}
-
-export function getData_U() {
-  return data;
-}
-export function setData_U(data_r: ChatUserData[]) {
-  data = data_r;
 }
 
 // test

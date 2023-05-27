@@ -106,7 +106,7 @@ const ChatBar: React.FC = () => {
 
   return (
     <div style={{display: "flex"}}>
-      <Modal 
+      <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);
@@ -163,10 +163,13 @@ const ChatBar: React.FC = () => {
               <Button onClick={handleClick} label="검색" />
             </div>
             <div className="item">
-              <Button onClick={() => {
-                setModalIsOpen(true);
-                getFriendList(data);
-              }} label="추가" />
+              <Button
+                onClick={() => {
+                  setModalIsOpen(true);
+                  getFriendList(data);
+                }}
+                label="추가"
+              />
               <br />
             </div>
             <div className="item">

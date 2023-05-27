@@ -10,7 +10,6 @@ chat list :
   }];
 ]
 */
-
 var chat_list = new Array();
 
 // 유저가 속한 방 목록을 data로 받아서 chat_list에 저장하는 함수
@@ -35,7 +34,7 @@ export function getChat_list() {
 // 방에 초대 받았을 경우 방에 대한 정보가 들어온다.
 // 이 때 기존의 방목록에 초대 받은 방을 추가하는 함수
 // setChatList와 동일하게 roomid만 받기 때문에 lastMessage 속성을 만들어준다.
-// 또한 이 함수가 실행되는 시점에서 이 방의 생성이 가장 최근에 발생한 이벤트임으로 
+// 또한 이 함수가 실행되는 시점에서 이 방의 생성이 가장 최근에 발생한 이벤트임으로
 // 방목록의 제일 앞에 이 방을 추가해준다. => 방 목록의 시간 순 정렬을 위함
 export function addChat_list(data: any) {
   data = {...data, lastMessage: ""};

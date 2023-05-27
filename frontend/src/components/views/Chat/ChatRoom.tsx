@@ -3,7 +3,7 @@ import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {getFriendlist} from "@data/Friend/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {init_ChattingData,Message} from "@utils/ChattingController";
+import {init_ChattingData, Message} from "@utils/ChattingController";
 
 export let updateChat: any = () => {};
 
