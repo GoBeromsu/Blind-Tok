@@ -16,7 +16,7 @@ chatData에 저장된 데이터의 셋
 */
 
 // 지역저장소에서 데이터 가져오기
-// key값을 통해 저장된 데이터를 불러오고 
+// key값을 통해 저장된 데이터를 불러오고
 // 불러온 데이터가 string이기 때문에 parse를 통해 전환해줘야된다.
 function getData(key: string): any {
   let myArr: any = localStorage.getItem(key);
@@ -47,7 +47,7 @@ export function updateChatData(datas: any): any {
     if (index == -1) {
       savedata = [{roomid: roomid, data: [rest]}, ...savedata];
     } else {
-      data_n = savedata.splice(index,1);
+      data_n = savedata.splice(index, 1);
       data_n[0].data.push(rest);
       savedata.unshift(data_n[0]);
     }
@@ -70,13 +70,13 @@ export function updateData_s(datas: any): void {
   let {roomid, data} = datas;
   let savedata = getData("chatData");
   if (!savedata) {
-    updateData("chatData", [data]);
+    updateData("chatData", [{roomid: roomid, data: data}]);
   } else {
     let index = savedata.findIndex((p: any) => p.roomid === roomid);
-    if (index== -1) {
+    if (index == -1) {
       savedata = [{roomid: roomid, data: data}, ...savedata];
     } else {
-      savedata[index] = savedata[index].data = [...savedata[index].data, ...data];
+      savedata[index].data = [...data, ...savedata[index].data];
     }
     //console.log(tmp_f);
     updateData("chatData", savedata);
@@ -145,7 +145,7 @@ export function getChatData(roomid: any): any {
 // 로컬 저장소에서 데이터를 가져온다.
 // 해당 방의 정보를 찾는다. 없으면 종료
 // 찾으면 해당 데이터 삭제, 그후 다시 저장
-export function subData(roomid:string){
+export function subData(roomid: string) {
   let savedata = getData("chatData");
   if (!savedata) {
     return;
@@ -154,7 +154,7 @@ export function subData(roomid:string){
     if (index == -1) {
       return;
     } else {
-      savedata.splice(index,1);
+      savedata.splice(index, 1);
     }
     console.log("delete data : " + roomid);
     updateData("chatData", savedata);
