@@ -3,14 +3,12 @@ import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {getFriendlist} from "@data/Friend/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getChatData} from "@data/chat/chat_data";
-import {sendMessage} from "../../../socket";
-import {Box, Button, Input} from "@mui/material";
+import {init_ChattingData, Message} from "@utils/ChattingController";
 
 export let updateChat: any = () => {};
 
 interface User {
-  user_id: any;
+  userid: any;
   nickname: any;
 }
 
@@ -51,7 +49,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const params: any = useParams();
-  const chatRoom: any = getChatData(params.room_id);
+  const chatRoom: any = init_ChattingData(params.roomid);
   const location: any = useLocation();
 
   const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
@@ -62,27 +60,15 @@ const ChatRoom: React.FC = () => {
   let check_n = "";
 
   updateChat = (data: any) => {
-    //console.log(data);
-    let {room_id, ...rest} = data;
-    if (room_id === chatRoom.room_id) {
+    console.log(data);
+    let {roomid, ...rest} = data;
+    if (roomid === chatRoom.roomid) {
       setChat_data([...chat_data, rest]);
     }
   };
 
-  const click = (e: any) => {
-    let today = new Date();
-    let hours: any = today.getHours(); // 시
-    hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
-    let minutes: any = today.getMinutes(); // 분
-    minutes = minutes < 10 ? "0" + minutes : minutes; // 자릿수 맞추기
-    const data = {
-      room_id: chatRoom.room_id,
-      user_id: loginUser.userid,
-      user_nickname: loginUser.nickname,
-      time: `${hours} : ${minutes}`,
-      data_s: string,
-    };
-    sendMessage(data);
+  const click = () => {
+    Message(chatRoom.roomid, loginUser, string);
     setString("");
   };
 
@@ -103,15 +89,15 @@ const ChatRoom: React.FC = () => {
       <Box style={{width: `100%`, height: "100%"}}>
         <Box style={{width: `100%`, height: "90%"}}>
           {chat_data.map((p: any, index: number) => (
-            <Box key={index} className="text" style={{width: "800px"}}>
-              <Box style={loginUser?.userid === p?.user_id ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
-                {check_name(p.user_nickname) === 1 ? "" : p.user_nickname}
-              </Box>
-              <Box style={loginUser?.userid === p?.user_id ? myCSS : youCSS}>
-                <Box style={dataCSS}>{p.data_s}</Box>
-                <Box style={{fontSize: "10px"}}>{p.time}</Box>
-              </Box>
-            </Box>
+            <div key={index} className="text" style={{width: "800px"}}>
+              <div style={loginUser?.userid === p?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
+                {check_name(p.usernickname) === 1 ? "" : p.usernickname}
+              </div>
+              <div style={loginUser?.userid === p?.userid ? myCSS : youCSS}>
+                <div style={dataCSS}>{p.data_s}</div>
+                <div style={{fontSize: "10px"}}>{p.time}</div>
+              </div>
+            </div>
           ))}
         </Box>
         <Box>
