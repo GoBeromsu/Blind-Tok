@@ -10,7 +10,6 @@ import {useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
-import {Box} from "@mui/material";
 
 const ChatBar: React.FC = () => {
   const {roomid} = useParams();
@@ -114,9 +113,9 @@ const ChatBar: React.FC = () => {
           setAddFriendList([]);
         }}
         style={M_style}>
-        <Box className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
+        <div className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
           {addFriendList.map((friend: any, index: number) => (
-            <Box
+            <div
               key={index}
               style={{height: "50px"}}
               onClick={() => {
@@ -125,11 +124,11 @@ const ChatBar: React.FC = () => {
               {friend.userid}
             </div>
           ))}
-        </Box>
+        </div>
         <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
-        <Box className="f_item">
+        <div className="f_item">
           {filteredFriends.map((friend: any, index: number) => (
-            <Box
+            <div
               key={index}
               style={{width: `30px`, height: "50px"}}
               onClick={() => {
@@ -138,7 +137,7 @@ const ChatBar: React.FC = () => {
               {friend.userid}
             </div>
           ))}
-        </Box>
+        </div>
         <button
           onClick={() => {
             addUser(roomid, addFriendList);
@@ -149,18 +148,18 @@ const ChatBar: React.FC = () => {
           확인
         </button>
       </Modal>
-      <Box className={`sidebar${sidebarOpen ? "" : " closed"}`}>
-        <Box className="test">
-          <Box className="sidebar_main">
-            <Box className="item">
+      <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
+        <div className="test">
+          <div className="sidebar_main">
+            <div className="item">
               <Link to="/friend">
                 <Button onClick={handleClick} label="친구 목록" />
               </Link>
               <br />
-            </Box>
+            </div>
             <br />
             <br />
-            <Box className="item">
+            <div className="item">
               <Button onClick={handleClick} label="검색" />
             </div>
             <div className="item">
@@ -172,27 +171,28 @@ const ChatBar: React.FC = () => {
                 label="추가"
               />
               <br />
-            </Box>
-            <Box className="item">
+            </div>
+            <div className="item">
               <Button onClick={handleClick} label="알림" />
               <br />
-            </Box>
-            <Box className="item">
+            </div>
+            <div className="item">
               <Link to="/User">
                 <Button onClick={handleClick} label="설정" />
               </Link>
               <br />
-            </Box>
-            <Box className="item">
+            </div>
+            <div className="item">
               <Button onClick={leave} label="방 나가기" />
               <br />
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Outlet />
-    </Box>
+    </div>
   );
 };
+
 export default ChatBar;
