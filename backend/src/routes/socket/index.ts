@@ -22,7 +22,7 @@ export default async function (fastify: FastifyInstance) {
       userJoin(socket, list);
       //console.log(userlist);
       // 유저가 속한 방 리스트
-      fastify.io.to(socket.id).emit("rec_message", {data : make_RoomListData(list), id:"rec_chatList"});
+      fastify.io.to(socket.id).emit("rec_message", {data: make_RoomListData(list), id: "rec_chatList"});
       // 오프라인 일때 들어온 데이터 갱신
       for (let i = 0; i < list.length; i++) {
         let roomid = list[i].roomid;
@@ -33,7 +33,7 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("disconnect", (reason: any) => {
-      let index = userlist.findIndex((user: any) => user.socketid === socket.id);
+      let index = userlist.findIndex((user: any) => user.socket === socket);
       if (index == -1) {
         return;
       }

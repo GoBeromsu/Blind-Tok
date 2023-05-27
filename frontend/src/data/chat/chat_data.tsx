@@ -76,7 +76,7 @@ export function updateData_s(datas: any): void {
     if (index == -1) {
       savedata = [{roomid: roomid, data: data}, ...savedata];
     } else {
-      savedata[index].data = [...data, ...savedata[index].data];
+      savedata[index].data = [...savedata[index].data, ...data];
     }
     //console.log(tmp_f);
     updateData("chatData", savedata);
