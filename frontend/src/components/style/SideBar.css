@@ -7,9 +7,13 @@
   /* position: fixed; */
   top: 0;
   z-index: 1;
-  transition: transform 0.5s ease;
+  transition: transform 1s;
 }
-
+.sidebar.closed {
+  justify-content: flex-end;
+  width: 60px;
+  transform: translateX(-10px);
+}
 .sidebar_main {
   display: flex;
   flex-direction: column;
@@ -18,7 +22,7 @@
   width: 300px;
   height: 100vh;
 
-  margin-right: 15px;
+  margin-left: 40px;
 }
 .item {
   margin-bottom: 10px;
@@ -30,10 +34,6 @@
   display: flex;
   justify-content: center;
   height: 100vh;
-}
-
-.sidebar.closed {
-  transform: translateX(-270px);
 }
 
 hr {
