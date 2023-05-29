@@ -12,6 +12,7 @@ const SideBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const defaultImg = "/image/l.png";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,7 +35,11 @@ const SideBar = () => {
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
         <div className="test">
           <div className="sidebar_main">
-            <BTlogo />
+            <div onClick={() => navigate("/")}>
+              <Link to="/">
+                <BTlogo />
+              </Link>
+            </div>
             <br />
             <br />
             <C_Image src={defaultImg} alt="프로필 이미지" size="130" />
@@ -49,7 +54,7 @@ const SideBar = () => {
             </div>
             <br />
             <div className="item">
-            <Link to="/upload">
+              <Link to="/upload">
                 <Button onClick={handleClick} label="영상 업로드" />
               </Link>
             </div>

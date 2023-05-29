@@ -4,7 +4,7 @@
 }
 
 .audio-player {
-    background-image: "../../image/defaultImage";
+    background-image: url("/image/defaultImage.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

@@ -11,29 +11,26 @@ export async function getAudioFile(userid: any) {
   }
 }
 
-  // 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
-export function deleteAudioFile(audioFile: any, loginUser: any){
-  try{
-      const res = api.delete(`/file/${audioFile.fileid}`)
-      return res;
-  }catch(error){
+// 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
+export function deleteAudioFile(audioFile: any, loginUser: any) {
+  try {
+    const res = api.delete(`/file/${audioFile.fileid}`);
+    return res;
+  } catch (error) {
     throw new Error("Failed to delete audio files");
   }
 }
 
 // 오디오 파일 서버에 보내기 및 에러 처리
-export function postAudioFile(audio: any, userid: any) {
+export function postAudioFile(formData: any, userid: any) {
   try {
-    const formData = new FormData();
-    // console.log(userid);
-    formData.append("file", audio);
-    formData.append("userid", userid.userid);
-    // console.log("post Success")
+    formData.append("userid", userid);
     const res = api.post(`/file`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log(res);
     return res;
   } catch (error: any) {
     if (error.response) {

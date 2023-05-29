@@ -58,7 +58,7 @@ export default async function (fastify: FastifyInstance) {
   });
 
   fastify.delete("/:fileid", async (req: FastifyRequest<{Params: {fileid: string}}>, reply: FastifyReply) => {
-    console.log(req.params)
+    console.log(req.params);
     const {fileid} = req.params;
     const result = await deleteFile(fileid);
     reply.send(result);
