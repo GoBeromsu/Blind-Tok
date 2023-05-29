@@ -5,7 +5,7 @@ import {useGoogleLogin} from "@react-oauth/google";
 import React from "react";
 import GoogleButton from "react-google-button";
 
-import {getGoogleInfoAxios, getToken} from "@data/login/axios";
+import {getGoogleInfoAxios, getToken, postUser} from "@data/login/axios";
 import {userGoogleAuthState} from "@data/login/state";
 
 const Login: React.FC = () => {
@@ -21,8 +21,11 @@ const Login: React.FC = () => {
 
     if (status == "REGISTER") {
       setGoogleAuth(data); //구글 sso 로그인 등록을 하기 위한, 정보를 state에 저장함
-      console.log(auth.ssoid);
-      navigate("/register");
+      const {ssoid, nickname, email, type} = auth;
+      const result = await postUser({ssoid: ssoid, email: email, name: nickname, type: type});
+      if (result.status == 200) {
+        navigate("/login");
+      }
     } else {
       const {ssoid} = auth;
       const {userid} = user;
@@ -30,8 +33,6 @@ const Login: React.FC = () => {
 
       setUser(user); // loginUser, #user 통채로 저장하지 않고, access_token으로 가져오도록 수정
       setGoogleAuth(null); //혹시나 유저 정보가 들어있을지 모르니까 비운다
-      console.log(data);
-
       navigate("/");
     }
   };
