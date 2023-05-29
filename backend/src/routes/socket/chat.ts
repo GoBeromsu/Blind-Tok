@@ -100,7 +100,7 @@ export function message(io: any, socket: any, datas: any) {
 
   console.log("update Room : ", data);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
-  socket.to(Number(roomid)).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
+  socket.to(roomid).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
   io.to(socket.id).emit("rec_message", {data: data, id: "rec_message"}); // 특정 인원에게 전달 가능
 }
 
