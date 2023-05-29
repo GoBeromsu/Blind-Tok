@@ -28,8 +28,8 @@ const ChatBar: React.FC = () => {
   const handleClick = () => {};
   // 방 나갈 때 실행되는 이벤트 함수
   const leave = () => {
-    if (roomid) {
-      leaveRoom(roomid);
+    if (Number(roomid)) {
+      leaveRoom(Number(roomid));
       navigate("/chat");
     } else "leaveRoom error : roomid undefined";
   };
