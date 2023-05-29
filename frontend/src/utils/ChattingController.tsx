@@ -34,7 +34,6 @@ export function leaveRoom(roomid: number) {
 // 방 아이디와 보내는 유저의 정보, 입력한 메시지를 받아 전송
 // 입력한 메시지를 가공하여 전송한다.
 export function Message(roomid: number, loginUser: any, data: string) {
-  console.log("Message : ", roomid, loginUser, data);
   let today = new Date();
   let hours: any = today.getHours(); // 시
   hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
@@ -58,9 +57,9 @@ export function init_list() {
 
 // 로컬 저장소에 저장된 방 데이터 내용을 가져오는 함수
 // chatRoom에서 처음 실행시 이 함수를 불러 방의 데이터를 불러온다.
-export function init_ChattingData(roomid: number) {
-  return getChatData(roomid);
-}
+// export function init_ChattingData(roomid: number) {
+//   return getChatData(roomid);
+// }
 
 // 소켓 서버로부터 받는 메시지 처리 함수
 // id를 통해 각 상황에 맞춰 분류한다.
