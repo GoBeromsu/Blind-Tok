@@ -13,7 +13,7 @@ const ChatRoom: React.FC = () => {
   const {roomid}: any = useParams();
   const [searchParams, setSearchParams]: any = useSearchParams();
 
-  const chatData: any = getChatData(roomid); //가존의 채팅방 데이터를 가져온다
+  const chatData: any = getChatData(Number(roomid)); //가존의 채팅방 데이터를 가져온다
   const [chatDataState, setChatDataState]: any = useState(chatData.data);
   const [string, setString]: any = useState("");
 
@@ -47,7 +47,7 @@ const ChatRoom: React.FC = () => {
   return (
     <Box>
       <Box style={{width: `100%`, height: "100%"}}>
-        <Box style={{width: `100%`, height: "90%"}}>
+        <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState.map((friend: any, index: number) => (
             <div key={index} className="text" style={{width: "800px"}}>
               <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
@@ -61,7 +61,7 @@ const ChatRoom: React.FC = () => {
           ))}
         </Box>
         <Box>
-          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `93%`, height: "9%"}} />
+          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `90%`, height: "5vh"}} />
           <Button onClick={handleSendMessage}>확인</Button>
         </Box>
       </Box>

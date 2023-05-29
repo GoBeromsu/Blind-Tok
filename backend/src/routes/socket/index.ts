@@ -11,6 +11,7 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("leave_room", (roomid: number) => {
+      console.log(typeof roomid);
       leave_room(fastify.io, socket, roomid);
       console.log("leave_roo");
     });
