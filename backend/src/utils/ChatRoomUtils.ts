@@ -6,7 +6,7 @@ interface ChatRoomData {
   roomname: string;
   minnum: number;
   maxnum: number;
-  userlist: user_l[];
+  userlist: {userid: string; datanum: number}[];
 }
 
 interface user_l {
@@ -25,39 +25,40 @@ let nextId: number = 1;
 export function createRoom(userlist: any, roomname: string) {
   let roomid: number = nextId;
   if (chatRoomDatas.find(data => data.roomid === roomid)) {
-    console.log("err(createRoom : roomid)");
+    console.log("Error: createRoom - Room ID already exists");
     return;
   }
-  let check: ChatRoomData[] = chatRoomDatas;
+  let filteredRooms: ChatRoomData[] = chatRoomDatas;
   // 같은 인원을 가진 방은 만들지 않는다.
   for (let i = 0; i < userlist.length; i++) {
-    check = check.filter(room => (room.userlist.find(user => user.userid === userlist[i].userid) ? true : false));
+    filteredRooms = filteredRooms.filter(room => !!room.userlist.find(user => user.userid === userlist[i].userid));
   }
-  check = check.filter(room => (room.userlist.length == userlist.length ? true : false));
-  if (check.length > 0) return;
 
-  let str: string = userlist[0].userid;
+  filteredRooms = filteredRooms.filter(room => room.userlist.length == userlist.length);
+  if (filteredRooms.length > 0) return;
+
+  let newRoomName: string = userlist[0].userid;
   if (roomname == "") {
     for (let i = 1; i < userlist.length; i++) {
-      str += ", " + userlist[i].userid;
+      newRoomName += ", " + userlist[i].userid;
     }
-  } else str = roomname;
+  } else newRoomName = roomname;
 
-  let data_n = {
+  let newRoom = {
     roomid: roomid,
-    roomname: str,
+    roomname: newRoomName,
     minnum: 0,
     maxnum: 0,
-    userlist: userlist.map((user: user_l) => {
+    userlist: userlist.map((user: {datenum: number; userid: string}) => {
       return {userid: user.userid, datanum: 0};
     }),
   };
-  console.log("data_n : ", data_n);
-  chatRoomDatas = [...chatRoomDatas, data_n];
+  console.log("data_n : ", newRoom);
+  chatRoomDatas = [...chatRoomDatas, newRoom];
   console.log("RoomData : ", chatRoomDatas);
   nextId = nextId + 1;
   console.log("success createRoom");
-  return {roomid: data_n.roomid, roomname: data_n.roomname, userlist: data_n.userlist};
+  return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
 }
 
 // 서버와 접속이 끊긴 동안의 채팅 내역을 가져오는 함수
@@ -71,7 +72,7 @@ export function checkData(roomid: number, userid: string) {
   let min = roomdata.minnum;
   let max = roomdata.maxnum;
   // 해당 방에서 해당 유저의 데이터를 가져온다.
-  let userdata = roomdata.userlist.find((user: user_l) => user.userid === userid);
+  let userdata = roomdata.userlist.find((user: {userid: string; datanum: number}) => user.userid === userid);
   if (typeof userdata === "undefined") {
     console.log("checkData : userid not Found");
     return;
@@ -112,7 +113,10 @@ export function updateRoom(roomid: number, rest: any, list: any) {
   if (index == -1) return;
   let num = chatRoomDatas[index].maxnum + 1;
   chatRoomDatas[index].maxnum = num;
-  let userlist: user_l[] = [];
+  let userlist: {
+    userid: string;
+    datanum: number;
+  }[] = [];
   chatRoomDatas[index].userlist.map((data: any) => {
     !list.find((user: any) => user.userid === data.userid) ? userlist.push(data) : userlist.push({userid: data.userid, datanum: num});
   });

@@ -9,3 +9,11 @@ export async function getToken({userid, ssoid}: {userid: string; ssoid: string})
     return await server.post("/auth/token", {userid, ssoid});
   });
 }
+export async function postUser(user: any) {
+  try {
+    const res = await api.post(`/user`, user);
+    return res;
+  } catch (error) {
+    throw new Error("Failed to post user");
+  }
+}

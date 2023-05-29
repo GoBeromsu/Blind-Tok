@@ -4,7 +4,7 @@ import {createData, show_d} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
-export var userlist: any = [];
+export let userlist: any = [];
 
 // 클라이언트의 데이터를 초기화하는 함수
 // 처음 접속시 필요한 방 목록 전송 및 방에 연결
@@ -63,13 +63,14 @@ export function leave_room(io: any, socket: any, roomid: number) {
 // updateRoomList : ChatUserUtils에서 해당 유저의 방 목록에 생성된 방의 아이디를 저장하는 함수
 // createData : ChatDataUtils에서 해당 방의 데이터 저장 공간을 만드는 함수
 // route_createRoom : 방의 생성을 참여자에게 알리는 함수
-export function create_room(io: any, data: any) {
-  let list = [{userid: data.user.userid, nickname: data.user.nickname}, ...data.userlist];
-  let result = createRoom(list, data.roomname);
-  if (result) {
-    updateRoomList(result.roomid, list);
-    createData(result.roomid);
-    route_createRoom(io, result);
+export function create_room(io: any, data: {user: any; userlist: any; roomname: string}) {
+  const {user, userlist, roomname} = data;
+  let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
+  let createdRoom = createRoom(updatedUserList, roomname);
+  if (createdRoom) {
+    updateRoomList(createdRoom.roomid, updatedUserList);
+    createData(createdRoom.roomid);
+    route_createRoom(io, createdRoom);
   }
 }
 
@@ -99,7 +100,7 @@ export function message(io: any, socket: any, datas: any) {
 
   console.log("update Room : ", data);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
-  socket.to(Number(roomid)).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
+  socket.to(roomid).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
   io.to(socket.id).emit("rec_message", {data: data, id: "rec_message"}); // 특정 인원에게 전달 가능
 }
 
@@ -128,9 +129,11 @@ export function make_RoomListData(list: any) {
 // userlist.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
 // 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
 // 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
-export function route_createRoom(io: any, data: any) {
+export function route_createRoom(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
+  console.log("route_createRoom : ", data);
   data.userlist.map((user: any) => {
     let tmp = userlist.find((socket: any) => socket.userid === user.userid);
+    console.log("tmp...?", tmp);
     if (tmp) {
       io.to(tmp.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
       tmp.socket.join(data.roomid);
