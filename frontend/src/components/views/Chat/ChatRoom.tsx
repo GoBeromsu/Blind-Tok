@@ -73,6 +73,7 @@ export default ChatRoom;
 const myCSS = {
   display: "flex",
   alignItems: "flex-end",
+  flexDirection: "row-reverse",
   borderStyle: "solid",
   borderWidth: "0px",
   margin: "5px",
@@ -82,7 +83,6 @@ const myCSS = {
 const youCSS = {
   display: "flex",
   alignItems: "flex-end",
-  flexDirection: "row-reverse",
   borderStyle: "solid",
   borderWidth: "0px",
   margin: "5px",
