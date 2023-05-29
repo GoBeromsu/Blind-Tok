@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import {getAudio, getVideo, mergeStreams} from "../../../utils/MediaStream";
+import {Box, Button} from "@mui/material";
 
 const VideoChat: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -54,11 +55,11 @@ const VideoChat: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Video Chat Page</h1>
+    <Box>
+      <Box>Video Chat Page</Box>
       <video ref={videoRef} autoPlay></video>
-      <button onClick={handleMuteClick}>{mute ? "Unmute" : "Mute"}</button>
-      <div>
+      <Button onClick={handleMuteClick}>{mute ? "Unmute" : "Mute"}</Button>
+      <Box>
         <label htmlFor="audioSource">Audio Source: </label>
         <select id="audioSource" value={audioSource || ""} onChange={handleAudioSourceChange}>
           <option value="">Default</option>
@@ -70,8 +71,8 @@ const VideoChat: React.FC = () => {
               </option>
             ))}
         </select>
-      </div>
-      <div>
+      </Box>
+      <Box>
         <label htmlFor="videoSource">Video Source: </label>
         <select id="videoSource" value={videoSource || ""} onChange={handleVideoSourceChange}>
           <option value="">Default</option>
@@ -83,9 +84,9 @@ const VideoChat: React.FC = () => {
               </option>
             ))}
         </select>
-      </div>
-      <div id="videolist"></div>#videolist
-    </div>
+      </Box>
+      <Box id="videolist"></Box>#videolist
+    </Box>
   );
 };
 

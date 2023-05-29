@@ -1,6 +1,8 @@
 import {getData, setData} from "@utils/ChatDataUtils";
+import user from "../routes/api/User";
+import {userlist} from "../routes/socket/chat";
 interface ChatRoomData {
-  roomid: string;
+  roomid: number;
   roomname: string;
   minnum: number;
   maxnum: number;
@@ -12,8 +14,8 @@ interface user_l {
   datanum: number;
 }
 
-var data: ChatRoomData[] = [];
-var nextId: number = 1;
+let chatRoomDatas: ChatRoomData[] = [];
+let nextId: number = 1;
 
 // 방생성 함수
 // 방 아이디를 만들어 부여한다.
@@ -21,12 +23,12 @@ var nextId: number = 1;
 // 방 이름이 없다는 가정하여 유저리스트의 아이디를 방의 이름으로 설정
 // data 배열에 새로운 방(data_n)을 저장 및 반환 / 이는 방이 만들어졌다는 사실을 유저에게 전송할 때 사용됨.
 export function createRoom(userlist: any, roomname: string) {
-  let roomid: string = "" + nextId;
-  if (data.find(data => data.roomid === roomid)) {
+  let roomid: number = nextId;
+  if (chatRoomDatas.find(data => data.roomid === roomid)) {
     console.log("err(createRoom : roomid)");
     return;
   }
-  let check: ChatRoomData[] = data;
+  let check: ChatRoomData[] = chatRoomDatas;
   // 같은 인원을 가진 방은 만들지 않는다.
   for (let i = 0; i < userlist.length; i++) {
     check = check.filter(room => (room.userlist.find(user => user.userid === userlist[i].userid) ? true : false));
@@ -50,21 +52,21 @@ export function createRoom(userlist: any, roomname: string) {
       return {userid: user.userid, datanum: 0};
     }),
   };
-  data = [...data, data_n];
-  console.log("RoomData : ");
-  console.log(data);
+  console.log("data_n : ", data_n);
+  chatRoomDatas = [...chatRoomDatas, data_n];
+  console.log("RoomData : ", chatRoomDatas);
   nextId = nextId + 1;
   console.log("success createRoom");
   return {roomid: data_n.roomid, roomname: data_n.roomname, userlist: data_n.userlist};
 }
 
 // 서버와 접속이 끊긴 동안의 채팅 내역을 가져오는 함수
-export function checkData(roomid: string, userid: string) {
+export function checkData(roomid: number, userid: string) {
   // 해당 방을 찾을 찾고 방의 데이터를 가져온다.
-  let index: number = data.findIndex(data => data.roomid === roomid);
-  let roomdata: ChatRoomData = data[index];
-  console.log(data);
-  if (!roomdata) roomdata = data[index];
+  let index: number = chatRoomDatas.findIndex(data => data.roomid === roomid);
+  let roomdata: ChatRoomData = chatRoomDatas[index];
+  console.log(chatRoomDatas);
+  if (!roomdata) roomdata = chatRoomDatas[index];
   let data_n;
   let min = roomdata.minnum;
   let max = roomdata.maxnum;
@@ -83,7 +85,7 @@ export function checkData(roomid: string, userid: string) {
     let min_Arr = roomdata.userlist.reduce((prev, value) => {
       return prev.datanum < value.datanum ? prev : value;
     });
-    data[index].minnum = min_Arr.datanum;
+    chatRoomDatas[index].minnum = min_Arr.datanum;
     data_n = getData(roomid, min_Arr.datanum, 1);
     console.log(userdata);
     // 만일 max와 min 사이의 값이라면 유저의 datanum에서 부터 max까지의 데이터를 가져온다. 이때 저장된 데이터는 삭제하지 않는다.
@@ -104,16 +106,17 @@ export function checkData(roomid: string, userid: string) {
 // 리스트에 있으면 datanum 에 num을 넣고 아니면 기존의 data를 사용한다.
 // list에 있다는 것은 현재 접속 중이며 메시지를 받는다는 의미이다.
 // 그 후 메시지와 roomid를 합쳐서 반환한다.
-export function updateRoom(roomid: string, rest: any, list: any) {
-  let index = data.findIndex(data => data.roomid === roomid);
+export function updateRoom(roomid: number, rest: any, list: any) {
+  let index = chatRoomDatas.findIndex(data => data.roomid == roomid); //room id로 방 찾기
+  console.log("updateRoom : ", index, rest);
   if (index == -1) return;
-  let num = data[index].maxnum + 1;
-  data[index].maxnum = num;
+  let num = chatRoomDatas[index].maxnum + 1;
+  chatRoomDatas[index].maxnum = num;
   let userlist: user_l[] = [];
-  data[index].userlist.map((data: any) => {
+  chatRoomDatas[index].userlist.map((data: any) => {
     !list.find((user: any) => user.userid === data.userid) ? userlist.push(data) : userlist.push({userid: data.userid, datanum: num});
   });
-  data[index].userlist = userlist;
+  chatRoomDatas[index].userlist = userlist;
   console.log(userlist);
   rest = {num: num, ...rest};
   setData(roomid, rest);
@@ -122,38 +125,43 @@ export function updateRoom(roomid: string, rest: any, list: any) {
 
 // 방 나가기 시 실행되는 함수
 // 해당 방을 찾고 userlist에서 해당 userid를 제거한다.
-export function removeUserList(roomid: string, userid: string) {
-  let room = data.find(data => data.roomid === roomid);
+export function removeUserList(roomid: number, userid: string) {
+  let room = chatRoomDatas.find(data => data.roomid === roomid);
   if (typeof room === "undefined") {
     console.log("reomveUserList : roomid not Found");
     return;
   }
   room.userlist = room.userlist.filter(user => user.userid != userid);
-  data = data.map((data: any) => (data.roomid === roomid ? room : data));
+  chatRoomDatas = chatRoomDatas.map((data: any) => (data.roomid === roomid ? room : data));
 }
 
 // 해당 방의 정보를 가져오는데, 필요없는 minnum과 maxnum, userlist의 num을 제외하고 반환한다.
-export function getRoomData_name_user(roomid: string) {
-  let room = data.find(data => data.roomid === roomid);
+export function getRoomData_name_user(roomid: number) {
+  let room = chatRoomDatas.find(data => data.roomid === roomid);
   if (!room) return {};
+  console.log("getRoomData의 userList 호출 됨 :", userlist);
   return {
     roomid: roomid,
     roomname: room.roomname,
-    userlist: room.userlist.map(data => {
-      return {userid: data.userid};
-    }),
+
+    userlist: room.userlist.map((userid: any) => ({
+      userid: userid,
+    })),
+    // userlist: room.userlist.map(data => {
+    //   return {userid: data.userid};
+    // })
   };
 }
 
 // 해당 방을 찾아 유저리스트에 해당 유저를 추가하는 함수
-export function roomAddUser(roomid: string, userid: string) {
-  let index: number = data.findIndex(data => data.roomid === roomid);
-  data[index].userlist.push({userid: userid, datanum: data[index].maxnum});
-  console.log(data);
+export function roomAddUser(roomid: number, userid: string) {
+  let index: number = chatRoomDatas.findIndex(data => data.roomid === roomid);
+  chatRoomDatas[index].userlist.push({userid: userid, datanum: chatRoomDatas[index].maxnum});
+  console.log(chatRoomDatas);
 }
 
 // test
 export function show_r() {
   console.log("room_userList : ");
-  console.log(data);
+  console.log(chatRoomDatas);
 }

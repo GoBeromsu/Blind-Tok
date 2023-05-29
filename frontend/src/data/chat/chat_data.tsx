@@ -1,21 +1,4 @@
-﻿/*
-chatData에 저장된 데이터의 셋
-[
-  {
-    roomid: string,
-    lastMassage: string,
-    data: [{
-      num : number,
-      userid : string,
-      usernickname : string,
-      time : string,
-      data_s : string,
-    }],
-  },
-]
-*/
-
-// 지역저장소에서 데이터 가져오기
+﻿// 지역저장소에서 데이터 가져오기
 // key값을 통해 저장된 데이터를 불러오고
 // 불러온 데이터가 string이기 때문에 parse를 통해 전환해줘야된다.
 function getData(key: string): any {
@@ -91,7 +74,7 @@ export function updateData_s(datas: any): void {
 // 데이터도 있고 방에 대한 정보도 있을 때로 나누어 진행
 // 이도 수정이 필요, 서버가 data 변수를 방만들때 뿌리면 데이터가 없을 수가 없음
 // 마지막 경우만 처리하면됨. / data 변수란 이 함수에 있는 data 변수를 의미함
-export function getChatData(roomid: any): any {
+export function getChatData(roomid: number): any {
   let savedata = getData("chatData");
   let today = new Date();
   let year = today.getFullYear();
@@ -145,7 +128,7 @@ export function getChatData(roomid: any): any {
 // 로컬 저장소에서 데이터를 가져온다.
 // 해당 방의 정보를 찾는다. 없으면 종료
 // 찾으면 해당 데이터 삭제, 그후 다시 저장
-export function subData(roomid: string) {
+export function subData(roomid: number) {
   let savedata = getData("chatData");
   if (!savedata) {
     return;

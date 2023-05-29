@@ -1,75 +1,35 @@
 ﻿import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
-import {getFriendlist} from "@data/Friend/axios";
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
-import {init_ChattingData, Message} from "@utils/ChattingController";
+import {Message} from "@utils/ChattingController";
+import {Box, Button, Input} from "@mui/material";
+import {getChatData} from "@data/chat/chat_data";
 
-export let updateChat: any = () => {};
-
-interface User {
-  userid: any;
-  nickname: any;
-}
+export let updateChat: any = () => {}; //
 
 const ChatRoom: React.FC = () => {
-  const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const myCSS = {
-    display: "flex",
-    alignItems: "flex-end",
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "800px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
-  const youCSS = {
-    display: "flex",
-    alignItems: "flex-end",
-    flexDirection: "row-reverse",
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "800px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
-  const nameCSS = {
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    fontSize: "20px",
-    fontWeight: "700",
-  };
-  const dataCSS = {
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "400px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
+  const loginUser: any = useRecoilValue(userState);
+  const {roomid}: any = useParams();
+  const [searchParams, setSearchParams]: any = useSearchParams();
 
-  const params: any = useParams();
-  const chatRoom: any = init_ChattingData(params.roomid);
-  const location: any = useLocation();
+  const chatData: any = getChatData(roomid); //가존의 채팅방 데이터를 가져온다
+  const [chatDataState, setChatDataState]: any = useState(chatData.data);
+  const [string, setString]: any = useState("");
 
-  const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
-  const detail: any = searchParams.get("detail");
-
-  const [chat_data, setChat_data]: [any, (data: any) => void] = useState(chatRoom.data);
-  const [string, setString]: [string, (str: string) => void] = useState("");
   let check_n = "";
 
   updateChat = (data: any) => {
-    console.log(data);
+    console.log("updateChat : ", data);
     let {roomid, ...rest} = data;
-    if (roomid === chatRoom.roomid) {
-      setChat_data([...chat_data, rest]);
+    if (roomid == chatData.roomid) {
+      setChatDataState([...chatDataState, rest]);
     }
   };
 
-  const click = () => {
-    Message(chatRoom.roomid, loginUser, string);
-    setString("");
+  const handleSendMessage = () => {
+    Message(chatData.roomid, loginUser, string);
+    setString(""); //입력 칸을 초기화 해준다
   };
 
   const textChange = (e: any) => {
@@ -85,28 +45,61 @@ const ChatRoom: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{width: `100%`, height: "100%"}}>
-        <div style={{width: `100%`, height: "90%"}}>
-          {chat_data.map((p: any, index: number) => (
+    <Box>
+      <Box style={{width: `100%`, height: "100%"}}>
+        <Box style={{width: `100%`, height: "90%"}}>
+          {chatDataState.map((friend: any, index: number) => (
             <div key={index} className="text" style={{width: "800px"}}>
-              <div style={loginUser?.userid === p?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
-                {check_name(p.usernickname) === 1 ? "" : p.usernickname}
+              <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
+                {check_name(friend.usernickname) === 1 ? "" : friend.usernickname}
               </div>
-              <div style={loginUser?.userid === p?.userid ? myCSS : youCSS}>
-                <div style={dataCSS}>{p.data_s}</div>
-                <div style={{fontSize: "10px"}}>{p.time}</div>
+              <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
+                <div style={dataCSS}>{friend.data_s}</div>
+                <div style={{fontSize: "10px"}}>{friend.time}</div>
               </div>
             </div>
           ))}
-        </div>
-        <div>
-          <input type="text" placeholder="" value={string} onChange={textChange} style={{width: `93%`, height: "9%"}} />
-          <button onClick={click}>확인</button>
-        </div>
-      </div>
-    </div>
+        </Box>
+        <Box>
+          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `93%`, height: "9%"}} />
+          <Button onClick={handleSendMessage}>확인</Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
 export default ChatRoom;
+const myCSS = {
+  display: "flex",
+  alignItems: "flex-end",
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "800px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};
+const youCSS = {
+  display: "flex",
+  alignItems: "flex-end",
+  flexDirection: "row-reverse",
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "800px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};
+const nameCSS = {
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  fontSize: "20px",
+  fontWeight: "700",
+};
+const dataCSS = {
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "400px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};
