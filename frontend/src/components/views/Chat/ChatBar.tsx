@@ -140,7 +140,7 @@ const ChatBar: React.FC = () => {
         </div>
         <button
           onClick={() => {
-            addUser(roomid, addFriendList);
+            addUser(Number(roomid), addFriendList);
             setModalIsOpen(false);
             setAddFriendList([]);
           }}
