@@ -3,7 +3,7 @@
     "baseUrl": "src",
     "paths": {
       "@hoc/*": ["hoc/*"],
-      "@utils/*": ["util/*"],
+      "@utils/*": ["utils/*"],
       "@loading/*": ["components/loading/*"],
       "@views/*": ["components/views/*"],
       "@data/*": ["data/*"],

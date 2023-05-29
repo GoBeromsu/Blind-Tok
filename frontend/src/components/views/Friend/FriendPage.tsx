@@ -1,4 +1,6 @@
-﻿﻿import React, {useState, useEffect} from "react";
+﻿import {Box, Button} from "@mui/material";
+
+import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import "../../style/FriendList.css";
 import {getFriends, getFriend} from "@data/user/axios";
@@ -36,15 +38,15 @@ const FriendPage = () => {
   };
 
   return (
-    <div>
+    <Box>
       <h2>{movie.title}</h2>
       <p>감독 : {movie.director}</p>
       <p>카테고리 : {movie.category}</p>
-      <button onClick={handleClick} type="button">
+      <Button onClick={handleClick} type="button">
         자세히
-      </button>
+      </Button>
       {detail === "true" ? <p>{movie.detail}</p> : " "}
-    </div>
+    </Box>
   );
 };
 
