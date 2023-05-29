@@ -44,7 +44,9 @@ const SideBar = () => {
             </Link>
           </div>
           <Br />
+          <Br />
           <C_Image src={defaultImg} alt="Profile image" size="130" />
+          <Br />
         </div>
         <div className="sidebar_separator"></div>
         <div className="icon_sidebar" style={{display: "flex", flexDirection: "column"}}>
