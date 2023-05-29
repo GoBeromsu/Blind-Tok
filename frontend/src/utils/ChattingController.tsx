@@ -24,7 +24,7 @@ export function addUser(roomid: any, userlist: any[]) {
 // subData : 해당 방의 데이터 삭제
 // removeChat_list : chat_list의 chat_list 변수에서 방 삭제 / 실행 후 chat_list를 반환
 // setList : 입력 값으로 chatList의 목록 갱신 => 목록의 리렌더링이 발생
-export function leaveRoom(roomid: string) {
+export function leaveRoom(roomid: number) {
   subData(roomid);
   setList(removeChat_list(roomid));
   sendMessage(roomid, "leave_room");
@@ -33,7 +33,8 @@ export function leaveRoom(roomid: string) {
 // 입력한 메시지 전송
 // 방 아이디와 보내는 유저의 정보, 입력한 메시지를 받아 전송
 // 입력한 메시지를 가공하여 전송한다.
-export function Message(roomid: string, loginUser: any, data: string) {
+export function Message(roomid: number, loginUser: any, data: string) {
+  console.log("Message : ", roomid, loginUser, data);
   let today = new Date();
   let hours: any = today.getHours(); // 시
   hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
@@ -57,7 +58,7 @@ export function init_list() {
 
 // 로컬 저장소에 저장된 방 데이터 내용을 가져오는 함수
 // chatRoom에서 처음 실행시 이 함수를 불러 방의 데이터를 불러온다.
-export function init_ChattingData(roomid: any) {
+export function init_ChattingData(roomid: number) {
   return getChatData(roomid);
 }
 
@@ -91,7 +92,7 @@ export function recMessage(datas: any) {
     // setChatList : chat_list의 chat_list변수에 저장한다.
     // setList : 입력 값으로 chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
     case "rec_chatList":
-      console.log(data);
+      console.log("recChatList", data);
       setList(setChatList(data));
       break;
     // 유저가 속한 방이 만들어졌을 경우

@@ -15,53 +15,18 @@ interface User {
 
 const ChatRoom: React.FC = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const myCSS = {
-    display: "flex",
-    alignItems: "flex-end",
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "800px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
-  const youCSS = {
-    display: "flex",
-    alignItems: "flex-end",
-    flexDirection: "row-reverse",
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "800px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
-  const nameCSS = {
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    fontSize: "20px",
-    fontWeight: "700",
-  };
-  const dataCSS = {
-    borderStyle: "solid",
-    borderWidth: "0px",
-    margin: "5px",
-    maxWidth: "400px",
-    backgroundColor: "rgba(30, 150, 100, 0.1)",
-  };
-
   const params: any = useParams();
   const chatRoom: any = init_ChattingData(params.roomid);
   const location: any = useLocation();
-
   const [searchParams, setSearchParams]: [any, (params: any) => void] = useSearchParams();
   const detail: any = searchParams.get("detail");
-
   const [chat_data, setChat_data]: [any, (data: any) => void] = useState(chatRoom.data);
   const [string, setString]: [string, (str: string) => void] = useState("");
   let check_n = "";
 
+  const [socket, setSocket] = useState(null);
   updateChat = (data: any) => {
-    console.log(data);
+    console.log("updateChat : ", data);
     let {roomid, ...rest} = data;
     if (roomid === chatRoom.roomid) {
       setChat_data([...chat_data, rest]);
@@ -70,7 +35,7 @@ const ChatRoom: React.FC = () => {
 
   const click = () => {
     Message(chatRoom.roomid, loginUser, string);
-    setString("");
+    setString(""); //입력 칸을 초기화 해준다
   };
 
   const textChange = (e: any) => {
@@ -111,3 +76,36 @@ const ChatRoom: React.FC = () => {
 };
 
 export default ChatRoom;
+const myCSS = {
+  display: "flex",
+  alignItems: "flex-end",
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "800px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};
+const youCSS = {
+  display: "flex",
+  alignItems: "flex-end",
+  flexDirection: "row-reverse",
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "800px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};
+const nameCSS = {
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  fontSize: "20px",
+  fontWeight: "700",
+};
+const dataCSS = {
+  borderStyle: "solid",
+  borderWidth: "0px",
+  margin: "5px",
+  maxWidth: "400px",
+  backgroundColor: "rgba(30, 150, 100, 0.1)",
+};

@@ -1,11 +1,7 @@
 interface ChatUserData {
   userid: string;
-  roomlist: room_l[];
+  roomlist: {roomid: number}[];
 }
-interface room_l {
-  roomid: string;
-}
-
 var data: ChatUserData[] = [];
 
 // 새로운 유저 생성
@@ -20,7 +16,7 @@ export function newUser(userid: string) {
 // 해당 유저의 roomlist에 방을 추가하는 함수
 // 유저를 찾아서 없으면 유저를 생성해준다.
 // 그 후 roomlist에 방을 추가한다.
-export function updateRoomList(roomid: string, userList: any) {
+export function updateRoomList(roomid: number, userList: any) {
   if (!userList) return;
   console.log(userList);
 
@@ -39,7 +35,7 @@ export function updateRoomList(roomid: string, userList: any) {
 
 // 해당 유저의 roomlist에서 해당 방을 삭제하는 함수
 // 해당 유저를 찾고 방 목록에서 방을 빼고 이를 다시 저장한다.
-export function removeRoomList(roomid: string, userid: string) {
+export function removeRoomList(roomid: number, userid: string) {
   // 예외 처리
   if (!Array.isArray(data)) {
     console.error("Data is undefined or not an array");
@@ -71,7 +67,7 @@ export function getUserRoomList(userid: string) {
 }
 
 // updateRoomList와 동일하지만 이는 단일 유저에게 적용되는 함수
-export function userAddRoom(roomid: string, userid: string) {
+export function userAddRoom(roomid: number, userid: string) {
   let index = data.findIndex(data => data.userid === userid);
   if (index == -1) {
     newUser(userid);

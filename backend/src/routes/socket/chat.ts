@@ -11,7 +11,7 @@ export var userlist: any = [];
 // 또한 오프라인 시 받은 메시지 전송
 // 앞 5중은 userlist 배열에 동일한 유저아이디가 존재하지 않는지 확인하고
 // 있으면 해당 socket으로 갱신, 없으면 userlist 배열에 추가
-// getUserRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방목록을 저장하고 있음
+// getUserRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방 목록을 저장하고 있음
 // userJoin : 유저의 방 목록을 가지고 목록에 있는 방에 접속시켜주는 함수
 // 유저가 속한 방 목록을 먼저 해당 유저에게 제공 => 이는 다음 코드로 데이터 갱신이 될 때 LastMessage를 갱신하기 위함
 // make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
@@ -30,6 +30,7 @@ export function data_init(io: any, socket: any, userid: string) {
   //console.log(userlist);
   // 유저가 속한 방 리스트
   io.to(socket.id).emit("rec_message", {data: make_RoomListData(list), id: "rec_chatList"});
+
   // 오프라인 일때 들어온 데이터 갱신
   for (let i = 0; i < list.length; i++) {
     let roomid = list[i].roomid;
@@ -45,7 +46,7 @@ export function data_init(io: any, socket: any, userid: string) {
 // removeRoomList : ChatRoomUtils의 해당 방 데이터의 유저 리스트에서 유저를 삭제한다.
 // removeUserList : ChatUserUtils의 해당 유저의 데이터의 방 리스트에서 방을 삭제한다.
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
-export function leave_room(io: any, socket: any, roomid: string) {
+export function leave_room(io: any, socket: any, roomid: number) {
   socket.leave(roomid);
   let userid = userlist.find((user: any) => user.socket === socket).userid;
   removeRoomList(roomid, userid);
@@ -92,8 +93,11 @@ export function disconnect(socket: any) {
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
 export function message(io: any, socket: any, datas: any) {
   let {roomid, ...rest} = datas;
+  console.log("rest : ", rest);
 
-  let data = updateRoom(roomid + "", rest, userlist);
+  let data = updateRoom(datas.roomid, rest, userlist);
+
+  console.log("update Room : ", data);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
   socket.to(roomid).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
   io.to(socket.id).emit("rec_message", {data: data, id: "rec_message"}); // 특정 인원에게 전달 가능
