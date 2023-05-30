@@ -1,5 +1,5 @@
 import {sendMessage} from "../socket";
-import {getChatList, updateChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {getChatList, setChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
@@ -88,11 +88,11 @@ export function recMessage(datas: any) {
       }
       break;
     // 유저가 속한 방의 리스트를 받는 경우
-    // updateChatList : chat_list의 chat_list변수에 저장한다.
+    // setChatList : chat_list의 chat_list변수에 저장한다.
     // setList : 입력 값으로 chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
     case "rec_chatList":
       console.log("recChatList", data);
-      setList(updateChatList(data));
+      setList(setChatList(data));
       break;
     // 유저가 속한 방이 만들어졌을 경우
     // addChat_list : 유저의 방목록에 추가한다.
