@@ -4,15 +4,48 @@ import {useNavigate} from "react-router-dom";
 import {useGoogleLogin} from "@react-oauth/google";
 import React from "react";
 import GoogleButton from "react-google-button";
-
 import {getGoogleInfoAxios, getToken, postUser} from "@data/login/axios";
 import {userGoogleAuthState} from "@data/login/state";
+import {Box, Typography, Container, Card, CardContent, CardMedia, Button} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+
+const logoImg = "/image/Logo.png";
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    padding: theme.spacing(3),
+  },
+  card: {
+    height: 400,
+    width: 450,
+  },
+  content: {
+    textAlign: "center",
+  },
+  title: {
+    fontFamily: "Montserrat, sans-serif",
+    color: theme.palette.text.primary,
+  },
+  media: {
+    height: 250,
+    background: `url(${logoImg}) no-repeat center center`,
+    backgroundColor: "#f3f3f3",
+    backgroundSize: 300,
+  },
+}));
 
 const Login: React.FC = () => {
   const [googleAuth, setGoogleAuth] = useRecoilState(userGoogleAuthState);
   const setUser = useSetRecoilState(userState);
 
+  const classes = useStyles();
   const navigate = useNavigate();
+
   const handleLoginSuccess = async (code: string) => {
     const {
       data,
@@ -51,10 +84,22 @@ const Login: React.FC = () => {
   });
 
   return (
-    <div>
-      <h1>로그인 페이지</h1>
-      <GoogleButton onClick={googleSocialLogin} />
-    </div>
+    <Container component="main">
+      <Box className={classes.root}>
+        <Card className={classes.card}>
+          <div className={classes.media} />
+          <CardContent className={classes.content}>
+            <Typography component="h1" variant="h5" className={classes.title}>
+              SIGN - IN
+            </Typography>
+            <br />
+            <Button variant="contained" color="primary" onClick={googleSocialLogin}>
+              Google 로그인
+            </Button>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 };
 export default Login;
