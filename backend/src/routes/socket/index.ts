@@ -11,9 +11,7 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("leave_room", (roomid: number) => {
-      console.log(typeof roomid);
       leave_room(fastify.io, socket, roomid);
-      console.log("leave_roo");
     });
 
     socket.on("disconnect", (reason: any) => {
@@ -30,7 +28,6 @@ export default async function (fastify: FastifyInstance) {
       add_user(fastify.io, data);
       console.log("add_user");
     });
-
     socket.on("message", (datas: any) => {
       console.log("message : ", datas);
       message(fastify.io, socket, datas);

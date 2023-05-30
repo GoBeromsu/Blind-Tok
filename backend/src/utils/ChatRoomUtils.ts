@@ -1,17 +1,12 @@
 import {getData, setData} from "@utils/ChatDataUtils";
 import user from "../routes/api/User";
-import {userlist} from "../routes/socket/chat";
+import {connectedUsers} from "../routes/socket/chat";
 interface ChatRoomData {
   roomid: number;
   roomname: string;
   minnum: number;
   maxnum: number;
   userlist: {userid: string; datanum: number}[];
-}
-
-interface user_l {
-  userid: string;
-  datanum: number;
 }
 
 let chatRoomDatas: ChatRoomData[] = [];
@@ -140,25 +135,21 @@ export function removeUserList(roomid: number, userid: string) {
 }
 
 // 해당 방의 정보를 가져오는데, 필요없는 minnum과 maxnum, userlist의 num을 제외하고 반환한다.
-export function getRoomData_name_user(roomid: number) {
+export function getRoomData(roomid: number) {
   let room = chatRoomDatas.find(data => data.roomid === roomid);
   if (!room) return {};
-  console.log("getRoomData의 userList 호출 됨 :", userlist);
+  console.log("getRoomData의 userList 호출 됨 :", connectedUsers);
   return {
     roomid: roomid,
     roomname: room.roomname,
-
     userlist: room.userlist.map((userid: any) => ({
       userid: userid,
     })),
-    // userlist: room.userlist.map(data => {
-    //   return {userid: data.userid};
-    // })
   };
 }
 
 // 해당 방을 찾아 유저리스트에 해당 유저를 추가하는 함수
-export function roomAddUser(roomid: number, userid: string) {
+export function addRoomUser(roomid: number, userid: string) {
   let index: number = chatRoomDatas.findIndex(data => data.roomid === roomid);
   chatRoomDatas[index].userlist.push({userid: userid, datanum: chatRoomDatas[index].maxnum});
   console.log(chatRoomDatas);

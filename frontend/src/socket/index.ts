@@ -1,13 +1,9 @@
 import {Socket, io} from "socket.io-client";
 
-import {setList} from "@views/Chat/ChatList";
-import {setChatList, addChat_list, removeChat_list, subUserChat_list} from "@data/chat/chat_list";
-import {updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {SOCKET_URL} from "../consonants";
 import {recMessage} from "@utils/ChattingController";
 
 const socket: Socket = io(SOCKET_URL);
-console.log(socket);
 socket.on("disconnect", reason => {
   console.log("socket : disconnect");
 });
