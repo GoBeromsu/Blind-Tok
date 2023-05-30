@@ -5,14 +5,24 @@
 // 받아온 데이터에는 최신 메시지를 저장할 속성이 없기 때문에 lastMessage 자리를 만들어준다.
 // 배열의 맵 함수를 통해 data의 각 원소마다 반복하여 배열을 만들어서 chat_list에 저장한다.
 // 마지막으로 갱신된 chat_list를 반환한다.
-export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
-  console.log("updateChatList: ", data);
-  chatList = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
+// export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
+//   console.log("updateChatList: ", data);
+//   chatList = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
+//   return chatList;
+// }
+
+export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[]) {
+  console.log("setChatList : ", data);
+
+  chatList = data.map((chatRoom: any) => {
+    return {...chatRoom, lastMessage: ""};
+  });
   return chatList;
 }
 
 // 변수 chat_list의 값을 반환하는 함수
 export function getChat_list() {
+export function getChatList() {
   return chatList;
 }
 
@@ -21,10 +31,16 @@ export function getChat_list() {
 // setChatList와 동일하게 roomid만 받기 때문에 lastMessage 속성을 만들어준다.
 // 또한 이 함수가 실행되는 시점에서 이 방의 생성이 가장 최근에 발생한 이벤트임으로
 // 방목록의 제일 앞에 이 방을 추가해준다. => 방 목록의 시간 순 정렬을 위함
+// export function addChat_list(data: any) {
+//   console.log("addChat_list : ", data);
+//   data = {...data, lastMessage: ""};
+//   return updateChatList(data, "");
+// }
 export function addChat_list(data: any) {
-  console.log("addChat_list : ", data);
   data = {...data, lastMessage: ""};
-  return updateChatList(data, "");
+  chatList = [data, ...chatList];
+  return chatList;
+  // updateChatList(data);
 }
 
 // 방 나갈때 방 목록에서 해당 방을 제거하는 함수
