@@ -28,7 +28,7 @@ export default async function (fastify: FastifyInstance) {
       add_user(fastify.io, data);
       console.log("add_user");
     });
-    socket.on("enteredMessage", (data: {roomid: string; userid: number; nickname: string; time: string; data_s: any}) => {
+    socket.on("enteredMessage", (data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) => {
       processReceivedMessage(fastify.io, socket, data);
     });
   });
