@@ -25,6 +25,7 @@ const useStyles = makeStyles(theme => ({
     width: 450,
   },
   content: {
+    backgroundColor: "#f7f7f7",
     textAlign: "center",
   },
   title: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   media: {
     height: 250,
     background: `url(${logoImg}) no-repeat center center`,
-    backgroundColor: "#f3f3f3",
+    backgroundColor: "#ffffff",
     backgroundSize: 300,
   },
 }));
