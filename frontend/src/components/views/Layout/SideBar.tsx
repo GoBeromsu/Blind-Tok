@@ -1,18 +1,22 @@
 ﻿import React, {useState, useEffect} from "react";
-import Button from "@views/Layout/Button";
-import C_Image from "@views/Layout/CircularImage";
-import "@style/SideBar.css";
-import MessageBox from "../MainPage/MessageBox";
-import BTlogo from "@views/svgImg/BTlogo";
 import {Link, Outlet, useNavigate} from "react-router-dom";
-import UploadPage from "@views/MainPage/AudioUpload";
+import BTlogo from "@views/svgImg/BTlogo";
+import C_Image from "@views/Layout/CircularImage";
+import {IconButton} from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import UploadIcon from "@mui/icons-material/CloudUpload";
+import SearchIcon from "@mui/icons-material/Search";
+import ChatIcon from "@mui/icons-material/Chat";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
+import "@style/SideBar.css";
+import Br from "./Br";
 
 const SideBar = () => {
-  const handleClick = () => {};
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const defaultImg = "/image/l.png";
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const defaultImg = "/image/l.png";
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,60 +36,72 @@ const SideBar = () => {
 
   return (
     <div style={{display: "flex"}}>
-      <div className={`sidebar${sidebarOpen ? "" : " closed"}`}>
-        <div className="test">
-          <div className="sidebar_main">
-            <div onClick={() => navigate("/")}>
-              <Link to="/">
-                <BTlogo />
-              </Link>
-            </div>
-            <br />
-            <br />
-            <C_Image src={defaultImg} alt="프로필 이미지" size="130" />
-            <br />
-
-            {/*<MessageBox user={user} />*/}
-            <div className="item">
-              <Link to="/friend">
-                <Button onClick={handleClick} label="친구 목록" />
-              </Link>
-              <br />
-            </div>
-            <br />
-            <div className="item">
-              <Link to="/upload">
-                <Button onClick={handleClick} label="영상 업로드" />
-              </Link>
-            </div>
-            <br />
-            <div className="item">
-              <Button onClick={handleClick} label="검색" />
-            </div>
-            <div className="item">
-              <Link to="/chat">
-                <Button onClick={handleClick} label="채팅" />
-              </Link>
-              <br />
-            </div>
-            <div className="item">
-              <Button onClick={handleClick} label="알림" />
-              <br />
-            </div>
-            <div className="item">
-              <Link to="/User">
-                <Button onClick={handleClick} label="설정" />
-              </Link>
-              <br />
-            </div>
-            <div className="item">
-              <Button onClick={handleClick} label="로그아웃" />
-              <br />
-            </div>
+      <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", flexDirection: "row"}}>
+        <div className="sidebar_main">
+          <div onClick={() => navigate("/")}>
+            <Link to="/">
+              <BTlogo />
+            </Link>
+          </div>
+          <Br />
+          <Br />
+          <C_Image src={defaultImg} alt="Profile image" size="130" />
+          <Br />
+        </div>
+        <div className="sidebar_separator"></div>
+        <div className="icon_sidebar" style={{display: "flex", flexDirection: "column"}}>
+          <div className="item">
+            <Link to="/friend">
+              <IconButton>
+                <PeopleIcon style={{fontSize: 28}} />
+              </IconButton>
+            </Link>
+            <Br />
+          </div>
+          <div className="item">
+            <Link to="/upload">
+              <IconButton>
+                <UploadIcon style={{fontSize: 28}} />
+              </IconButton>
+            </Link>
+            <Br />
+          </div>
+          <div className="item">
+            <IconButton>
+              <SearchIcon style={{fontSize: 28}} />
+            </IconButton>
+            <Br />
+          </div>
+          <div className="item">
+            <Link to="/chat">
+              <IconButton>
+                <ChatIcon style={{fontSize: 28}} />
+              </IconButton>
+            </Link>
+            <Br />
+          </div>
+          <div className="item">
+            <IconButton>
+              <NotificationsIcon style={{fontSize: 28}} />
+            </IconButton>
+            <Br />
+          </div>
+          <div className="item">
+            <Link to="/User">
+              <IconButton>
+                <SettingsIcon style={{fontSize: 28}} />
+              </IconButton>
+            </Link>
+            <Br />
+          </div>
+          <div className="item">
+            <IconButton>
+              <LogoutIcon style={{fontSize: 28}} />
+            </IconButton>
+            <Br />
           </div>
         </div>
       </div>
-
       <Outlet />
     </div>
   );

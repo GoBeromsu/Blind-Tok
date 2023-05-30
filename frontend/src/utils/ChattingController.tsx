@@ -1,5 +1,5 @@
 import {sendMessage} from "../socket";
-import {getChat_list, setChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {getChatList, updateChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
@@ -52,7 +52,7 @@ export function Message(roomid: number, loginUser: any, data: string) {
 // 유저가 속한 방의 리스트 목록 반환 함수
 // getChat_list : chatList에서 처음 실행시 chat_list의 chat_list변수에서 유저 방목록을 가져온다.
 export function init_list() {
-  return getChat_list();
+  return getChatList();
 }
 
 // 로컬 저장소에 저장된 방 데이터 내용을 가져오는 함수
@@ -72,7 +72,7 @@ export function recMessage(datas: any) {
     // setListMessage : chatList에서 해당 방의 최신 메시지의 내용을 갱신한다. / chat_list를 반환한다.
     // setList : chat_List의 목록을 주어진 값으로 갱신한다. => 따라서 목록의 리렌더링이 발생
     case "rec_message":
-      console.log(data);
+      console.log("rec_meesage : ", data);
       updateChat(updateChatData(data));
       setList(setListMessage(data.roomid, data.data_s));
       break;
@@ -88,17 +88,17 @@ export function recMessage(datas: any) {
       }
       break;
     // 유저가 속한 방의 리스트를 받는 경우
-    // setChatList : chat_list의 chat_list변수에 저장한다.
+    // updateChatList : chat_list의 chat_list변수에 저장한다.
     // setList : 입력 값으로 chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
     case "rec_chatList":
       console.log("recChatList", data);
-      setList(setChatList(data));
+      setList(updateChatList(data));
       break;
     // 유저가 속한 방이 만들어졌을 경우
     // addChat_list : 유저의 방목록에 추가한다.
     // setList : chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
     case "rec_createRoom":
-      console.log(data);
+      console.log("rec_create Room : ", data);
       setList(addChat_list(data));
       break;
     // 방에 속한 인원 중 누군가가 떠났을 경우

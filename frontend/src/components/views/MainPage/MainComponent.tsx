@@ -8,7 +8,7 @@ const MainComponent: React.FC = () => {
   const [allLoaded, setAllLoaded] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const {isLoading, isError, data, error} = getUserListQuery();
-
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
   const debounce = (func: Function, wait: number) => {
     let timeout: NodeJS.Timeout;
@@ -45,7 +45,7 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded]);
 
   return (
-    <div className="maincomponent">
+    <div className="maincomponent" style={{width: `${windowWidth - 200}px`}}>
       <AudioPlayer src="" type="" />
       <br />
       <br />
