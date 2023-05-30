@@ -1,4 +1,4 @@
-﻿let chat_list: any[] = [];
+﻿let chatList: any[] = [];
 
 // 유저가 속한 방 목록을 data로 받아서 chat_list에 저장하는 함수
 // 서버에서 유저가 속한 방의 room_id 리스트를 받아온다.
@@ -7,13 +7,13 @@
 // 마지막으로 갱신된 chat_list를 반환한다.
 export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
   console.log("updateChatList: ", data);
-  chat_list = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
-  return chat_list;
+  chatList = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
+  return chatList;
 }
 
 // 변수 chat_list의 값을 반환하는 함수
 export function getChat_list() {
-  return chat_list;
+  return chatList;
 }
 
 // 방에 초대 받았을 경우 방에 대한 정보가 들어온다.
@@ -30,9 +30,9 @@ export function addChat_list(data: any) {
 // 방 나갈때 방 목록에서 해당 방을 제거하는 함수
 // 해방 방의 인덱스를 찾고 이를 추출하고 반환한다.
 export function removeChat_list(roomid: number) {
-  let index = chat_list.findIndex(data => data.roomid === roomid);
-  chat_list.splice(index, 1);
-  return chat_list;
+  let index = chatList.findIndex(data => data.roomid === roomid);
+  chatList.splice(index, 1);
+  return chatList;
 }
 
 // 해당 방에는 방에 속해 있는 유저목록이 존재한다.
@@ -42,27 +42,27 @@ export function removeChat_list(roomid: number) {
 // 그 때 이를 이용해야한다.
 // 아직 미구현
 export function subUserChat_list(roomid: number, userid: string) {
-  chat_list = chat_list.map((chat: any) => (chat.roomid === roomid ? chat.userlist.filter((user: any) => user.userid !== userid) : chat));
-  console.log(chat_list);
-  return chat_list;
+  chatList = chatList.map((chat: any) => (chat.roomid === roomid ? chat.userlist.filter((user: any) => user.userid !== userid) : chat));
+  console.log(chatList);
+  return chatList;
 }
 
 // subUserChat_list와 마찬가지로 유저가 참여했을 때도 목록 갱신이 필요하다.
 export function addUserChat_list(roomid: number, userid: string) {
-  chat_list = chat_list.map((chat: any) => (chat.roomid === roomid ? chat.userlist.pust({userid: userid}) : chat));
-  console.log(chat_list);
-  return chat_list;
+  chatList = chatList.map((chat: any) => (chat.roomid === roomid ? chat.userlist.pust({userid: userid}) : chat));
+  console.log(chatList);
+  return chatList;
 }
 
 // 채팅방의 lastMessage를 설정하는 함수
 // lastMessage가 갱신된다는 의미는 가장 최근 발생한 이벤트를 의미한다.
 // 따라서 lastMessage를 갱신하면서 방 목록의 가장 위로 올린다.
 export function setListMessage(roomid: number, message: any) {
-  let temp: any = chat_list.splice(
-    chat_list.findIndex((data: any) => data.roomid === roomid),
+  let temp: any = chatList.splice(
+    chatList.findIndex((data: any) => data.roomid === roomid),
     1,
   );
   temp[0].lastMessage = message;
-  chat_list = [temp[0], ...chat_list];
-  return chat_list;
+  chatList = [temp[0], ...chatList];
+  return chatList;
 }
