@@ -17,17 +17,19 @@ export let userlist: any = [];
 // make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
 // checkData : 유저의 num과 방의 minnum, maxnum을 비교하여 유저가 받지 못한 데이터를 반환하는 함수
 export function data_init(io: any, socket: any, userid: string) {
+  console.log("data_init : " + userid);
   let index = userlist.findIndex((user: any) => user.userid === userid);
+
   if (!userid) return;
+
   if (index != -1) {
     if (userlist[index].socket === socket) return;
     userlist[index].socket = socket;
   } else userlist.push({userid: userid, socket: socket});
 
-  let list = getUserRoomList(userid);
+  let list = getUserRoomList(userid) || [];
   // 유저가 속한 방에 연결
   userJoin(socket, list);
-  //console.log(userlist);
   // 유저가 속한 방 리스트
   io.to(socket.id).emit("rec_message", {data: make_RoomListData(list), id: "rec_chatList"});
 

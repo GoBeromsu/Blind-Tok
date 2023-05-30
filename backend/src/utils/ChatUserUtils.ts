@@ -17,7 +17,6 @@ export function newUser(userid: string) {
 // 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: number, userList: any) {
   if (!userList) return;
-  console.log(userList);
 
   for (let i = 0; i < userList.length; i++) {
     let index = chatUserData.findIndex(user => user.userid === userList[i].userid);
@@ -27,8 +26,7 @@ export function updateRoomList(roomid: number, userList: any) {
     }
     chatUserData[index] = {userid: chatUserData[index].userid, roomlist: [{roomid: roomid}, ...chatUserData[index].roomlist]};
 
-    console.log("updateRoomList : ");
-    console.log(chatUserData);
+    console.log("updateRoomList : ", chatUserData);
   }
 }
 
@@ -46,8 +44,7 @@ export function removeRoomList(roomid: number, userid: string) {
   if (typeof user === "undefined") return;
   user.roomlist = user.roomlist.filter(room => room.roomid != roomid);
   chatUserData = chatUserData.map((data: any) => (data.userid === userid ? user : data));
-  console.log("removeRoomList : ");
-  console.log(chatUserData);
+  console.log("removeRoomList : ", chatUserData);
 }
 
 // 유저가 속한 방 리스트를 가져오는 함수
