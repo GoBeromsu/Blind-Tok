@@ -51,7 +51,7 @@ const ChatRoom: React.FC = () => {
           {chatDataState.map((friend: any, index: number) => (
             <div key={index} className="text" style={{width: "800px"}}>
               <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
-                {check_name(friend.usernickname) === 1 ? "" : friend.usernickname}
+                {check_name(friend.nickname) === 1 ? "" : friend.nickname}
               </div>
               <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
                 <div style={dataCSS}>{friend.data_s}</div>

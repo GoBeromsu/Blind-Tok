@@ -12,13 +12,13 @@ socket.on("rec_message", (message: any) => {
   recMessage(message);
 });
 
-// socket.on("message", (message: any) => {
-//   switch (message.id) {
+// socket.on("processReceivedMessage", (processReceivedMessage: any) => {
+//   switch (processReceivedMessage.id) {
 //     case "registered":
-//       console.log(message.data);
+//       console.log(processReceivedMessage.data);
 //       break;
 //     default:
-//       console.log("Unrecognized message", message);
+//       console.log("Unrecognized processReceivedMessage", processReceivedMessage);
 //   }
 // });
 

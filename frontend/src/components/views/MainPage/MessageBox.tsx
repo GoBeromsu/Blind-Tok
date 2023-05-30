@@ -7,7 +7,7 @@ interface Props {
 }
 
 const MessageBox: React.FC<Props> = ({user}) => {
-  const [message, setMessage] = useState(user.detail);
+  const [processReceivedMessage, setMessage] = useState(user.detail);
 
   const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);

@@ -1,5 +1,5 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
-import {message, disconnect, create_room, leave_room, data_init, add_user} from "./chat";
+import {processReceivedMessage, disconnect, create_room, leave_room, data_init, add_user} from "./chat";
 import {register} from "./video";
 
 export default async function (fastify: FastifyInstance) {
@@ -28,36 +28,8 @@ export default async function (fastify: FastifyInstance) {
       add_user(fastify.io, data);
       console.log("add_user");
     });
-    socket.on("enteredMessage", (data: any) => {
-      message(fastify.io, socket, data);
+    socket.on("enteredMessage", (data: {roomid: string; userid: number; nickname: string; time: string; data_s: any}) => {
+      processReceivedMessage(fastify.io, socket, data);
     });
-
-    // socket.on("message", (message: any) => {
-    //   console.log(`Connection: ${socket.id} receive message: ${message.id}`);
-    //
-    //   switch (message.id) {
-    //     case "register":
-    //       console.log(`Server: Register ${socket.id}`);
-    //       register(socket, message?.name || "", () => {});
-    //       break;
-    //     case "joinRoom":
-    //       console.log(`Server: ${socket.id} joinRoom: ${message.roomName}`);
-    //       // joinRoom(socket, message.roomName || "", () => {});
-    //       break;
-    //     // case "receiveVideoFrom":
-    //     //   console.log(`${socket.id} receiveVideoFrom: ${message.sender}`);
-    //     //   receiveVideoFrom(socket, message.sender || "", message.sdpOffer || "", () => {});
-    //     //   break;
-    //     // case "leaveRoom":
-    //     //   console.log(`${socket.id} leaveRoom`);
-    //     //   leaveRoom(socket.id);
-    //     //   break;
-    //     // case "onIceCandidate":
-    //     //   addIceCandidate(socket, message);
-    //     //   break;
-    //     // default:
-    //     //   socket.emit("error", {id: "error", message: `Invalid message ${message}`});
-    //   }
-    // });
   });
 }

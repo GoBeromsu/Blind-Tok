@@ -42,7 +42,7 @@ export function sendEnteredMessage(roomid: number, loginUser: any, data: string)
   const message = {
     roomid: roomid,
     userid: loginUser.userid,
-    usernickname: loginUser.nickname,
+    nickname: loginUser.nickname,
     time: `${hours} : ${minutes}`,
     data_s: data,
   };

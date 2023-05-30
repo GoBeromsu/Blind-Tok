@@ -94,7 +94,7 @@ export function disconnect(socket: any) {
 // 메시지에서 roomid를 추출
 // updateRoom : ChatRoomUtils의 해당 방의 데이터를 갱신하고 데이터를 다시 반환
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
-export function message(io: any, socket: any, data: any) {
+export function processReceivedMessage(io: any, socket: any, data: any) {
   let {roomid, ...rest} = data;
   console.log("rest : ", rest);
 
