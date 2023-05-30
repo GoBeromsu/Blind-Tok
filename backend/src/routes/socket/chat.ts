@@ -1,5 +1,5 @@
 import {addRoomUser, checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
-import {getUserRoomList, removeRoomList, updateRoomList, show_u, addUserRoom} from "@utils/ChatUserUtils";
+import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "@utils/ChatUserUtils";
 import {createData, show_d} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
@@ -11,7 +11,7 @@ export let connectedUsers: any = [];
 // 또한 오프라인 시 받은 메시지 전송
 // 앞 5중은 connectedUsers 배열에 동일한 유저아이디가 존재하지 않는지 확인하고
 // 있으면 해당 socket으로 갱신, 없으면 connectedUsers 배열에 추가
-// getUserRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방 목록을 저장하고 있음
+// getRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방 목록을 저장하고 있음
 // userJoin : 유저의 방 목록을 가지고 목록에 있는 방에 접속시켜주는 함수
 // 유저가 속한 방 목록을 먼저 해당 유저에게 제공 => 이는 다음 코드로 데이터 갱신이 될 때 LastMessage를 갱신하기 위함
 // make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
@@ -27,7 +27,7 @@ export function data_init(io: any, socket: any, userid: string) {
     connectedUsers[index].socket = socket;
   } else connectedUsers.push({userid: userid, socket: socket});
 
-  let list = getUserRoomList(userid) || [];
+  let list = getRoomList(userid) || [];
   // 유저가 속한 방에 연결
   userJoin(socket, list);
   // 유저가 속한 방 리스트
@@ -159,7 +159,7 @@ export function route(io: any, list: any, opt: string, data: any) {
 // 유저는 배열 형태로 전달된다.
 // 배열에 있는 유저마다 처리를 해준다.
 // addRoomUser : ChatRoomUtils에 있는 해당 방의 데이터에 userlist가 존재하는데 여기에 유저를 추가한다.
-// addUserRoom : ChatUserUils에 있는 유저 데이터에 roomlist가 있는데 여기에 해당 방을 추가한다.
+// addRoomList : ChatUserUils에 있는 유저 데이터에 roomlist가 있는데 여기에 해당 방을 추가한다.
 // 이는 차후에 유저가 서버에 접속하면 방 목록을 요청하고 부재 중 시 받은 데이터를 처리하는데 사용된다.
 // 그 후 추가된 유저를 해당 방에 연결시킨다. (join)
 // 마지막으로 해당 유저가 추가되었다는 사실을 방에 속한 유저에게 보내고
@@ -171,7 +171,7 @@ export function add_user(io: any, data: any) {
   //if(!tmp.user_list?.find((user) => data.user.userid === user.user_id))return;
   data.userlist.map((user: any) => {
     addRoomUser(data.roomid, user.userid);
-    addUserRoom(data.roomid, user.userid);
+    addRoomList(data.roomid, user.userid);
     connectedUsers.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
   });
   let tmp = getRoomData(data.roomid);

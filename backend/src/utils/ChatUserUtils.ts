@@ -49,7 +49,7 @@ export function removeRoomList(roomid: number, userid: string) {
 
 // 유저가 속한 방 리스트를 가져오는 함수
 // 유저를 찾아서 roomlist를 반환한다.
-export function getUserRoomList(userid: string) {
+export function getRoomList(userid: string) {
   if (!Array.isArray(chatUserData)) {
     console.error("Data is undefined or not an array");
     return [];
@@ -63,7 +63,7 @@ export function getUserRoomList(userid: string) {
 }
 
 // updateRoomList와 동일하지만 이는 단일 유저에게 적용되는 함수
-export function addUserRoom(roomid: number, userid: string) {
+export function addRoomList(roomid: number, userid: string) {
   let index = chatUserData.findIndex(data => data.userid === userid);
   if (index == -1) {
     newUser(userid);

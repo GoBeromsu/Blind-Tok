@@ -142,7 +142,6 @@ export function getRoomData(roomid: number) {
   return {
     roomid: roomid,
     roomname: room.roomname,
-
     userlist: room.userlist.map((userid: any) => ({
       userid: userid,
     })),
