@@ -63,7 +63,7 @@ export function getUserRoomList(userid: string) {
 }
 
 // updateRoomList와 동일하지만 이는 단일 유저에게 적용되는 함수
-export function addUserRoom(roomid: number, userid: string) {
+export function userAddRoom(roomid: number, userid: string) {
   let index = chatUserData.findIndex(data => data.userid === userid);
   if (index == -1) {
     newUser(userid);
