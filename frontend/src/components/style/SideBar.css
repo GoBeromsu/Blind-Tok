@@ -3,13 +3,17 @@
   flex-direction: column;
   width: 332px;
   box-shadow: 0px 4px 8px rgb(0 0 0 / 16%);
-  background-color: #fff;
+  background-color: #f7f7f7;
   /* position: fixed; */
   top: 0;
   z-index: 1;
-  transition: transform 0.5s ease;
+  transition: transform 1s;
 }
-
+.sidebar.closed {
+  justify-content: flex-end;
+  width: 70px;
+  transform: translateX(-10px);
+}
 .sidebar_main {
   display: flex;
   flex-direction: column;
@@ -18,7 +22,12 @@
   width: 300px;
   height: 100vh;
 
-  margin-right: 15px;
+  margin-left: 60px;
+}
+.sidebar_separator {
+  width: 1px;
+  /* background-color: #e0e0e0; */
+  margin: 5px 5px 0;
 }
 .item {
   margin-bottom: 10px;
@@ -29,11 +38,8 @@
 .icon_sidebar {
   display: flex;
   justify-content: center;
+  margin-top: 100px;
   height: 100vh;
-}
-
-.sidebar.closed {
-  transform: translateX(-270px);
 }
 
 hr {
