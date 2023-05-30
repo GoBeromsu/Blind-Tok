@@ -48,18 +48,17 @@ const ChatRoom: React.FC = () => {
     <Box>
       <Box style={{width: `100%`, height: "100%"}}>
         <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
-          {chatDataState &&
-            chatDataState.map((friend: any, index: number) => (
-              <div key={index} className="text" style={{width: "800px"}}>
-                <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
-                  {check_name(friend.usernickname) === 1 ? "" : friend.usernickname}
-                </div>
-                <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
-                  <div style={dataCSS}>{friend.data_s}</div>
-                  <div style={{fontSize: "10px"}}>{friend.time}</div>
-                </div>
+          {chatDataState.map((friend: any, index: number) => (
+            <div key={index} className="text" style={{width: "800px"}}>
+              <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
+                {check_name(friend.usernickname) === 1 ? "" : friend.usernickname}
               </div>
-            ))}
+              <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
+                <div style={dataCSS}>{friend.data_s}</div>
+                <div style={{fontSize: "10px"}}>{friend.time}</div>
+              </div>
+            </div>
+          ))}
         </Box>
         <Box>
           <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `90%`, height: "5vh"}} />
