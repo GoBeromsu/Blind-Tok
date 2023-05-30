@@ -2,7 +2,7 @@
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
-import {Message} from "@utils/ChattingController";
+import {sendEnteredMessage} from "@utils/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
 
@@ -28,7 +28,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const handleSendMessage = () => {
-    Message(chatData.roomid, loginUser, string);
+    sendEnteredMessage(chatData.roomid, loginUser, string);
     setString(""); //입력 칸을 초기화 해준다
   };
 
@@ -65,6 +65,7 @@ const ChatRoom: React.FC = () => {
           <Button onClick={handleSendMessage}>확인</Button>
         </Box>
       </Box>
+      인
     </Box>
   );
 };

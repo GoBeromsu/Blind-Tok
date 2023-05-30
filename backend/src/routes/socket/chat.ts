@@ -94,16 +94,16 @@ export function disconnect(socket: any) {
 // 메시지에서 roomid를 추출
 // updateRoom : ChatRoomUtils의 해당 방의 데이터를 갱신하고 데이터를 다시 반환
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
-export function message(io: any, socket: any, datas: any) {
-  let {roomid, ...rest} = datas;
+export function message(io: any, socket: any, data: any) {
+  let {roomid, ...rest} = data;
   console.log("rest : ", rest);
 
-  let data = updateRoom(datas.roomid, rest, connectedUsers);
+  let room = updateRoom(data.roomid, rest, connectedUsers);
 
-  console.log("update Room : ", data);
+  console.log("update Room : ", room);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
-  socket.to(roomid).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
-  io.to(socket.id).emit("rec_message", {data: data, id: "rec_message"}); // 특정 인원에게 전달 가능
+  socket.to(roomid).emit("rec_message", {data: room, id: "rec_message"}); // 방 하나만
+  io.to(socket.id).emit("rec_message", {data: room, id: "rec_message"}); // 특정 인원에게 전달 가능
 }
 
 // 소켓과 방 아이디를 가진 리스트를 받아

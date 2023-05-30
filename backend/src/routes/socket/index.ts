@@ -28,9 +28,8 @@ export default async function (fastify: FastifyInstance) {
       add_user(fastify.io, data);
       console.log("add_user");
     });
-    socket.on("message", (datas: any) => {
-      console.log("message : ", datas);
-      message(fastify.io, socket, datas);
+    socket.on("enteredMessage", (data: any) => {
+      message(fastify.io, socket, data);
     });
 
     // socket.on("message", (message: any) => {

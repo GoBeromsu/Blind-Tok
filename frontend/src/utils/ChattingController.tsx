@@ -33,7 +33,7 @@ export function leaveRoom(roomid: number) {
 // 입력한 메시지 전송
 // 방 아이디와 보내는 유저의 정보, 입력한 메시지를 받아 전송
 // 입력한 메시지를 가공하여 전송한다.
-export function Message(roomid: number, loginUser: any, data: string) {
+export function sendEnteredMessage(roomid: number, loginUser: any, data: string) {
   let today = new Date();
   let hours: any = today.getHours(); // 시
   hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
@@ -46,7 +46,8 @@ export function Message(roomid: number, loginUser: any, data: string) {
     time: `${hours} : ${minutes}`,
     data_s: data,
   };
-  sendMessage(message, "message");
+  console.log("sendEnteredMessage : ", message);
+  sendMessage(message, "enteredMessage");
 }
 
 // 유저가 속한 방의 리스트 목록 반환 함수
