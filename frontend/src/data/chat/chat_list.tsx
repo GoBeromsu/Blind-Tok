@@ -14,14 +14,14 @@
 export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[]) {
   console.log("setChatList : ", data);
 
-  chatList = data.map((chatRoom: any) => {
+  const updatedChatList = data.map((chatRoom: any) => {
     return {...chatRoom, lastMessage: ""};
   });
+  chatList = updatedChatList;
   return chatList;
 }
 
 // 변수 chat_list의 값을 반환하는 함수
-export function getChat_list() {
 export function getChatList() {
   return chatList;
 }
@@ -37,17 +37,16 @@ export function getChatList() {
 //   return updateChatList(data, "");
 // }
 export function addChat_list(data: any) {
+  console.log("addChat List", data);
   data = {...data, lastMessage: ""};
   chatList = [data, ...chatList];
   return chatList;
-  // updateChatList(data);
 }
 
 // 방 나갈때 방 목록에서 해당 방을 제거하는 함수
 // 해방 방의 인덱스를 찾고 이를 추출하고 반환한다.
 export function removeChat_list(roomid: number) {
-  let index = chatList.findIndex(data => data.roomid === roomid);
-  chatList.splice(index, 1);
+  chatList = chatList.filter(data => data.roomid !== roomid);
   return chatList;
 }
 
@@ -58,14 +57,16 @@ export function removeChat_list(roomid: number) {
 // 그 때 이를 이용해야한다.
 // 아직 미구현
 export function subUserChat_list(roomid: number, userid: string) {
-  chatList = chatList.map((chat: any) => (chat.roomid === roomid ? chat.userlist.filter((user: any) => user.userid !== userid) : chat));
+  chatList = chatList.map((chat: any) =>
+    chat.roomid === roomid ? {...chat, userlist: chat.userlist.filter((user: any) => user.userid !== userid)} : chat,
+  );
   console.log(chatList);
   return chatList;
 }
 
 // subUserChat_list와 마찬가지로 유저가 참여했을 때도 목록 갱신이 필요하다.
 export function addUserChat_list(roomid: number, userid: string) {
-  chatList = chatList.map((chat: any) => (chat.roomid === roomid ? chat.userlist.pust({userid: userid}) : chat));
+  chatList = chatList.map((chat: any) => (chat.roomid === roomid ? {...chat, userlist: [...chat.userlist, {userid}]} : chat));
   console.log(chatList);
   return chatList;
 }
@@ -74,11 +75,9 @@ export function addUserChat_list(roomid: number, userid: string) {
 // lastMessage가 갱신된다는 의미는 가장 최근 발생한 이벤트를 의미한다.
 // 따라서 lastMessage를 갱신하면서 방 목록의 가장 위로 올린다.
 export function setListMessage(roomid: number, message: any) {
-  let temp: any = chatList.splice(
-    chatList.findIndex((data: any) => data.roomid === roomid),
-    1,
-  );
-  temp[0].lastMessage = message;
-  chatList = [temp[0], ...chatList];
+  const index = chatList.findIndex((data: any) => data.roomid === roomid);
+  const room = chatList[index];
+  room.lastMessage = message;
+  chatList = [room, ...chatList.slice(0, index), ...chatList.slice(index + 1)];
   return chatList;
 }
