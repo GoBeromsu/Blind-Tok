@@ -7,7 +7,7 @@
 // 마지막으로 갱신된 chat_list를 반환한다.
 export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
   console.log("updateChatList: ", data);
-  chat_list = Array.isArray(data) ? data.map(chatRoom => ({...chatRoom, lastMessage})) : [{...data, lastMessage}];
+  chat_list = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
   return chat_list;
 }
 
