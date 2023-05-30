@@ -1,15 +1,15 @@
-﻿var chat_list = new Array();
+﻿let chat_list: any[] = [];
 
 // 유저가 속한 방 목록을 data로 받아서 chat_list에 저장하는 함수
 // 서버에서 유저가 속한 방의 room_id 리스트를 받아온다.
 // 받아온 데이터에는 최신 메시지를 저장할 속성이 없기 때문에 lastMessage 자리를 만들어준다.
 // 배열의 맵 함수를 통해 data의 각 원소마다 반복하여 배열을 만들어서 chat_list에 저장한다.
 // 마지막으로 갱신된 chat_list를 반환한다.
-export function setChatList(data: any) {
-  chat_list = data.map((data: any) => {
-    return {...data, lastMessage: ""};
+export function setChatList(data: {roomid: number; roomname: string; userlist: any}[]) {
+  console.log("setChatList : ", data);
+  chat_list = data.map((chatRoom: any) => {
+    return {...chatRoom, lastMessage: ""};
   });
-  console.log("Chat List : ", chat_list);
   return chat_list;
 }
 
