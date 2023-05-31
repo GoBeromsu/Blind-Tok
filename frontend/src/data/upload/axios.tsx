@@ -11,6 +11,15 @@ export async function getAudioFile(userid: any) {
   }
 }
 
+// export async function getAllFile(userid: any) {
+//   try {
+//     const Data = await api.get(`file/user/${userid}`);
+//     return getData;
+//   } catch (error) {
+//     throw new Error("Failed to fetch audio files");
+//   }
+// }
+
 // 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
 export function deleteAudioFile(audioFile: any, loginUser: any) {
   try {

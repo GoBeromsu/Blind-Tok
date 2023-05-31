@@ -2,14 +2,7 @@
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import BTlogo from "@views/svgImg/BTlogo";
 import C_Image from "@views/Layout/CircularImage";
-import {IconButton} from "@mui/material";
-import PeopleIcon from "@mui/icons-material/People";
-import UploadIcon from "@mui/icons-material/CloudUpload";
-import SearchIcon from "@mui/icons-material/Search";
-import ChatIcon from "@mui/icons-material/Chat";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutIcon from "@mui/icons-material/Logout";
+import IconBar from "./IconBar";
 import "@style/SideBar.css";
 import Br from "./Br";
 
@@ -36,8 +29,12 @@ const SideBar = () => {
 
   return (
     <div style={{display: "flex"}}>
-      <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", flexDirection: "row"}}>
-        <div className="sidebar_main">
+      <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", 
+       // Add this CSS property
+          }}>
+        <div className="sidebar_main"style={{
+      position: "fixed", 
+          }}>
           <div onClick={() => navigate("/")}>
             <Link to="/">
               <BTlogo />
@@ -49,58 +46,7 @@ const SideBar = () => {
           <Br />
         </div>
         <div className="sidebar_separator"></div>
-        <div className="icon_sidebar" style={{display: "flex", flexDirection: "column"}}>
-          <div className="item">
-            <Link to="/friend">
-              <IconButton>
-                <PeopleIcon style={{fontSize: 28}} />
-              </IconButton>
-            </Link>
-            <Br />
-          </div>
-          <div className="item">
-            <Link to="/upload">
-              <IconButton>
-                <UploadIcon style={{fontSize: 28}} />
-              </IconButton>
-            </Link>
-            <Br />
-          </div>
-          <div className="item">
-            <IconButton>
-              <SearchIcon style={{fontSize: 28}} />
-            </IconButton>
-            <Br />
-          </div>
-          <div className="item">
-            <Link to="/chat">
-              <IconButton>
-                <ChatIcon style={{fontSize: 28}} />
-              </IconButton>
-            </Link>
-            <Br />
-          </div>
-          <div className="item">
-            <IconButton>
-              <NotificationsIcon style={{fontSize: 28}} />
-            </IconButton>
-            <Br />
-          </div>
-          <div className="item">
-            <Link to="/User">
-              <IconButton>
-                <SettingsIcon style={{fontSize: 28}} />
-              </IconButton>
-            </Link>
-            <Br />
-          </div>
-          <div className="item">
-            <IconButton>
-              <LogoutIcon style={{fontSize: 28}} />
-            </IconButton>
-            <Br />
-          </div>
-        </div>
+        <IconBar />
       </div>
       <Outlet />
     </div>
