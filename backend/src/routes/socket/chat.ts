@@ -1,4 +1,4 @@
-import {addRoomUser, checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
+import {addRoomUser, checkData, removeUserList, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
 import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "@utils/ChatUserUtils";
 import {createData} from "@utils/ChatDataUtils";
 
@@ -6,40 +6,33 @@ import {createData} from "@utils/ChatDataUtils";
 // [{userid : string, socket : any}]
 export let connectedUsers: any = [];
 
-// 클라이언트의 데이터를 초기화하는 함수
-// 처음 접속시 필요한 방 목록 전송 및 방에 연결
-// 또한 오프라인 시 받은 메시지 전송
-// 앞 5중은 connectedUsers 배열에 동일한 유저아이디가 존재하지 않는지 확인하고
-// 있으면 해당 socket으로 갱신, 없으면 connectedUsers 배열에 추가
-// getRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방 목록을 저장하고 있음
-// userJoin : 유저의 방 목록을 가지고 목록에 있는 방에 접속시켜주는 함수
-// 유저가 속한 방 목록을 먼저 해당 유저에게 제공 => 이는 다음 코드로 데이터 갱신이 될 때 LastMessage를 갱신하기 위함
-// make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
-// checkData : 유저의 num과 방의 minnum, maxnum을 비교하여 유저가 받지 못한 데이터를 반환하는 함수
-export function data_init(io: any, socket: any, userid: string) {
-  if (!userid) return;
-  console.log("data_init : " + userid);
-  let index = connectedUsers.findIndex((user: any) => user.userid === userid);
-  console.log("connectedUsers : " + connectedUsers);
-
-  if (index != -1) {
-    if (connectedUsers[index].socket === socket) return;
-    connectedUsers[index].socket = socket;
-  } else connectedUsers.push({userid: userid, socket: socket});
-
-  let list = getRoomList(userid) || [];
-  // 유저가 속한 방에 연결
-  userJoin(socket, list);
-  // 유저가 속한 방 리스트
-  io.to(socket.id).emit("rec_message", {data: make_RoomListData(list), id: "rec_chatList"});
-
-  // 오프라인 일때 들어온 데이터 갱신
-  for (let i = 0; i < list.length; i++) {
-    let roomid = list[i].roomid;
-    let data = checkData(roomid, userid);
-    io.to(socket.id).emit("rec_message", {data: {roomid: roomid, data: data}, id: "rec_chatData"});
-    console.log("rec_chatData : " + roomid + data);
+export function updateUserSocket(socket: any, userid: string) {
+  const index = connectedUsers.findIndex((user: any) => user.userid === userid);
+  if (index !== -1) {
+    if (connectedUsers[index].socket !== socket) {
+      connectedUsers[index].socket = socket;
+    }
+  } else {
+    connectedUsers.push({userid, socket});
   }
+}
+export function sendOfflineMessages(io: any, socket: any, list: any[], userid: string) {
+  list.forEach(item => {
+    let roomid = item.roomid;
+    let data = checkData(roomid, userid);
+    sendMessageToUser(socket, {data: {roomid, data}, id: "rec_chatData"});
+    console.log("rec_chatData : " + roomid + data);
+  });
+}
+
+export function data_init(io: any, socket: any, userid: string) {
+  updateUserSocket(socket, userid);
+  const roomList = getRoomList(userid) || [];
+  // 유저가 속한 방에 연결
+  userJoin(socket, roomList);
+  // 유저가 속한 방 리스트
+  io.to(socket.id).emit("rec_message", {data: make_RoomListData(roomList), id: "rec_chatList"});
+  sendOfflineMessages(io, socket, roomList, userid);
 }
 
 // 유저가 방을 나갈때 이를 처리하는 함수
@@ -134,8 +127,8 @@ export function make_RoomListData(list: any) {
 export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
   console.log("notifyUsersConnect : ", data);
   data.userlist.map((user: any) => {
-    let connectedUser = connectedUsers.find((socket: any) => socket.userid === user.userid);
-    console.log("tmp...?", connectedUser);
+    const connectedUser = connectedUsers.find((socket: any) => socket.userid === user.userid);
+    console.log("connectedUser...?", connectedUser);
     if (connectedUser) {
       io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
       connectedUser.socket.join(data.roomid);
@@ -148,11 +141,15 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
 // 현재 접속해있는지 확인하여 route_createRoom과 동일하게 메시지를 전달한다.
 export function route(io: any, list: any, opt: string, data: any) {
   list.map((user: any) => {
-    let tmp = connectedUsers.find((socket: any) => socket.userid === user.userid);
-    if (tmp) {
-      io.to(tmp.socket.id).emit("rec_message", {data: data, id: opt});
+    let connectedUser = connectedUsers.find((socket: any) => socket.userid === user.userid);
+    if (connectedUser) {
+      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
     }
   });
+}
+
+function sendMessageToUser(socket: any, message: any) {
+  socket.emit("rec_message", message);
 }
 
 // 방에 유저가 추가되었을 경우 이를 처리하는 함수

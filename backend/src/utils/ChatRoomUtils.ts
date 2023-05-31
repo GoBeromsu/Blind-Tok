@@ -48,11 +48,8 @@ export function createRoom(userlist: any, roomname: string) {
       return {userid: user.userid, datanum: 0};
     }),
   };
-  console.log("data_n : ", newRoom);
   chatRoomDatas = [...chatRoomDatas, newRoom];
-  console.log("RoomData : ", chatRoomDatas);
   nextId = nextId + 1;
-  console.log("success createRoom");
   return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
 }
 
@@ -61,7 +58,6 @@ export function checkData(roomid: number, userid: string) {
   // 해당 방을 찾을 찾고 방의 데이터를 가져온다.
   let index: number = chatRoomDatas.findIndex(data => data.roomid === roomid);
   let roomdata: ChatRoomData = chatRoomDatas[index];
-  console.log(chatRoomDatas);
   if (!roomdata) roomdata = chatRoomDatas[index];
   let data_n;
   let min = roomdata.minnum;
@@ -83,12 +79,10 @@ export function checkData(roomid: number, userid: string) {
     });
     chatRoomDatas[index].minnum = min_Arr.datanum;
     data_n = getData(roomid, min_Arr.datanum, 1);
-    console.log(userdata);
     // 만일 max와 min 사이의 값이라면 유저의 datanum에서 부터 max까지의 데이터를 가져온다. 이때 저장된 데이터는 삭제하지 않는다.
     // 이는 옵션 0을 통해 구별 가능하다.
   } else {
     data_n = getData(roomid, userdata.datanum, 0);
-    console.log(userdata);
   }
   // 그 후 데이터를 가져간 해당 유저의 datanum을 max로 바꿔준다.
   userdata.datanum = max;
@@ -152,11 +146,4 @@ export function getRoomData(roomid: number) {
 export function addRoomUser(roomid: number, userid: string) {
   let index: number = chatRoomDatas.findIndex(data => data.roomid === roomid);
   chatRoomDatas[index].userlist.push({userid: userid, datanum: chatRoomDatas[index].maxnum});
-  console.log(chatRoomDatas);
-}
-
-// test
-export function show_r() {
-  console.log("room_userList : ");
-  console.log(chatRoomDatas);
 }
