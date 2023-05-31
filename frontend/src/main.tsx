@@ -5,13 +5,11 @@ import {QueryClient, QueryClientProvider} from "react-query";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {RecoilRoot} from "recoil";
 import {BrowserRouter} from "react-router-dom";
-import SocketProvider from "@utils/SocketProvider";
 
 const queryClient = new QueryClient();
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <RecoilRoot>
-    <SocketProvider />
     <Init />
   </RecoilRoot>,
 );
