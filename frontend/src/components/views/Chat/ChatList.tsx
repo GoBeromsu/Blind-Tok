@@ -1,5 +1,5 @@
 ﻿// 필요한 모듈들을 임포트합니다.
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
@@ -11,6 +11,8 @@ import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 import {Box, Button, Input} from "@mui/material";
 import {socketState} from "@data/chat/state";
+import {io, Socket} from "socket.io-client";
+import {SOCKET_URL} from "../../../consonants";
 
 Modal.setAppElement("#root");
 
@@ -19,7 +21,9 @@ export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
-  const socket: any = useSetRecoilState(socketState);
+  const setSocket = useSetRecoilState(socketState);
+  const socket: Socket = useMemo(() => io(SOCKET_URL), []);
+  setSocket(socket);
 
   if (!loginUser) {
     return <Loading />;
