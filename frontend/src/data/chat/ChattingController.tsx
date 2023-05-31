@@ -1,4 +1,4 @@
-import {sendMessage} from "../socket";
+import {sendMessage} from "@data/chat/index";
 import {getChatList, setChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {updateChat} from "@views/Chat/ChatRoom";

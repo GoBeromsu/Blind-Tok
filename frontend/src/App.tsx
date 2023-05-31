@@ -23,7 +23,7 @@ import UserProfile from "@views/User/UserProfile";
 
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
-import {dataInit} from "./socket";
+import {dataInit} from "@data/chat";
 
 export default function App() {
   return (

@@ -2,7 +2,7 @@
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
-import {sendEnteredMessage} from "@utils/ChattingController";
+import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
 

@@ -5,7 +5,7 @@ import "../../style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
 //import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate, useParams} from "react-router-dom";
-import {leaveRoom, addUser} from "utils/ChattingController";
+import {leaveRoom, addUser} from "@data/chat/ChattingController";
 import {useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import Modal from "react-modal";

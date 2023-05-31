@@ -4,12 +4,13 @@ import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {createRoom, init_list} from "@utils/ChattingController";
+import {createRoom, init_list} from "@data/chat/ChattingController";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 import {Box, Button, Input} from "@mui/material";
+import {socketState} from "@data/chat/state";
 
 Modal.setAppElement("#root");
 
@@ -18,6 +19,7 @@ export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
+  const socket: any = useSetRecoilState(socketState);
 
   if (!loginUser) {
     return <Loading />;
