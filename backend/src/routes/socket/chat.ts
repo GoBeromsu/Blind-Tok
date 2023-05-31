@@ -1,6 +1,6 @@
 import {addRoomUser, checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
 import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "@utils/ChatUserUtils";
-import {createData, show_d} from "@utils/ChatDataUtils";
+import {createData} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
@@ -17,10 +17,10 @@ export let connectedUsers: any = [];
 // make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
 // checkData : 유저의 num과 방의 minnum, maxnum을 비교하여 유저가 받지 못한 데이터를 반환하는 함수
 export function data_init(io: any, socket: any, userid: string) {
+  if (!userid) return;
   console.log("data_init : " + userid);
   let index = connectedUsers.findIndex((user: any) => user.userid === userid);
-
-  if (!userid) return;
+  console.log("connectedUsers : " + connectedUsers);
 
   if (index != -1) {
     if (connectedUsers[index].socket === socket) return;
@@ -178,11 +178,4 @@ export function add_user(io: any, data: any) {
   route(io, tmp.userlist, "rec_addUser", data);
   route(io, data.userlist, "rec_addRoom", tmp);
   console.log("add_user");
-}
-
-// test
-export function show() {
-  show_d();
-  show_r();
-  show_u();
 }

@@ -12,16 +12,6 @@ socket.on("rec_message", (message: any) => {
   recMessage(message);
 });
 
-// socket.on("processReceivedMessage", (processReceivedMessage: any) => {
-//   switch (processReceivedMessage.id) {
-//     case "registered":
-//       console.log(processReceivedMessage.data);
-//       break;
-//     default:
-//       console.log("Unrecognized processReceivedMessage", processReceivedMessage);
-//   }
-// });
-
 export function dataInit(userid: string) {
   console.log("data init called user : ", userid);
   socket.emit("data_init", userid);

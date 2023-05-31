@@ -21,9 +21,6 @@ export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
-  const setSocket = useSetRecoilState(socketState);
-  const socket: Socket = useMemo(() => io(SOCKET_URL), []);
-  setSocket(socket);
 
   if (!loginUser) {
     return <Loading />;

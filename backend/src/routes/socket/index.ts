@@ -16,17 +16,15 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("disconnect", (reason: any) => {
       disconnect(socket);
-      console.log("disconnect");
     });
 
-    socket.on("create_room", (data: any) => {
+    socket.on("create_room", (data: {user: any; userlist: any; roomname: string}) => {
+      console.log("create_room", data);
       create_room(fastify.io, data);
-      console.log("create_room");
     });
 
     socket.on("add_user", (data: any) => {
       add_user(fastify.io, data);
-      console.log("add_user");
     });
     socket.on("enteredMessage", (data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) => {
       processReceivedMessage(fastify.io, socket, data);
