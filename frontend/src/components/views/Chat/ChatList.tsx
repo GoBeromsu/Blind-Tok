@@ -126,7 +126,7 @@ const ChatList: React.FC = () => {
   };
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
       <h1>Chating Room</h1>
       <Input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</Button>

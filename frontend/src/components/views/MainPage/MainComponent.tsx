@@ -45,7 +45,7 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded]);
 
   return (
-    <div className="maincomponent" style={{width: `${windowWidth - 200}px`}}>
+    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "340px"}}>
       <AudioPlayer src="" type="" />
       <br />
       <br />
