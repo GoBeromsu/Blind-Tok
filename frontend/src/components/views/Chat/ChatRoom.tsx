@@ -46,7 +46,7 @@ const ChatRoom: React.FC = () => {
 
   return (
     <Box>
-      <Box style={{width: `100%`, height: "100%"}}>
+      <Box style={{width: `100%`, height: "100%", paddingLeft: "350px"}}>
         <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState.map((friend: any, index: number) => (
             <div key={index} className="text" style={{width: "800px"}}>

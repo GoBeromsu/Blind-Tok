@@ -2,9 +2,9 @@
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import BTlogo from "@views/svgImg/BTlogo";
 import C_Image from "@views/Layout/CircularImage";
-import IconBar from "./IconBar";
 import "@style/SideBar.css";
 import Br from "./Br";
+import IconBar from "./IconBar";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -29,12 +29,8 @@ const SideBar = () => {
 
   return (
     <div style={{display: "flex"}}>
-      <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", 
-       // Add this CSS property
-          }}>
-        <div className="sidebar_main"style={{
-      position: "fixed", 
-          }}>
+      <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", flexDirection: "row"}}>
+        <div className="sidebar_main">
           <div onClick={() => navigate("/")}>
             <Link to="/">
               <BTlogo />
