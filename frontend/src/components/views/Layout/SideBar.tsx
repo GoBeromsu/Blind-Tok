@@ -11,6 +11,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "@style/SideBar.css";
+import Br from "./Br";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -42,9 +43,12 @@ const SideBar = () => {
               <BTlogo />
             </Link>
           </div>
-          <br />
+          <Br />
+          <Br />
           <C_Image src={defaultImg} alt="Profile image" size="130" />
+          <Br />
         </div>
+        <div className="sidebar_separator"></div>
         <div className="icon_sidebar" style={{display: "flex", flexDirection: "column"}}>
           <div className="item">
             <Link to="/friend">
@@ -52,7 +56,7 @@ const SideBar = () => {
                 <PeopleIcon style={{fontSize: 28}} />
               </IconButton>
             </Link>
-            <br />
+            <Br />
           </div>
           <div className="item">
             <Link to="/upload">
@@ -60,12 +64,13 @@ const SideBar = () => {
                 <UploadIcon style={{fontSize: 28}} />
               </IconButton>
             </Link>
-            <br />
+            <Br />
           </div>
           <div className="item">
             <IconButton>
               <SearchIcon style={{fontSize: 28}} />
             </IconButton>
+            <Br />
           </div>
           <div className="item">
             <Link to="/chat">
@@ -73,13 +78,13 @@ const SideBar = () => {
                 <ChatIcon style={{fontSize: 28}} />
               </IconButton>
             </Link>
-            <br />
+            <Br />
           </div>
           <div className="item">
             <IconButton>
               <NotificationsIcon style={{fontSize: 28}} />
             </IconButton>
-            <br />
+            <Br />
           </div>
           <div className="item">
             <Link to="/User">
@@ -87,13 +92,13 @@ const SideBar = () => {
                 <SettingsIcon style={{fontSize: 28}} />
               </IconButton>
             </Link>
-            <br />
+            <Br />
           </div>
           <div className="item">
             <IconButton>
               <LogoutIcon style={{fontSize: 28}} />
             </IconButton>
-            <br />
+            <Br />
           </div>
         </div>
       </div>
