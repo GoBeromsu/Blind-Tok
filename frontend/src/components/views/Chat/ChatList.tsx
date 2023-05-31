@@ -21,10 +21,6 @@ export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
-  const setSocket = useSetRecoilState(socketState);
-  const socket: Socket = useMemo(() => io(SOCKET_URL), []);
-  setSocket(socket);
-
   if (!loginUser) {
     return <Loading />;
   }
@@ -44,7 +40,7 @@ const ChatList: React.FC = () => {
   // 검색을 위한 변수
   const [search, setSearch] = useState("");
   const [search_f, setSearch_f] = useState("");
-  // 모달의 on/off를 위한 변수
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // useEffect를 사용해 로그인 사용자가 변경될 때마다 친구 목록을 다시 불러옵니다.
