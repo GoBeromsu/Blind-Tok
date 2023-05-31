@@ -72,32 +72,6 @@ const ChatList: React.FC = () => {
     setChatList(list);
   };
 
-  const M_style: any = {
-    overlay: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "rgba(255, 255, 255, 0.45)",
-      zIndex: 10,
-    },
-    content: {
-      display: "flex",
-      background: "#ffffff",
-      overflow: "auto",
-      inset: "100px 100px 100px 400px",
-      WebkitOverflowScrolling: "touch",
-      borderRadius: "14px",
-      outline: "none",
-      zIndex: 10,
-      flexDirection: "column",
-      flexWrap: "nowrap",
-      alignItems: "stretch",
-      justifyContent: "flex-start",
-    },
-  };
-
   // 초대할 목록에 인원을 추가하는 함수
   // 초대 목록에 이미있는 인원이면 추가하지 않는다.
   const add_list = (friend_n: any) => {
@@ -191,3 +165,29 @@ const ChatList: React.FC = () => {
 };
 
 export default ChatList;
+
+const M_style: any = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.45)",
+    zIndex: 10,
+  },
+  content: {
+    display: "flex",
+    background: "#ffffff",
+    overflow: "auto",
+    inset: "100px 100px 100px 400px",
+    WebkitOverflowScrolling: "touch",
+    borderRadius: "14px",
+    outline: "none",
+    zIndex: 10,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+  },
+};
