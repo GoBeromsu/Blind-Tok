@@ -10,7 +10,7 @@ import {createRoom, init_list} from "@data/chat/ChattingController";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 import {Box, Button, Input} from "@mui/material";
-import {socketState} from "@data/chat/state";
+
 import {io, Socket} from "socket.io-client";
 import {SOCKET_URL} from "../../../consonants";
 
