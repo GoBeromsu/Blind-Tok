@@ -1,45 +1,37 @@
-import {addRoomUser, checkData, removeUserList, show_r, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
+import {addRoomUser, checkData, removeUserList, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
 import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "@utils/ChatUserUtils";
-import {createData, show_d} from "@utils/ChatDataUtils";
+import {createData} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
-export let connectedUsers: any = [];
+export let Participants: any = {};
 
-// 클라이언트의 데이터를 초기화하는 함수
-// 처음 접속시 필요한 방 목록 전송 및 방에 연결
-// 또한 오프라인 시 받은 메시지 전송
-// 앞 5중은 connectedUsers 배열에 동일한 유저아이디가 존재하지 않는지 확인하고
-// 있으면 해당 socket으로 갱신, 없으면 connectedUsers 배열에 추가
-// getRoomList : 유저의 방목록을 가져오는 함수 / ChatUserUtils에서 유저 마다 해당 유저의 방 목록을 저장하고 있음
-// userJoin : 유저의 방 목록을 가지고 목록에 있는 방에 접속시켜주는 함수
-// 유저가 속한 방 목록을 먼저 해당 유저에게 제공 => 이는 다음 코드로 데이터 갱신이 될 때 LastMessage를 갱신하기 위함
-// make_RoomListData : 불필요한 방 정보를 빼고 필요한 정보만 가공한 배열을 반환하는 함수
-// checkData : 유저의 num과 방의 minnum, maxnum을 비교하여 유저가 받지 못한 데이터를 반환하는 함수
-export function data_init(io: any, socket: any, userid: string) {
-  console.log("data_init : " + userid);
-  let index = connectedUsers.findIndex((user: any) => user.userid === userid);
-
-  if (!userid) return;
-
-  if (index != -1) {
-    if (connectedUsers[index].socket === socket) return;
-    connectedUsers[index].socket = socket;
-  } else connectedUsers.push({userid: userid, socket: socket});
-
-  let list = getRoomList(userid) || [];
-  // 유저가 속한 방에 연결
-  userJoin(socket, list);
-  // 유저가 속한 방 리스트
-  io.to(socket.id).emit("rec_message", {data: make_RoomListData(list), id: "rec_chatList"});
-
-  // 오프라인 일때 들어온 데이터 갱신
-  for (let i = 0; i < list.length; i++) {
-    let roomid = list[i].roomid;
-    let data = checkData(roomid, userid);
-    io.to(socket.id).emit("rec_message", {data: {roomid: roomid, data: data}, id: "rec_chatData"});
-    console.log("rec_chatData : " + roomid + data);
+export function updateUserSocket(socket: any, userid: string) {
+  if (Participants[userid]) {
+    if (Participants[userid].socket !== socket) {
+      Participants[userid].socket = socket;
+    }
+  } else {
+    Participants[userid] = {socket};
   }
+}
+export function sendOfflineMessages(io: any, socket: any, list: any[], userid: string) {
+  list.forEach(item => {
+    let roomid = item.roomid;
+    let data = checkData(roomid, userid);
+    sendMessageToUser(socket, {data: {roomid, data}, id: "rec_chatData"});
+    console.log("rec_chatData : " + roomid + data);
+  });
+}
+
+export function data_init(io: any, socket: any, userid: string) {
+  updateUserSocket(socket, userid);
+  const roomList = getRoomList(userid) || [];
+  // 유저가 속한 방에 연결
+  userJoin(socket, roomList);
+  // 유저가 속한 방 리스트
+  io.to(socket.id).emit("rec_message", {data: make_RoomListData(roomList), id: "rec_chatList"});
+  sendOfflineMessages(io, socket, roomList, userid);
 }
 
 // 유저가 방을 나갈때 이를 처리하는 함수
@@ -48,9 +40,10 @@ export function data_init(io: any, socket: any, userid: string) {
 // removeRoomList : ChatRoomUtils의 해당 방 데이터의 유저 리스트에서 유저를 삭제한다.
 // removeUserList : ChatUserUtils의 해당 유저의 데이터의 방 리스트에서 방을 삭제한다.
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
-export function leave_room(io: any, socket: any, roomid: number) {
+export function leave_room(io: any, socket: any, roomid: number, userid: string) {
   socket.leave(roomid);
-  let userid = connectedUsers.find((user: any) => user.socket === socket).userid;
+  // let userid = Participants.find((user: any) => user.socket === socket).userid;
+
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
   let list = getRoomData(roomid).userlist;
@@ -64,7 +57,7 @@ export function leave_room(io: any, socket: any, roomid: number) {
 // 이를 가지고 방에 속한 유저에게 방에 대한 정보를 전송/ 이를 통해 클라이언트가 이벤트 발생을 확인하고 처리함
 // updateRoomList : ChatUserUtils에서 해당 유저의 방 목록에 생성된 방의 아이디를 저장하는 함수
 // createData : ChatDataUtils에서 해당 방의 데이터 저장 공간을 만드는 함수
-// route_createRoom : 방의 생성을 참여자에게 알리는 함수
+// notifyUsersConnect : 방의 생성을 참여자에게 알리는 함수
 export function create_room(io: any, data: {user: any; userlist: any; roomname: string}) {
   const {user, userlist, roomname} = data;
   let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
@@ -72,7 +65,7 @@ export function create_room(io: any, data: {user: any; userlist: any; roomname: 
   if (createdRoom) {
     updateRoomList(createdRoom.roomid, updatedUserList);
     createData(createdRoom.roomid);
-    route_createRoom(io, createdRoom);
+    notifyUsersConnect(io, createdRoom);
   }
 }
 
@@ -80,38 +73,34 @@ export function create_room(io: any, data: {user: any; userlist: any; roomname: 
 // 현재 접속하고 있는 유저의 정보를 저장한 userlist에서 해당 유저의 정보를 제거
 // 이미 없다면 종료
 export function disconnect(socket: any) {
-  let index = connectedUsers.findIndex((user: any) => user.socket === socket);
-  if (index == -1) {
-    return;
+  let userid = Object.keys(Participants).find(id => Participants[id].socket === socket);
+  if (userid) {
+    delete Participants[userid!];
   }
-  console.log(connectedUsers);
-  console.log("연결 종료 : " + connectedUsers[index].userid);
-  connectedUsers.splice(index, 1);
-  console.log("new user_list : " + connectedUsers);
 }
 
 // 메시지를 받았을 경우 처리 함수
 // 메시지에서 roomid를 추출
 // updateRoom : ChatRoomUtils의 해당 방의 데이터를 갱신하고 데이터를 다시 반환
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
-export function message(io: any, socket: any, datas: any) {
-  let {roomid, ...rest} = datas;
-  console.log("rest : ", rest);
+export function processReceivedMessage(io: any, socket: any, data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) {
+  let {roomid, ...rest} = data;
+  // console.log("rest : ", rest);
 
-  let data = updateRoom(datas.roomid, rest, connectedUsers);
+  let room = updateRoom(data.roomid, rest, Participants);
 
-  console.log("update Room : ", data);
+  // console.log("update Room : ", room);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
-  socket.to(roomid).emit("rec_message", {data: data, id: "rec_message"}); // 방 하나만
-  io.to(socket.id).emit("rec_message", {data: data, id: "rec_message"}); // 특정 인원에게 전달 가능
+  socket.to(roomid).emit("rec_message", {data: room, id: "rec_message"}); // 방 하나만
+  io.to(socket.id).emit("rec_message", {data: room, id: "rec_message"}); // 특정 인원에게 전달 가능
 }
 
 // 소켓과 방 아이디를 가진 리스트를 받아
 // 해당 소켓을 방에 연결시키는 함수
-export function userJoin(socket: any, list: any) {
-  console.log("userJoin : ", list);
-  for (let l = 0; l < list.length; l++) {
-    socket.join(list[l].roomid);
+export function userJoin(socket: any, roomList: any) {
+  console.log("userJoin : ", roomList);
+  for (let l = 0; l < roomList.length; l++) {
+    socket.join(roomList[l].roomid);
   }
 }
 
@@ -127,18 +116,18 @@ export function make_RoomListData(list: any) {
 // 방을 생성하면 그 방에 속한 유저를 연결시켜야된다.
 // 또한 방에 속한 것을 유저에게 알려 유저의 방리스트 즉 chatList의 목록을 갱신시켜
 // 실시간으로 방에 참여할수 있도록 만들어야된다.
-// data.connectedUsers.map : 주어진 유저리스트 마다 반복한다.
-// connectedUsers.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
+// data.Participants.map : 주어진 유저리스트 마다 반복한다.
+// Participants.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
 // 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
 // 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
-export function route_createRoom(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
-  console.log("route_createRoom : ", data);
-  data.userlist.map((user: any) => {
-    let tmp = connectedUsers.find((socket: any) => socket.userid === user.userid);
-    console.log("tmp...?", tmp);
-    if (tmp) {
-      io.to(tmp.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
-      tmp.socket.join(data.roomid);
+export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
+  console.log("notifyUsersConnect : ", data);
+  const {userlist} = data;
+  userlist.map((user: any) => {
+    const connectedUser = Participants[user.userid];
+    if (connectedUser) {
+      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
+      connectedUser.socket.join(data.roomid);
     }
   });
 }
@@ -148,11 +137,13 @@ export function route_createRoom(io: any, data: {roomid: number; userlist: any[]
 // 현재 접속해있는지 확인하여 route_createRoom과 동일하게 메시지를 전달한다.
 export function route(io: any, list: any, opt: string, data: any) {
   list.map((user: any) => {
-    let tmp = connectedUsers.find((socket: any) => socket.userid === user.userid);
-    if (tmp) {
-      io.to(tmp.socket.id).emit("rec_message", {data: data, id: opt});
-    }
+    let connectedUser = Participants[user.userid];
+    io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
   });
+}
+
+function sendMessageToUser(socket: any, message: any) {
+  socket.emit("rec_message", message);
 }
 
 // 방에 유저가 추가되었을 경우 이를 처리하는 함수
@@ -164,25 +155,14 @@ export function route(io: any, list: any, opt: string, data: any) {
 // 그 후 추가된 유저를 해당 방에 연결시킨다. (join)
 // 마지막으로 해당 유저가 추가되었다는 사실을 방에 속한 유저에게 보내고
 // 추가된 유저에게도 방에 접속했다는 사실을 보낸다. => 이를 통해 추가된 유저의 방 목록 갱신이 가능
-export function add_user(io: any, data: any) {
-  console.log(data.userlist);
-
-  if (!data.userlist) return;
-  //if(!tmp.user_list?.find((user) => data.user.userid === user.user_id))return;
-  data.userlist.map((user: any) => {
-    addRoomUser(data.roomid, user.userid);
-    addRoomList(data.roomid, user.userid);
-    connectedUsers.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
+export function add_user(io: any, data: {roomid: number; userlist: any[]}) {
+  const {roomid, userlist} = data;
+  userlist.map((user: any) => {
+    addRoomUser(roomid, user.userid);
+    addRoomList(roomid, user.userid);
+    Participants[user.userid]?.socket.join(roomid);
   });
-  let tmp = getRoomData(data.roomid);
-  route(io, tmp.userlist, "rec_addUser", data);
-  route(io, data.userlist, "rec_addRoom", tmp);
-  console.log("add_user");
-}
-
-// test
-export function show() {
-  show_d();
-  show_r();
-  show_u();
+  let currentRoomData = getRoomData(roomid);
+  route(io, currentRoomData.userlist, "rec_addUser", data);
+  route(io, userlist, "rec_addRoom", currentRoomData);
 }

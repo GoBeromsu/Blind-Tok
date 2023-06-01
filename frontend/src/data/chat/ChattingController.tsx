@@ -1,5 +1,5 @@
-import {sendMessage} from "../socket";
-import {getChatList, updateChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {sendMessage} from "@data/chat/index";
+import {getChatList, setChatList, addChat_list, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
@@ -7,7 +7,7 @@ import {setList} from "@views/Chat/ChatList";
 // 채팅방 생성
 // chatList에서 초대할 친구를 선택해서 소켓으로 전송
 export function createRoom(user: any, userlist: any[], roomname: string = "") {
-  let data = {user, userlist, roomname};
+  const data = {user, userlist, roomname};
   sendMessage(data, "create_room");
 }
 
@@ -24,16 +24,16 @@ export function addUser(roomid: any, userlist: any[]) {
 // subData : 해당 방의 데이터 삭제
 // removeChat_list : chat_list의 chat_list 변수에서 방 삭제 / 실행 후 chat_list를 반환
 // setList : 입력 값으로 chatList의 목록 갱신 => 목록의 리렌더링이 발생
-export function leaveRoom(roomid: number) {
+export function leaveRoom(roomid: number, userid: string) {
   subData(roomid);
   setList(removeChat_list(roomid));
-  sendMessage(roomid, "leave_room");
+  sendMessage({roomid: roomid, userid: userid}, "leave_room");
 }
 
 // 입력한 메시지 전송
 // 방 아이디와 보내는 유저의 정보, 입력한 메시지를 받아 전송
 // 입력한 메시지를 가공하여 전송한다.
-export function Message(roomid: number, loginUser: any, data: string) {
+export function sendEnteredMessage(roomid: number, loginUser: any, data: string) {
   let today = new Date();
   let hours: any = today.getHours(); // 시
   hours = hours < 10 ? "0" + hours : hours; // 자릿수 맞추기
@@ -42,11 +42,12 @@ export function Message(roomid: number, loginUser: any, data: string) {
   const message = {
     roomid: roomid,
     userid: loginUser.userid,
-    usernickname: loginUser.nickname,
+    nickname: loginUser.nickname,
     time: `${hours} : ${minutes}`,
     data_s: data,
   };
-  sendMessage(message, "message");
+  console.log("sendEnteredMessage : ", message);
+  sendMessage(message, "enteredMessage");
 }
 
 // 유저가 속한 방의 리스트 목록 반환 함수
@@ -88,11 +89,11 @@ export function recMessage(datas: any) {
       }
       break;
     // 유저가 속한 방의 리스트를 받는 경우
-    // updateChatList : chat_list의 chat_list변수에 저장한다.
+    // setChatList : chat_list의 chat_list변수에 저장한다.
     // setList : 입력 값으로 chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
     case "rec_chatList":
       console.log("recChatList", data);
-      setList(updateChatList(data));
+      setList(setChatList(data));
       break;
     // 유저가 속한 방이 만들어졌을 경우
     // addChat_list : 유저의 방목록에 추가한다.

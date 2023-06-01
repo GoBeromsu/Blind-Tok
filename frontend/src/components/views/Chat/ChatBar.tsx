@@ -5,7 +5,7 @@ import "../../style/SideBar.css";
 import MessageBox from "../MainPage/MessageBox";
 //import BTlogo from "/image/BTlogo";
 import {Link, Outlet, useNavigate, useParams} from "react-router-dom";
-import {leaveRoom, addUser} from "utils/ChattingController";
+import {leaveRoom, addUser} from "@data/chat/ChattingController";
 import {useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import Modal from "react-modal";
@@ -29,7 +29,7 @@ const ChatBar: React.FC = () => {
   // 방 나갈 때 실행되는 이벤트 함수
   const leave = () => {
     if (Number(roomid)) {
-      leaveRoom(Number(roomid));
+      leaveRoom(Number(roomid), loginUser.userid);
       navigate("/chat");
     } else "leaveRoom error : roomid undefined";
   };

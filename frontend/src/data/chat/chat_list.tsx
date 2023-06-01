@@ -5,13 +5,13 @@
 // 받아온 데이터에는 최신 메시지를 저장할 속성이 없기 때문에 lastMessage 자리를 만들어준다.
 // 배열의 맵 함수를 통해 data의 각 원소마다 반복하여 배열을 만들어서 chat_list에 저장한다.
 // 마지막으로 갱신된 chat_list를 반환한다.
-// export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
-//   console.log("updateChatList: ", data);
+// export function setChatList(data: {roomid: number; roomname: string; userlist: any}[], lastMessage: string = "") {
+//   console.log("setChatList: ", data);
 //   chatList = Array.from(data, chatRoom => ({...chatRoom, lastMessage}));
 //   return chatList;
 // }
 
-export function updateChatList(data: {roomid: number; roomname: string; userlist: any}[]) {
+export function setChatList(data: {roomid: number; roomname: string; userlist: any}[]) {
   console.log("setChatList : ", data);
 
   const updatedChatList = data.map((chatRoom: any) => {
@@ -34,7 +34,7 @@ export function getChatList() {
 // export function addChat_list(data: any) {
 //   console.log("addChat_list : ", data);
 //   data = {...data, lastMessage: ""};
-//   return updateChatList(data, "");
+//   return setChatList(data, "");
 // }
 export function addChat_list(data: any) {
   console.log("addChat List", data);
