@@ -25,6 +25,7 @@ import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
 
 import {Style} from "@material-ui/icons";
+import {dataInit} from "@data/chat";
 
 export default function App() {
   return (

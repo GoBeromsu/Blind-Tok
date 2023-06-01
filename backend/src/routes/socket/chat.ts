@@ -4,16 +4,16 @@ import {createData} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
-export let connectedUsers: any = [];
+export let Participants: any = [];
 
 export function updateUserSocket(socket: any, userid: string) {
-  const index = connectedUsers.findIndex((user: any) => user.userid === userid);
+  const index = Participants.findIndex((user: any) => user.userid === userid);
   if (index !== -1) {
-    if (connectedUsers[index].socket !== socket) {
-      connectedUsers[index].socket = socket;
+    if (Participants[index].socket !== socket) {
+      Participants[index].socket = socket;
     }
   } else {
-    connectedUsers.push({userid, socket});
+    Participants.push({userid, socket});
   }
 }
 export function sendOfflineMessages(io: any, socket: any, list: any[], userid: string) {
@@ -43,7 +43,7 @@ export function data_init(io: any, socket: any, userid: string) {
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
 export function leave_room(io: any, socket: any, roomid: number) {
   socket.leave(roomid);
-  let userid = connectedUsers.find((user: any) => user.socket === socket).userid;
+  let userid = Participants.find((user: any) => user.socket === socket).userid;
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
   let list = getRoomData(roomid).userlist;
@@ -73,14 +73,11 @@ export function create_room(io: any, data: {user: any; userlist: any; roomname: 
 // 현재 접속하고 있는 유저의 정보를 저장한 userlist에서 해당 유저의 정보를 제거
 // 이미 없다면 종료
 export function disconnect(socket: any) {
-  let index = connectedUsers.findIndex((user: any) => user.socket === socket);
+  let index = Participants.findIndex((user: any) => user.socket === socket);
   if (index == -1) {
     return;
   }
-  console.log(connectedUsers);
-  console.log("연결 종료 : " + connectedUsers[index].userid);
-  connectedUsers.splice(index, 1);
-  console.log("new user_list : " + connectedUsers);
+  Participants.splice(index, 1);
 }
 
 // 메시지를 받았을 경우 처리 함수
@@ -89,11 +86,11 @@ export function disconnect(socket: any) {
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
 export function processReceivedMessage(io: any, socket: any, data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) {
   let {roomid, ...rest} = data;
-  console.log("rest : ", rest);
+  // console.log("rest : ", rest);
 
-  let room = updateRoom(data.roomid, rest, connectedUsers);
+  let room = updateRoom(data.roomid, rest, Participants);
 
-  console.log("update Room : ", room);
+  // console.log("update Room : ", room);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
   socket.to(roomid).emit("rec_message", {data: room, id: "rec_message"}); // 방 하나만
   io.to(socket.id).emit("rec_message", {data: room, id: "rec_message"}); // 특정 인원에게 전달 가능
@@ -101,10 +98,10 @@ export function processReceivedMessage(io: any, socket: any, data: {roomid: numb
 
 // 소켓과 방 아이디를 가진 리스트를 받아
 // 해당 소켓을 방에 연결시키는 함수
-export function userJoin(socket: any, list: any) {
-  console.log("userJoin : ", list);
-  for (let l = 0; l < list.length; l++) {
-    socket.join(list[l].roomid);
+export function userJoin(socket: any, roomList: any) {
+  console.log("userJoin : ", roomList);
+  for (let l = 0; l < roomList.length; l++) {
+    socket.join(roomList[l].roomid);
   }
 }
 
@@ -120,18 +117,20 @@ export function make_RoomListData(list: any) {
 // 방을 생성하면 그 방에 속한 유저를 연결시켜야된다.
 // 또한 방에 속한 것을 유저에게 알려 유저의 방리스트 즉 chatList의 목록을 갱신시켜
 // 실시간으로 방에 참여할수 있도록 만들어야된다.
-// data.connectedUsers.map : 주어진 유저리스트 마다 반복한다.
-// connectedUsers.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
+// data.Participants.map : 주어진 유저리스트 마다 반복한다.
+// Participants.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
 // 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
 // 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
 export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
   console.log("notifyUsersConnect : ", data);
-  data.userlist.map((user: any) => {
-    const connectedUser = connectedUsers.find((socket: any) => socket.userid === user.userid);
-    console.log("connectedUser...?", connectedUser);
+  const {userlist} = data;
+  userlist.map((user: any) => {
+    const connectedUser = Participants.find((socket: any) => socket.userid === user.userid);
+    // console.log("connectedUser...?", connectedUser);
     if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
-      connectedUser.socket.join(data.roomid);
+      //TODO: Socket 메시지 주고 받는 부분 합칠 수 있을거 같음
+      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"}); // 방에 생성되었다는 메시지를 보낸다.
+      connectedUser.socket.join(data.roomid); // 방에 접속시킨다.
     }
   });
 }
@@ -141,7 +140,7 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
 // 현재 접속해있는지 확인하여 route_createRoom과 동일하게 메시지를 전달한다.
 export function route(io: any, list: any, opt: string, data: any) {
   list.map((user: any) => {
-    let connectedUser = connectedUsers.find((socket: any) => socket.userid === user.userid);
+    let connectedUser = Participants.find((socket: any) => socket.userid === user.userid);
     if (connectedUser) {
       io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
     }
@@ -169,7 +168,7 @@ export function add_user(io: any, data: any) {
   data.userlist.map((user: any) => {
     addRoomUser(data.roomid, user.userid);
     addRoomList(data.roomid, user.userid);
-    connectedUsers.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
+    Participants.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
   });
   let tmp = getRoomData(data.roomid);
   route(io, tmp.userlist, "rec_addUser", data);

@@ -1,6 +1,6 @@
 import {getData, setData} from "@utils/ChatDataUtils";
 import user from "../routes/api/User";
-import {connectedUsers} from "../routes/socket/chat";
+import {Participants} from "../routes/socket/chat";
 interface ChatRoomData {
   roomid: number;
   roomname: string;
@@ -132,7 +132,7 @@ export function removeUserList(roomid: number, userid: string) {
 export function getRoomData(roomid: number) {
   let room = chatRoomDatas.find(data => data.roomid === roomid);
   if (!room) return {};
-  console.log("getRoomData의 userList 호출 됨 :", connectedUsers);
+  console.log("getRoomData의 userList 호출 됨 :", Participants);
   return {
     roomid: roomid,
     roomname: room.roomname,

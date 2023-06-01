@@ -1,4 +1,5 @@
-import {sendMessage} from "./Socket";
+import {sendMessage} from "./index";
+
 export class Participant {
   id: string;
   rtcPeer: any; // Need to replace `any` with actual type of rtcPeer
