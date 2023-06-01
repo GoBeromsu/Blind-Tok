@@ -138,7 +138,6 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
 export function route(io: any, list: any, opt: string, data: any) {
   list.map((user: any) => {
     let connectedUser = Participants[user.userid];
-    if (!connectedUser) return;
     io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
   });
 }
@@ -156,18 +155,14 @@ function sendMessageToUser(socket: any, message: any) {
 // 그 후 추가된 유저를 해당 방에 연결시킨다. (join)
 // 마지막으로 해당 유저가 추가되었다는 사실을 방에 속한 유저에게 보내고
 // 추가된 유저에게도 방에 접속했다는 사실을 보낸다. => 이를 통해 추가된 유저의 방 목록 갱신이 가능
-export function add_user(io: any, data: any) {
-  if (!data.userlist) return;
-  //if(!tmp.user_list?.find((user) => data.user.userid === user.user_id))return;
-  data.userlist.map((user: any) => {
-    addRoomUser(data.roomid, user.userid);
-    addRoomList(data.roomid, user.userid);
-    Participants.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
+export function add_user(io: any, data: {roomid: number; userlist: any[]}) {
+  const {roomid, userlist} = data;
+  userlist.map((user: any) => {
+    addRoomUser(roomid, user.userid);
+    addRoomList(roomid, user.userid);
+    Participants[user.userid]?.socket.join(roomid);
   });
-  console.log("add user : ", data.userlist);
-  let tmp = getRoomData(data.roomid);
-  console.log("tmp : ", tmp);
-  route(io, tmp.userlist, "rec_addUser", data);
-  route(io, data.userlist, "rec_addRoom", tmp);
-  console.log("add_user");
+  let currentRoomData = getRoomData(roomid);
+  route(io, currentRoomData.userlist, "rec_addUser", data);
+  route(io, userlist, "rec_addRoom", currentRoomData);
 }
