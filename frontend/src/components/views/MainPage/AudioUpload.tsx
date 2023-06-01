@@ -69,7 +69,7 @@ const AudioUploadPage: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div style={{paddingLeft: "340px"}}>
         <h2>Upload your audio file</h2>
         <input type="file" accept="audio/*" onChange={handleAudioChange} />
         <h2>Upload your image file (optional)</h2>

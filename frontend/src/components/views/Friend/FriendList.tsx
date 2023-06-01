@@ -40,7 +40,7 @@ const FriendList = () => {
   const filteredFriends = friendList.filter(friend => friend.nickname.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "350px"}}>
       <h1>Friend List</h1>
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">

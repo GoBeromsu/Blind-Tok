@@ -8,7 +8,7 @@ interface CircularImageProps {
 }
 
 const CircularImage: React.FC<CircularImageProps> = ({src, alt, size}) => {
-  return <img className="circular-image" src={src} alt={alt} width={size} height={size} />;
+  return <img className="circular-image" src={src} alt={alt} width={size} height={size} style={{ marginLeft: "40px" }}/>;
 };
 
 export default CircularImage;

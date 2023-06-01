@@ -23,7 +23,8 @@ import UserProfile from "@views/User/UserProfile";
 
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
-import {dataInit} from "@data/chat";
+
+import {Style} from "@material-ui/icons";
 
 export default function App() {
   return (
