@@ -10,8 +10,9 @@ export default async function (fastify: FastifyInstance) {
       data_init(fastify.io, socket, userid);
     });
 
-    socket.on("leave_room", (roomid: number) => {
-      leave_room(fastify.io, socket, roomid);
+    socket.on("leave_room", (data: {roomid: number; userid: string}) => {
+      const {roomid, userid} = data;
+      leave_room(fastify.io, socket, roomid, userid);
     });
 
     socket.on("disconnect", (reason: any) => {

@@ -24,10 +24,10 @@ export function addUser(roomid: any, userlist: any[]) {
 // subData : 해당 방의 데이터 삭제
 // removeChat_list : chat_list의 chat_list 변수에서 방 삭제 / 실행 후 chat_list를 반환
 // setList : 입력 값으로 chatList의 목록 갱신 => 목록의 리렌더링이 발생
-export function leaveRoom(roomid: number) {
+export function leaveRoom(roomid: number, userid: string) {
   subData(roomid);
   setList(removeChat_list(roomid));
-  sendMessage(roomid, "leave_room");
+  sendMessage({roomid: roomid, userid: userid}, "leave_room");
 }
 
 // 입력한 메시지 전송

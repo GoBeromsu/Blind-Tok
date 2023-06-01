@@ -98,19 +98,16 @@ export function checkData(roomid: number, userid: string) {
 // 그 후 메시지와 roomid를 합쳐서 반환한다.
 export function updateRoom(roomid: number, rest: any, list: any) {
   let index = chatRoomDatas.findIndex(data => data.roomid == roomid); //room id로 방 찾기
-  console.log("updateRoom : ", index, rest);
   if (index == -1) return;
   let num = chatRoomDatas[index].maxnum + 1;
   chatRoomDatas[index].maxnum = num;
-  let userlist: {
-    userid: string;
-    datanum: number;
-  }[] = [];
+  let userlist: {userid: string; datanum: number}[] = [];
+
   chatRoomDatas[index].userlist.map((data: any) => {
-    !list.find((user: any) => user.userid === data.userid) ? userlist.push(data) : userlist.push({userid: data.userid, datanum: num});
+    !list[data.userid] ? userlist.push(data) : userlist.push({userid: data.userid, datanum: num});
   });
+
   chatRoomDatas[index].userlist = userlist;
-  console.log(userlist);
   rest = {num: num, ...rest};
   setData(roomid, rest);
   return {roomid: roomid, ...rest};

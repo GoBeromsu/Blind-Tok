@@ -4,16 +4,15 @@ import {createData} from "@utils/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
-export let Participants: any = [];
+export let Participants: any = {};
 
 export function updateUserSocket(socket: any, userid: string) {
-  const index = Participants.findIndex((user: any) => user.userid === userid);
-  if (index !== -1) {
-    if (Participants[index].socket !== socket) {
-      Participants[index].socket = socket;
+  if (Participants[userid]) {
+    if (Participants[userid].socket !== socket) {
+      Participants[userid].socket = socket;
     }
   } else {
-    Participants.push({userid, socket});
+    Participants[userid] = {socket};
   }
 }
 export function sendOfflineMessages(io: any, socket: any, list: any[], userid: string) {
@@ -41,9 +40,10 @@ export function data_init(io: any, socket: any, userid: string) {
 // removeRoomList : ChatRoomUtils의 해당 방 데이터의 유저 리스트에서 유저를 삭제한다.
 // removeUserList : ChatUserUtils의 해당 유저의 데이터의 방 리스트에서 방을 삭제한다.
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
-export function leave_room(io: any, socket: any, roomid: number) {
+export function leave_room(io: any, socket: any, roomid: number, userid: string) {
   socket.leave(roomid);
-  let userid = Participants.find((user: any) => user.socket === socket).userid;
+  // let userid = Participants.find((user: any) => user.socket === socket).userid;
+
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
   let list = getRoomData(roomid).userlist;
@@ -73,11 +73,10 @@ export function create_room(io: any, data: {user: any; userlist: any; roomname: 
 // 현재 접속하고 있는 유저의 정보를 저장한 userlist에서 해당 유저의 정보를 제거
 // 이미 없다면 종료
 export function disconnect(socket: any) {
-  let index = Participants.findIndex((user: any) => user.socket === socket);
-  if (index == -1) {
-    return;
+  let userid = Object.keys(Participants).find(id => Participants[id].socket === socket);
+  if (userid) {
+    delete Participants[userid!];
   }
-  Participants.splice(index, 1);
 }
 
 // 메시지를 받았을 경우 처리 함수
@@ -125,12 +124,10 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
   console.log("notifyUsersConnect : ", data);
   const {userlist} = data;
   userlist.map((user: any) => {
-    const connectedUser = Participants.find((socket: any) => socket.userid === user.userid);
-    // console.log("connectedUser...?", connectedUser);
+    const connectedUser = Participants[user.userid];
     if (connectedUser) {
-      //TODO: Socket 메시지 주고 받는 부분 합칠 수 있을거 같음
-      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"}); // 방에 생성되었다는 메시지를 보낸다.
-      connectedUser.socket.join(data.roomid); // 방에 접속시킨다.
+      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
+      connectedUser.socket.join(data.roomid);
     }
   });
 }
@@ -140,10 +137,9 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
 // 현재 접속해있는지 확인하여 route_createRoom과 동일하게 메시지를 전달한다.
 export function route(io: any, list: any, opt: string, data: any) {
   list.map((user: any) => {
-    let connectedUser = Participants.find((socket: any) => socket.userid === user.userid);
-    if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
-    }
+    let connectedUser = Participants[user.userid];
+    if (!connectedUser) return;
+    io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
   });
 }
 
@@ -161,8 +157,6 @@ function sendMessageToUser(socket: any, message: any) {
 // 마지막으로 해당 유저가 추가되었다는 사실을 방에 속한 유저에게 보내고
 // 추가된 유저에게도 방에 접속했다는 사실을 보낸다. => 이를 통해 추가된 유저의 방 목록 갱신이 가능
 export function add_user(io: any, data: any) {
-  console.log(data.userlist);
-
   if (!data.userlist) return;
   //if(!tmp.user_list?.find((user) => data.user.userid === user.user_id))return;
   data.userlist.map((user: any) => {
@@ -170,7 +164,9 @@ export function add_user(io: any, data: any) {
     addRoomList(data.roomid, user.userid);
     Participants.find((socket: any) => socket.userid === user.userid).socket.join(data.roomid);
   });
+  console.log("add user : ", data.userlist);
   let tmp = getRoomData(data.roomid);
+  console.log("tmp : ", tmp);
   route(io, tmp.userlist, "rec_addUser", data);
   route(io, data.userlist, "rec_addRoom", tmp);
   console.log("add_user");
