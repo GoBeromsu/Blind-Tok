@@ -136,12 +136,15 @@ export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any
 // 특정 유저리스트에 무언가를 보내고 싶을 때 사용하는 함수
 // opt : 보내는 메세지의 속성
 // 현재 접속해있는지 확인하여 route_createRoom과 동일하게 메시지를 전달한다.
-export function route(io: any, list: any, opt: string, data: any) {
-  list.map((user: any) => {
+export function route(io: any, userList: any, opt: string, data: any) {
+  userList.forEach((user: any) => {
     let connectedUser = Participants[user.userid];
-    if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
+
+    if (!connectedUser) {
+      console.warn(`User ${user.userid} is not connected.`);
+      return; // skip this iteration
     }
+    io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
   });
 }
 
