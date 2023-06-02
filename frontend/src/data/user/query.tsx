@@ -4,7 +4,7 @@ import {options} from "../constant";
 
 // let users = [
 //   {
-//     id: 1,
+//     userid: 1,
 //     user_id: "gogogo",
 //     nickname: "고범수",
 //     image: "",
@@ -13,7 +13,7 @@ import {options} from "../constant";
 //     detail: "안녕하세요. 고범수입니다.",
 //   },
 //   {
-//     id: 2,
+//     userid: 2,
 //     user_id: "choochoochoo",
 //     nickname: "추우엽",
 //     image: "",
@@ -22,7 +22,7 @@ import {options} from "../constant";
 //     detail: "안녕하세요. 추우엽입니다.",
 //   },
 //   {
-//     id: 3,
+//     userid: 3,
 //     user_id: "choichoichoi",
 //     nickname: "최승주",
 //     image: "",

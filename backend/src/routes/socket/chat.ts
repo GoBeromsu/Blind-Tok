@@ -1,6 +1,6 @@
-import {addRoomUser, checkData, removeUserList, createRoom, updateRoom, getRoomData} from "@utils/ChatRoomUtils";
-import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "@utils/ChatUserUtils";
-import {createData} from "@utils/ChatDataUtils";
+import {addRoomUser, checkData, removeUserList, createRoom, updateRoom, getRoomData} from "../../chat/ChatRoomUtils";
+import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "../../chat/ChatUserUtils";
+import {createData} from "../../chat/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
 // [{userid : string, socket : any}]
@@ -37,7 +37,7 @@ export function data_init(io: any, socket: any, userid: string) {
 
 // 유저가 방을 나갈때 이를 처리하는 함수
 // 유저와 해당 방의 접속을 끊는다.
-// 유저의 id를 받지 않기 때문에 userlist에서 해당 소켓이 가진 유저 id 를 찾는다.
+// 유저의 id를 받지 않기 때문에 userlist에서 해당 소켓이 가진 유저 userid 를 찾는다.
 // removeRoomList : ChatRoomUtils의 해당 방 데이터의 유저 리스트에서 유저를 삭제한다.
 // removeUserList : ChatUserUtils의 해당 유저의 데이터의 방 리스트에서 방을 삭제한다.
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
@@ -106,7 +106,7 @@ export function userJoin(socket: any, roomList: any) {
 }
 
 // ChatRoomUtils에 저장된 데이터는 maxnum과 minnum등 불필요한 정보가 있다.
-// 따라서 이를 제거하고 방의 이름, id, 속한 유저 아이디 리스트만 가공하여 반환하는 함수
+// 따라서 이를 제거하고 방의 이름, userid, 속한 유저 아이디 리스트만 가공하여 반환하는 함수
 // getRoomData : 방 하나를 가공하는 함수
 // 이 함수는 방 목록을 받아 목록에 있는 모든 방을 가공하여 반환한다.
 export function make_RoomListData(list: any) {
