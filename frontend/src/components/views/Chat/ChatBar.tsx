@@ -155,7 +155,6 @@ const ChatBar: React.FC = () => {
                 <Button onClick={handleClick} label="친구 목록" />
               </Link>
             </Box>
-
             <Box className="item">
               <Button onClick={handleClick} label="검색" />
             </Box>
@@ -170,6 +169,11 @@ const ChatBar: React.FC = () => {
             </Box>
             <Box className="item">
               <Button onClick={handleClick} label="알림" />
+            </Box>{" "}
+            <Box className="item">
+              <Link to="/video">
+                <Button onClick={handleClick} label="화상 채팅" />
+              </Link>
             </Box>
             <Box className="item">
               <Link to="/User">
