@@ -26,13 +26,12 @@ const MainComponent: React.FC = () => {
       if (isLoading || allLoaded) return;
 
       if (scrollTop >= threshold) {
+        console.log(AudioPlayer);
         setComponents(prevComponents => [
           ...prevComponents,
           <AudioPlayer src="" type="" key={prevComponents.length} />,
           <AudioPlayer src="" type="" key={prevComponents.length + 1} />,
           <AudioPlayer src="" type="" key={prevComponents.length + 2} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 3} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 4} />,
         ]);
       }
     }, 50);

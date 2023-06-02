@@ -11,9 +11,10 @@ export async function getAudioFile(userid: any) {
   }
 }
 
+// 모든 파일을 받아오는 요청
 // export async function getAllFile(userid: any) {
 //   try {
-//     const Data = await api.get(`file/user/${userid}`);
+//     const getData = await api.get(`file/user/${userid}`);
 //     return getData;
 //   } catch (error) {
 //     throw new Error("Failed to fetch audio files");
