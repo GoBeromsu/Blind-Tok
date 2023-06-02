@@ -12,7 +12,7 @@ const ChatRoom: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
   const {roomid}: any = useParams();
   const [searchParams, setSearchParams]: any = useSearchParams();
-
+  const textspace: any = document.getElementById("textspace");
   const chatData: any = getChatData(Number(roomid)); //가존의 채팅방 데이터를 가져온다
   const [chatDataState, setChatDataState]: any = useState(chatData.data);
   const [string, setString]: any = useState("");
@@ -49,7 +49,13 @@ const ChatRoom: React.FC = () => {
       <Box style={{width: `100%`, height: "100%", paddingLeft: "350px"}}>
         <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState.map((friend: any, index: number) => (
-            <div key={index} className="text" style={{width: "800px"}}>
+            <div
+              key={index}
+              className="text"
+              style={{width: "800px"}}
+              onLoad={() => {
+                textspace.scrollTop = textspace.scrollHeight;
+              }}>
               <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
                 {check_name(friend.nickname) === 1 ? "" : friend.nickname}
               </div>
