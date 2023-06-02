@@ -58,7 +58,7 @@ const VideoChat: React.FC = () => {
     <Box>
       <Box>Video Chat Page</Box>
       <video ref={videoRef} autoPlay></video>
-      <Button onClick={handleMuteClick}>{mute ? "Unmute" : "Mute"}</Button>
+
       <Box>
         <label htmlFor="audioSource">Audio Source: </label>
         <select id="audioSource" value={audioSource || ""} onChange={handleAudioSourceChange}>
@@ -85,9 +85,24 @@ const VideoChat: React.FC = () => {
             ))}
         </select>
       </Box>
-      <Box id="videolist"></Box>#videolist
+      <Box>
+        <Button onClick={handleMuteClick}>{mute ? "Unmute" : "Mute"}</Button>
+        <Button>Join Room</Button>
+        <Button onClick={() => createVideoForParticipant("test")}>Create Video</Button>
+      </Box>
+      <Box id="videolist"></Box>
     </Box>
   );
 };
 
+const createVideoForParticipant = (participant: any) => {
+  const video = document.createElement("video");
+  video.id = participant.sid;
+
+  video.autoplay = true;
+  video.muted = true;
+  video.className = "video";
+  video.poster = "https://koreanbots.dev/api/image/discord/avatars/739392161929363507.webp?size=256";
+  document.getElementById("videolist")?.appendChild(video);
+};
 export default VideoChat;
