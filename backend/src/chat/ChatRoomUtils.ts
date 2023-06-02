@@ -1,4 +1,4 @@
-import {getData, setData} from "@utils/ChatDataUtils";
+import {getData, setData} from "./ChatDataUtils";
 import user from "../routes/api/User";
 import {Participants} from "../routes/socket/chat";
 interface ChatRoomData {
@@ -13,9 +13,6 @@ let chatRoomDatas: {[roomid: number]: ChatRoomData} = {};
 let nextId: number = 1;
 
 // 방생성 함수
-// 방 아이디를 만들어 부여한다.
-// 같은 유저리스트를 가진 방이 있다면 종료
-// 방 이름이 없다는 가정하여 유저리스트의 아이디를 방의 이름으로 설정
 // data 배열에 새로운 방(data_n)을 저장 및 반환 / 이는 방이 만들어졌다는 사실을 유저에게 전송할 때 사용됨.
 export function createRoom(userlist: any, roomname: string) {
   let roomid: number = nextId;
@@ -24,6 +21,7 @@ export function createRoom(userlist: any, roomname: string) {
     console.log("Error: createRoom - Room ID already exists");
     return;
   }
+  // filterRooms는 userlist에 있는 유저들이 모두 있는 방을 찾는다.
   let filteredRooms: ChatRoomData[] = Object.values(chatRoomDatas).filter(room => {
     const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
     return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
