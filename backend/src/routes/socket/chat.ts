@@ -25,6 +25,7 @@ export function sendOfflineMessages(io: any, socket: any, list: any[], userid: s
 }
 
 export function data_init(io: any, socket: any, userid: string) {
+  if (!userid) return;
   updateUserSocket(socket, userid);
   const roomList = getRoomList(userid) || [];
   // 유저가 속한 방에 연결

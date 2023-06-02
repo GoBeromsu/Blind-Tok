@@ -31,9 +31,11 @@ const IconBar = () => {
           <Br />
         </div>
         <div className="item">
-          <IconButton>
-            <SearchIcon style={{fontSize: 28}} />
-          </IconButton>
+          <Link to="/User">
+            <IconButton>
+              <SearchIcon style={{fontSize: 28}} />
+            </IconButton>
+          </Link>
           <Br />
         </div>
         <div className="item">
