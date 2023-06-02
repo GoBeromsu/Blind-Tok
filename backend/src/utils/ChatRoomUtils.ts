@@ -31,21 +31,14 @@ export function createRoom(userlist: any, roomname: string) {
 
   if (filteredRooms.length > 0) return;
 
-  let newRoomName: string = userlist[0].userid;
-  if (roomname == "") {
-    for (let i = 1; i < userlist.length; i++) {
-      newRoomName += ", " + userlist[i].userid;
-    }
-  } else newRoomName = roomname;
+  let roomName: string = userlist.map((user: {datenum: number; userid: string}) => user.userid).join(", ");
 
   let newRoom = {
     roomid: roomid,
-    roomname: newRoomName,
+    roomname: roomName,
     minnum: 0,
     maxnum: 0,
-    userlist: userlist.map((user: {datenum: number; userid: string}) => {
-      return {userid: user.userid, datanum: 0};
-    }),
+    userlist: userlist,
   };
   chatRoomDatas[roomid] = newRoom;
   nextId = nextId + 1;
@@ -141,7 +134,7 @@ export function getRoomData(roomid: number) {
   return {
     roomid: roomid,
     roomname: room.roomname,
-    userlist: room.userlist.map(({userid, datanum}) => ({userid, datanum})),
+    userlist: room.userlist,
   };
 }
 
