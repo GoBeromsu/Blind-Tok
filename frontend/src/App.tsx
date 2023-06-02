@@ -20,10 +20,13 @@ import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
+import UserPage from "@views/User/UserPage";
 
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
-import {dataInit} from "./socket";
+
+import {Style} from "@material-ui/icons";
+import {dataInit} from "@data/chat";
 
 export default function App() {
   return (
@@ -62,7 +65,7 @@ function AppRoutes() {
           <Route index element={Auth(MainComponent, true, user)}></Route>
           <Route path="/friend" element={Auth(FriendList, true, user)}></Route>
           <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
-          {/*<Route path="/User" element={Auth(UserProfile, true, user)}></Route>*/}
+          <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
         </Route>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함

@@ -2,7 +2,7 @@
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
-import {Message} from "@utils/ChattingController";
+import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
 
@@ -27,8 +27,8 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const handleSendMessage = (e: any) => {
-    Message(chatData.roomid, loginUser, string);
+  const handleSendMessage = () => {
+    sendEnteredMessage(chatData.roomid, loginUser, string);
     setString(""); //입력 칸을 초기화 해준다
   };
 
@@ -46,8 +46,8 @@ const ChatRoom: React.FC = () => {
 
   return (
     <Box>
-      <Box style={{width: `100%`, height: "100%"}}>
-        <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}} id="textspace">
+      <Box style={{width: `100%`, height: "100%", paddingLeft: "350px"}}>
+        <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState.map((friend: any, index: number) => (
             <div
               key={index}
@@ -57,7 +57,7 @@ const ChatRoom: React.FC = () => {
                 textspace.scrollTop = textspace.scrollHeight;
               }}>
               <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
-                {check_name(friend.usernickname) === 1 ? "" : friend.usernickname}
+                {check_name(friend.nickname) === 1 ? "" : friend.nickname}
               </div>
               <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
                 <div style={dataCSS}>{friend.data_s}</div>
@@ -71,6 +71,7 @@ const ChatRoom: React.FC = () => {
           <Button onClick={handleSendMessage}>확인</Button>
         </Box>
       </Box>
+      인
     </Box>
   );
 };

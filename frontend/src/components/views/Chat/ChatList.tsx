@@ -1,15 +1,18 @@
 ﻿// 필요한 모듈들을 임포트합니다.
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import {Link} from "react-router-dom";
 import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {createRoom, init_list} from "@utils/ChattingController";
+import {createRoom, init_list} from "@data/chat/ChattingController";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
 import {Box, Button, Input} from "@mui/material";
+
+import {io, Socket} from "socket.io-client";
+import {SOCKET_URL} from "../../../consonants";
 
 Modal.setAppElement("#root");
 
@@ -66,32 +69,6 @@ const ChatList: React.FC = () => {
     setChatList(list);
   };
 
-  const M_style: any = {
-    overlay: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "rgba(255, 255, 255, 0.45)",
-      zIndex: 10,
-    },
-    content: {
-      display: "flex",
-      background: "#ffffff",
-      overflow: "auto",
-      inset: "100px 100px 100px 400px",
-      WebkitOverflowScrolling: "touch",
-      borderRadius: "14px",
-      outline: "none",
-      zIndex: 10,
-      flexDirection: "column",
-      flexWrap: "nowrap",
-      alignItems: "stretch",
-      justifyContent: "flex-start",
-    },
-  };
-
   // 초대할 목록에 인원을 추가하는 함수
   // 초대 목록에 이미있는 인원이면 추가하지 않는다.
   const add_list = (friend_n: any) => {
@@ -126,7 +103,7 @@ const ChatList: React.FC = () => {
   };
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
       <h1>Chating Room</h1>
       <Input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</Button>
@@ -185,3 +162,29 @@ const ChatList: React.FC = () => {
 };
 
 export default ChatList;
+
+const M_style: any = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.45)",
+    zIndex: 10,
+  },
+  content: {
+    display: "flex",
+    background: "#ffffff",
+    overflow: "auto",
+    inset: "100px 100px 100px 400px",
+    WebkitOverflowScrolling: "touch",
+    borderRadius: "14px",
+    outline: "none",
+    zIndex: 10,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+  },
+};
