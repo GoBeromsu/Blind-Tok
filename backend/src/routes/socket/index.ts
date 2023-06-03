@@ -4,7 +4,7 @@ import {register} from "./video";
 
 export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
-    // console.log(`User Connected: ${socket.id}`);
+    // console.log(`User Connected: ${socket.userid}`);
 
     socket.on("data_init", (userid: string) => {
       data_init(fastify.io, socket, userid);
@@ -16,11 +16,13 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("disconnect", (reason: any) => {
+      //TODO: Socket id가 아니라, userid로 모두 처리하도록 변경해야 함
       disconnect(socket);
     });
 
     socket.on("create_room", (data: {user: any; userlist: any; roomname: string}) => {
-      console.log("create_room", data);
+      const {user, userlist, roomname} = data;
+      console.log("create_room", user?.userid, userlist, roomname);
       create_room(fastify.io, data);
     });
 

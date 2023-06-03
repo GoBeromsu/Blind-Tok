@@ -4,14 +4,16 @@ export default class {
   private outGoingMedia: any;
   private incomingMedia: any;
   private iceCandidateQueue: any;
-  private roomName: string;
-  constructor(userid: string, socket: any) {
+  roomlist: any[];
+  // private roomName: string;
+  constructor(userid: string) {
     this.userid = userid;
-    this.socket = socket;
+    this.socket = null;
     this.outGoingMedia = null;
     this.incomingMedia = {};
     this.iceCandidateQueue = {};
-    this.roomName = "";
+    this.roomlist = [];
+    // this.roomName = "";
   }
 
   addIceCandidate(data: any, candidate: any) {
@@ -41,7 +43,7 @@ export default class {
   }
 
   //TODO: 그냥 room name 대신 id를 주는게 더 유효할거 같기도?
-  setRoom(roomName: string) {
-    this.roomName = roomName;
-  }
+  // setRoom(roomName: string) {
+  //   this.roomName = roomName;
+  // }
 }

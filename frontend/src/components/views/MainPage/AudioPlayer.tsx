@@ -1,6 +1,6 @@
 ﻿import React, {useEffect, useState} from "react";
 import "../../style/AudioPlayer.css";
-import {getAudioFile} from "@data/upload/axios";
+import {getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 
@@ -46,7 +46,7 @@ const AudioPlayer: React.FC<Props> = ({src, type}) => {
   const fetchAudioList = async () => {
     if (loginUser) {
       try {
-        const audioFiles = await getAudioFile(loginUser.userid);
+        const audioFiles = await getFileMetaList(loginUser.userid);
         const audioData = audioFiles.data;
         console.log("This is audioData", audioData[0]);
         if (Array.isArray(audioData) && audioData.length > 0) {
