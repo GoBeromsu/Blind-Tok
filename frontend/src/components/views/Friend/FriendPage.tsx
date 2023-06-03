@@ -21,7 +21,6 @@ const FriendPage = () => {
   useEffect(() => {
     if (friendid)
       getUserInfo(Number(friendid)).then(data => {
-        console.log(data);
         setLoginUser(data.data);
       });
     if (loginUser) {
@@ -37,7 +36,6 @@ const FriendPage = () => {
   }, []);
 
   const fetchAudioList = async () => {
-    console.log("zzzz");
     if (loginUser) {
       try {
         const audioFiles = await getAudioFile(loginUser.userid);
