@@ -52,11 +52,9 @@ const FriendList = () => {
   };
 
   useEffect(() => {
-    console.log(loginUser);
     if (loginUser) {
       let friendIdList = loginUser.friends?.map((user: any) => ({userid: user.friendid}));
       setFriendList(friendIdList);
-      console.log(friendIdList);
     }
   }, [loginUser]);
 

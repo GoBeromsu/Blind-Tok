@@ -32,8 +32,7 @@ export function removeRoomList(roomid: number, userid: string) {
     return;
   }
 
-  chatUserData[userid].roomlist = chatUserData[userid].roomlist.filter(room => room.roomid !== roomid);
-
+  chatUserData[userid].roomlist = chatUserData[userid].roomlist.filter(room => room !== roomid);
   console.log("removeRoomFromUser: ", chatUserData);
 }
 
@@ -44,7 +43,6 @@ export function getRoomList(userid: string) {
     console.error("User not found");
     return [];
   }
-
   return chatUserData[userid]?.roomlist;
 }
 
