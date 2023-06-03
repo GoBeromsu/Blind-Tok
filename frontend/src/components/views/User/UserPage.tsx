@@ -17,7 +17,6 @@ const UserPage = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  console.log(audioList);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -92,19 +91,19 @@ const UserPage = () => {
       <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
         <div className="container">
           <div className="profile-picture">
-            {loginUser.meta.profilepictureurl ? (
-              <img src={loginUser.meta.profilepictureurl} alt="Profile Picture" />
+            {loginUser?.meta.profilepictureurl ? (
+              <img src={loginUser?.meta.profilepictureurl} alt="Profile Picture" />
             ) : (
               <div className="empty-image"></div>
             )}
           </div>
           <div className="user-info">
             <h2>
-              {loginUser.name} ( {loginUser.nickname} )
+              {loginUser?.name} ( {loginUser?.nickname} )
             </h2>
-            <p>{loginUser.meta.profilemesage}</p>
-            <p>친구: {loginUser.friends.length}</p>
-            <p>게시물 수: {audioList.length}</p>
+            <p>{loginUser?.meta.profilemesage}</p>
+            <p>친구: {loginUser?.friends.length}</p>
+            <p>게시물 수: {audioList?.length}</p>
           </div>
         </div>
       </Box>

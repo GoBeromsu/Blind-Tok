@@ -16,6 +16,7 @@ import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import MainComponent from "@views/MainPage/MainComponent";
 import FriendList from "@views/Friend/FriendList";
+import FriendPage from "@views/Friend/FriendPage";
 import ChatRoom from "@views/Chat/ChatRoom";
 import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
@@ -63,7 +64,9 @@ function AppRoutes() {
         로그인 페이지로 이동하기 위함
         <Route path="/" element={Auth(SideBar, true, user)}>
           <Route index element={Auth(MainComponent, true, user)}></Route>
-          <Route path="/friend" element={Auth(FriendList, true, user)}></Route>
+          <Route path="/friend" element={Auth(FriendList, true, user)}>
+            <Route path=":friendid" element={Auth(FriendPage, true, user)} />
+          </Route>
           <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
