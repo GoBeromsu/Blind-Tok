@@ -88,7 +88,6 @@ const FriendList = () => {
               style={{width: `${W}px`, height: "50px"}}
               onClick={() => {
                 setModalIsOpen(true);
-                setUser(friend.userid);
               }}>
               {friend.userid}
             </Box>
