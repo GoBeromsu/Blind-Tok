@@ -24,7 +24,7 @@ export async function addUser({name, email, ssoid, type}: {name: string; email: 
     await loginRepository.save({userid, email, ssoid, type});
 
     //TODO: 현재 프로필 메시지와 프로필 이미지 URL는 Default 값을 지정하겠습니다
-    user.meta = await metaRepository.save({userid: userid, profilemesage: " ", profilepictureurl: " "});
+    user.meta = await metaRepository.save({userid: userid, profileMessage: " ", profilePictureUrl: " "});
     return user;
   });
 }
@@ -36,23 +36,16 @@ export async function editUser(
   {
     name,
     nickname,
-    profilemesage,
-    profilepictureurl,
     email,
   }: {
     name: string;
     nickname: string;
-    profilemesage: string;
-    profilepictureurl: string;
     email: string;
   },
 ) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(User);
-    const metaRepository = manager.getRepository(UserMeta);
     const user = await repository.update({userid}, {name: name, nickname: nickname, email: email});
-
-    await metaRepository.update({userid}, {profilemesage, profilepictureurl});
     return user;
   });
 }
