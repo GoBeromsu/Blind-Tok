@@ -90,7 +90,7 @@ export function processReceivedMessage(io: any, socket: any, data: {roomid: numb
 
   let room = updateRoom(data.roomid, rest, Participants);
 
-  // console.log("update Room : ", room);
+  // console.log("update Room : ", roomid);
   // socket.broadcast.emit("receive_message", data); // 1 대 다수
   socket.to(roomid).emit("rec_message", {data: room, id: "rec_message"}); // 방 하나만
   io.to(socket.id).emit("rec_message", {data: room, id: "rec_message"}); // 특정 인원에게 전달 가능

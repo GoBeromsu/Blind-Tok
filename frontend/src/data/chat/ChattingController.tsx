@@ -83,7 +83,7 @@ export function recMessage(datas: any) {
     // 여러 데이터를 data 속성으로 받고 가장 마지막 데이터가 최신 메시지임으로 data.data.at(-1).data_s로 마지막 데이터에 접근한다.
     // setList : chat_List의 목록을 주어진 값으로 갱신한다. => 따라서 목록의 리렌더링이 발생
     case "rec_chatData":
-      if (data || data.data) {
+      if (data && data.data) {
         updateData_s(data);
         setList(setListMessage(data.roomid, data.data.at(-1).data_s));
       }
