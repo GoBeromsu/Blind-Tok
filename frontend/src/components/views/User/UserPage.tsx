@@ -17,7 +17,6 @@ const UserPage = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  console.log(audioList);
   const M_style: any = {
     overlay: {
       position: "fixed",
