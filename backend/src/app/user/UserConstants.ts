@@ -17,3 +17,8 @@ export enum LOGIN_TYPE {
   KAKAO = "KAKAO",
   NAVER = "NAVER",
 }
+export enum FRIEND_STATUS {
+  NORMAL = "normal",
+  BAN = "ban",
+  WAIT = "wait",
+}
