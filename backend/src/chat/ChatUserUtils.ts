@@ -43,7 +43,6 @@ export function getRoomList(userid: string) {
     console.error("User not found");
     return [];
   }
-
   return chatUserData[userid]?.roomlist;
 }
 

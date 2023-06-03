@@ -110,7 +110,7 @@ export function userJoin(socket: any, roomList: any) {
 // getRoomData : 방 하나를 가공하는 함수
 // 이 함수는 방 목록을 받아 목록에 있는 모든 방을 가공하여 반환한다.
 export function make_RoomListData(list: any) {
-  return list.map((data: any) => getRoomData(data.roomid));
+  return list.map((data: any) => getRoomData(data));
 }
 
 // 방의 생성을 방에 속한 유저에게 알리고 유저를 방에 연결시키는 함수
