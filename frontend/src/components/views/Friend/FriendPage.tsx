@@ -1,19 +1,33 @@
-﻿import {Box, Button} from "@mui/material";
-
+﻿import {dividerClasses} from "@mui/material";
 import React, {useState, useEffect} from "react";
-import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
-import "../../style/FriendList.css";
-import {getFriends, getFriend} from "@data/user/axios";
+import {useParams, useSearchParams} from "react-router-dom";
+import {Box, Button, Input} from "@mui/material";
+import {getAudioFile} from "@data/upload/axios";
+import {getUserInfo} from "@data/user/axios";
+import "@style/UserPage.css";
 
 const FriendPage = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-  const [W, setW] = useState(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
+  const {friendid}: any = useParams();
+  const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
+  const [loginUser, setLoginUser]: any = useState<any>();
+  const [audioList, setAudioList] = useState<any[]>([]);
+
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
-    setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
   };
+
+  useEffect(() => {
+    if (friendid)
+      getUserInfo(Number(friendid)).then(data => {
+        console.log(data);
+        setLoginUser(data.data);
+      });
+    if (loginUser) {
+      fetchAudioList();
+    }
+  }, [loginUser]);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -22,30 +36,55 @@ const FriendPage = () => {
     };
   }, []);
 
-  const params = useParams();
-  const movie = getFriend(parseInt(params.friendId));
-  const movies = getFriends();
-
-  const location = useLocation();
-  //console.log(location);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const detail = searchParams.get("detail");
-
-  const handleClick = () => {
-    setSearchParams({detail: detail === "true" ? false : true});
-    console.log(detail);
+  const fetchAudioList = async () => {
+    console.log("zzzz");
+    if (loginUser) {
+      try {
+        const audioFiles = await getAudioFile(loginUser.userid);
+        setAudioList(audioFiles.data.reverse());
+      } catch (error) {
+        console.error("Failed to fetch audio files:", error);
+      }
+    }
   };
 
   return (
-    <Box>
-      <h2>{movie.title}</h2>
-      <p>감독 : {movie.director}</p>
-      <p>카테고리 : {movie.category}</p>
-      <Button onClick={handleClick} type="button">
-        자세히
-      </Button>
-      {detail === "true" ? <p>{movie.detail}</p> : " "}
+    <Box className="userAudioList" style={{width: `${windowWidth - 300}px`}}>
+      <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
+        <div className="container">
+          <div className="profile-picture">
+            {loginUser?.meta?.profilepictureurl ? (
+              <img src={loginUser?.meta?.profilepictureurl} alt="Profile Picture" />
+            ) : (
+              <div className="empty-image"></div>
+            )}
+          </div>
+          <div className="user-info">
+            <h2>
+              {loginUser?.name} ( {loginUser?.nickname} )
+            </h2>
+            <p>{loginUser?.meta?.profilemesage}</p>
+            <p>친구: {loginUser?.friends?.length}</p>
+            <p>게시물 수: {audioList?.length}</p>
+          </div>
+        </div>
+      </Box>
+      <h2>My audio list</h2>
+      {audioList.length > 0 ? (
+        <ul>
+          {audioList.map((audioFile, index) => (
+            <li key={index}>
+              <div>
+                <h3>{audioFile.filename}</h3>
+                <p>Comment: {audioFile.comment}</p>
+                {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No audio files found.</p>
+      )}
     </Box>
   );
 };
