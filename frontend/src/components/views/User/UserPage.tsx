@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
 import {Box, Button, Input} from "@mui/material";
 import AudioUploadPage, {handleFileUpload} from "@views/User/AudioUpload";
-import {getAudioFile, deleteAudioFile} from "@data/upload/axios";
+import {getFileMetaList, deleteAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import "@style/UserPage.css";
@@ -78,7 +78,7 @@ const UserPage = () => {
     console.log("zzzz");
     if (loginUser) {
       try {
-        const audioFiles = await getAudioFile(loginUser.userid);
+        const audioFiles = await getFileMetaList(loginUser.userid);
         setAudioList(audioFiles.data.reverse());
       } catch (error) {
         console.error("Failed to fetch audio files:", error);

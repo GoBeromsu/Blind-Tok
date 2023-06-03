@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {Box, Button, Input} from "@mui/material";
-import {getAudioFile} from "@data/upload/axios";
+import {getFileMetaList} from "@data/upload/axios";
 import {getUserInfo} from "@data/user/axios";
 import "@style/UserPage.css";
 
@@ -40,7 +40,7 @@ const FriendPage = () => {
     console.log("zzzz");
     if (loginUser) {
       try {
-        const audioFiles = await getAudioFile(loginUser.userid);
+        const audioFiles = await getFileMetaList(loginUser.userid);
         setAudioList(audioFiles.data.reverse());
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
