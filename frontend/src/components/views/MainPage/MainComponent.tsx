@@ -61,10 +61,6 @@ const MainComponent: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("audioURL:", audioURL);
-  // }, [audioURL]);
-
   useEffect(() => {
     const handleScroll = debounce(() => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -75,9 +71,9 @@ const MainComponent: React.FC = () => {
       if (scrollTop >= threshold) {
         setComponents(prevComponents => [
           ...prevComponents,
-          <AudioPlayer src={audioURL} type="audio/mpeg" key={prevComponents.length} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 1} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 2} />,
+          <AudioPlayer src={audioURL} key={prevComponents.length} />,
+          <AudioPlayer src="" key={prevComponents.length + 1} />,
+          <AudioPlayer src="" key={prevComponents.length + 2} />,
         ]);
       }
     }, 50);
@@ -91,34 +87,19 @@ const MainComponent: React.FC = () => {
 
   return (
     <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "320px"}}>
-      <ReactPlayer
-        url={audioURL}
-        type="audio/mpeg"
-        playing
-        loop={true}
-        muted={false}
-        controls
-        style={{
-          paddingRight: "100px",
-          width: "100%",
-          maxWidth: "500px",
-          height: "auto",
-          margin: "0 auto",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        }}
-      />
+      <AudioPlayer src={audioURL} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       {components}
     </div>
   );
