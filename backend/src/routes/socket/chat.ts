@@ -1,5 +1,5 @@
 import {addRoomUser, checkData, removeUserList, createRoom, updateRoom, getRoomData} from "../../chat/ChatRoomUtils";
-import {getRoomList, removeRoomList, updateRoomList, show_u, addRoomList} from "../../chat/ChatUserUtils";
+import {getRoomList, removeRoomList, updateRoomList, addRoomList} from "../../chat/ChatUserUtils";
 import {createData} from "../../chat/ChatDataUtils";
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
