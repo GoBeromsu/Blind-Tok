@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState, useEffect} from "react";
-import {postAudioFile, getAudioFile} from "@data/upload/axios";
+import {postAudioFile, getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {fetchAudioList} from "@views/User/UserPage";

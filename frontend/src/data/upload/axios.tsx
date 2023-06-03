@@ -2,7 +2,7 @@
 import axios from "axios";
 import {api, axiosProcess, server} from "../constant";
 
-export async function getAudioFile(userid: any) {
+export async function getFileMetaList(userid: any) {
   try {
     const getData = await api.get(`file/user/${userid}`);
     return getData;
@@ -11,6 +11,14 @@ export async function getAudioFile(userid: any) {
   }
 }
 
+export async function getFileData(fileid: any) {
+  try {
+    const getData = await api.get(`file/${fileid}`);
+    return getData;
+  } catch (error) {
+    throw new Error("Failed to fetch audio files");
+  }
+}
 // 모든 파일을 받아오는 요청
 // export async function getAllFile(userid: any) {
 //   try {

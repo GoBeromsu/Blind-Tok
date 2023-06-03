@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState, useEffect} from "react";
-import {postAudioFile, getAudioFile, deleteAudioFile} from "@data/upload/axios";
+import {postAudioFile, getFileMetaList, deleteAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 
@@ -59,7 +59,7 @@ const AudioUploadPage: React.FC = () => {
   const fetchAudioList = async () => {
     if (loginUser) {
       try {
-        const audioFiles = await getAudioFile(loginUser.userid);
+        const audioFiles = await getFileMetaList(loginUser.userid);
         setAudioList(audioFiles.data);
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
