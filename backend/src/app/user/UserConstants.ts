@@ -18,7 +18,7 @@ export enum LOGIN_TYPE {
   NAVER = "NAVER",
 }
 export enum FRIEND_STATUS {
-  NORMAL = "NORMAL",
-  BAN = "BAN",
-  WAIT = "WAIT",
+  NORMAL = "normal",
+  BAN = "ban",
+  WAIT = "wait",
 }
