@@ -241,9 +241,9 @@ function getEndpointForUser(userSession: any, sender: any, callback: any) {
   if (incoming == null) {
     // console.log(
     //   "user : " +
-    //   userSession.id +
+    //   userSession.userid +
     //   " create endpoint to receive video from : " +
-    //   sender.id
+    //   sender.userid
     // );
     getRoom(userSession.roomName, function (error, room) {
       if (error) {
@@ -258,7 +258,7 @@ function getEndpointForUser(userSession: any, sender: any, callback: any) {
           return callback(error);
         }
         // console.log(
-        //   "user : " + userSession.id + " successfully created pipeline"
+        //   "user : " + userSession.userid + " successfully created pipeline"
         // );
 
         incomingMedia.getStats("AUDIO", (error: any, statsMap: any) => {
