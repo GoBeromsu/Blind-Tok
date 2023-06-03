@@ -3,6 +3,8 @@ import {addUser, editUser, getUserInfo, getUsersInfo, removeUser} from "@user/se
 import {txProcess} from "@lib/db";
 import friend from "./friend";
 
+import {editProfileMessage} from "@user/service/UserMetaService";
+
 export default async function (fastify: FastifyInstance) {
   fastify.register(friend, {prefix: "/friend"});
   fastify.get("/", async (req: FastifyRequest, reply: FastifyReply) => {
@@ -39,6 +41,22 @@ export default async function (fastify: FastifyInstance) {
       const {userid} = req.params;
       const selected = await editUser(userid, req.body);
       reply.send(selected);
+    },
+  );
+  fastify.put(
+    "/:userid/profileMessage",
+    async (req: FastifyRequest<{Params: {userid: number}; Body: {profileMessage: string}}>, reply: FastifyReply) => {
+      const {userid} = req.params;
+      const {profileMessage} = req.body;
+      return await editProfileMessage(userid, profileMessage);
+    },
+  );
+  fastify.put(
+    "/:userid/profilePicturUrl",
+    async (req: FastifyRequest<{Params: {userid: number}; Body: {profileMessage: string}}>, reply: FastifyReply) => {
+      const {userid} = req.params;
+      const {profileMessage} = req.body;
+      return await editProfileMessage(userid, profileMessage);
     },
   );
 }

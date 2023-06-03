@@ -1,4 +1,6 @@
-﻿// 지역저장소에서 데이터 가져오기
+﻿var localStorageName: string = "chatData";
+
+// 지역저장소에서 데이터 가져오기
 // key값을 통해 저장된 데이터를 불러오고
 // 불러온 데이터가 string이기 때문에 parse를 통해 전환해줘야된다.
 function getData(key: string): any {
@@ -21,9 +23,9 @@ function getData(key: string): any {
 // 해당 방의 정보를 가져와서 받은 데이터를 추가하고 다시 저장한다.
 export function updateChatData(datas: any): any {
   let {roomid, ...rest} = datas;
-  let savedata = getData("chatData");
+  let savedata = getData(localStorageName);
   if (!savedata) {
-    updateData("chatData", [{roomid: roomid, data: [rest]}]);
+    updateData(localStorageName, [{roomid: roomid, data: [rest]}]);
   } else {
     let index = savedata.findIndex((p: any) => p.roomid === roomid);
     let data_n;
@@ -31,10 +33,12 @@ export function updateChatData(datas: any): any {
       savedata = [{roomid: roomid, data: [rest]}, ...savedata];
     } else {
       data_n = savedata.splice(index, 1);
-      data_n[0].data.push(rest);
+      console.log(data_n);
+      if (data_n[0].data) data_n[0].data?.push(rest);
+      else data_n[0] = {...data_n[0], data: [rest]};
       savedata.unshift(data_n[0]);
     }
-    updateData("chatData", savedata);
+    updateData(localStorageName, savedata);
   }
   return datas;
 }
@@ -48,12 +52,12 @@ function updateData(key: string, data: any): void {
 // updateChatData와 동일하게 경우를 나누고 똑같이 진행
 // 다만 데이터가 한개가 아닌 여러개를 가진 배열을 저장하는 것임으로 저장 부분만 다르다.
 export function updateData_s(datas: any): void {
-  if (!datas) return;
+  if (!datas || !datas.data) return;
   console.log(datas);
   let {roomid, data} = datas;
-  let savedata = getData("chatData");
+  let savedata = getData(localStorageName);
   if (!savedata) {
-    updateData("chatData", [{roomid: roomid, data: data}]);
+    updateData(localStorageName, [{roomid: roomid, data: data}]);
   } else {
     let index = savedata.findIndex((p: any) => p.roomid === roomid);
     if (index == -1) {
@@ -62,7 +66,7 @@ export function updateData_s(datas: any): void {
       savedata[index].data = [...savedata[index].data, ...data];
     }
     //console.log(tmp_f);
-    updateData("chatData", savedata);
+    updateData(localStorageName, savedata);
   }
 }
 
@@ -75,7 +79,7 @@ export function updateData_s(datas: any): void {
 // 이도 수정이 필요, 서버가 data 변수를 방만들때 뿌리면 데이터가 없을 수가 없음
 // 마지막 경우만 처리하면됨. / data 변수란 이 함수에 있는 data 변수를 의미함
 export function getChatData(roomid: number): any {
-  let savedata = getData("chatData");
+  let savedata = getData(localStorageName);
   let today = new Date();
   let year = today.getFullYear();
   let month = today.getMonth() + 1;
@@ -129,7 +133,7 @@ export function getChatData(roomid: number): any {
 // 해당 방의 정보를 찾는다. 없으면 종료
 // 찾으면 해당 데이터 삭제, 그후 다시 저장
 export function subData(roomid: number) {
-  let savedata = getData("chatData");
+  let savedata = getData(localStorageName);
   if (!savedata) {
     return;
   } else {
@@ -140,6 +144,10 @@ export function subData(roomid: number) {
       savedata.splice(index, 1);
     }
     console.log("delete data : " + roomid);
-    updateData("chatData", savedata);
+    updateData(localStorageName, savedata);
   }
+}
+
+export function setLocalStorageName(name: string) {
+  localStorageName = name;
 }

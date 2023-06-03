@@ -6,6 +6,8 @@ import SideBar from "@views/Layout/SideBar";
 // import FriendList from "./components/views/Friend/FriendList";
 //import ChatList from "./components/views/Chat/ChatList";
 
+import {setLocalStorageName} from "@data/chat/chat_data";
+
 import {BrowserRouter as Router, Route, Routes, Navigate, Outlet} from "react-router-dom";
 import {getAuthUserQuery, getUserInfoQuery} from "@data/user/query";
 import Loading from "react-loading";
@@ -54,7 +56,7 @@ function AppRoutes() {
   if (isLoading) {
     return <Loading />;
   }
-
+  setLocalStorageName(loginUser?.userid);
   dataInit(loginUser?.userid);
   const user = loginUser || data;
   return (

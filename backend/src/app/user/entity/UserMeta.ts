@@ -7,11 +7,11 @@ export default class UserMeta extends BaseEntity {
   @PrimaryColumn({type: COLUMN_TYPE_BIGINT})
   userid: number;
 
-  @Column({type: COLUMN_TYPE_TEXT})
-  profilemesage: string;
+  @Column({nullable: true, type: COLUMN_TYPE_TEXT})
+  profileMessage: string;
 
-  @Column({type: COLUMN_TYPE_TEXT})
-  profilepictureurl: string;
+  @Column({default: "https://i.imgur.com/4tZUf8h.png", type: COLUMN_TYPE_TEXT})
+  profilePictureUrl: string;
 
   @OneToOne(() => User, user => user.userid)
   @JoinColumn({name: "userid"})
