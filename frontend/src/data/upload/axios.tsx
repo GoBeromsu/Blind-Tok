@@ -13,10 +13,12 @@ export async function getFileMetaList(userid: any) {
 
 export async function getFileData(fileid: any) {
   try {
-    const getData = await api.get(`file/${fileid}`,{responseType:'blob'},);
-    const blob = new Blob([getData.data],{type:'audio/mp3'})
-    const url = URL.createObjectURL(blob);
-    return url;
+    const getData = await api.get(`file/${fileid}`, {responseType: "blob"});
+    // console.log("this is getData.data", getData.data);
+    // console.log("this is blob", blob);
+    // const url = URL.createObjectURL(getData.data);
+    // console.log(url);
+    return getData;
   } catch (error) {
     throw new Error("Failed to fetch audio files");
   }
