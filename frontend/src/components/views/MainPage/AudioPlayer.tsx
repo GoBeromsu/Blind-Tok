@@ -3,9 +3,11 @@ import "../../style/AudioPlayer.css";
 import ReactPlayer from "react-player";
 import {Modal, Backdrop, Fade} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import UserModal from "./UserModal";
 
 interface Props {
   src: any;
+  own: any;
   autoPlay: boolean;
 }
 
@@ -31,12 +33,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AudioPlayer: React.FC<Props> = ({src, autoPlay}) => {
+const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const classes = useStyles(); // 스타일 사용
+  const audioOwn = own;
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
@@ -96,7 +99,7 @@ const AudioPlayer: React.FC<Props> = ({src, autoPlay}) => {
         }}>
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
-            {/* 여기에 원하는 모달 내용을 추가하세요 */}
+            <UserModal own={audioOwn} />
           </div>
         </Fade>
       </Modal>

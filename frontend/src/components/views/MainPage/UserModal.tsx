@@ -1,22 +1,28 @@
-import {dividerClasses} from "@mui/material";
+import {Box, Button, Input, IconButton} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
-import {Box, Button, Input} from "@mui/material";
 import AudioUploadPage, {handleFileUpload} from "@views/User/AudioUpload";
-import {getFileMetaList, deleteAudioFile} from "@data/upload/axios";
+import {getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
+import {getUserInfoQuery} from "@data/user/query";
 import "@style/UserPage.css";
 
 export let fetchAudioList: any = () => {};
 
 Modal.setAppElement("#root");
-const UserPage = () => {
-  const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
-  const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
+
+interface Props {
+  own: any;
+}
+
+const UserModal: React.FC<Props> = ({own}) => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [owner, setOwner]: any = useState();
+
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -29,6 +35,7 @@ const UserPage = () => {
     },
     content: {
       display: "flex",
+      position: "fixed",
       background: "#ffffff",
       overflow: "auto",
       inset: "100px 700px",
@@ -36,7 +43,7 @@ const UserPage = () => {
       borderRadius: "14px",
       outline: "none",
       zIndex: 10,
-      flexDirection: "column",
+      flexDirection: "row",
       flexWrap: "nowrap",
       alignItems: "flex-start",
       justifyContent: "space-between",
@@ -45,37 +52,13 @@ const UserPage = () => {
     },
   };
 
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-    setWindowHeight(window.innerHeight);
-  };
-
   useEffect(() => {
     if (loginUser) {
       fetchAudioList();
     }
   }, [loginUser]);
 
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const handleDeleteAudio = async (audioFile: any) => {
-    try {
-      if (loginUser) {
-        await deleteAudioFile(audioFile, loginUser);
-        fetchAudioList();
-      }
-    } catch (error) {
-      console.error("Failed to delete audio file:", error);
-    }
-  };
-
   fetchAudioList = async () => {
-    console.log("zzzz");
     if (loginUser) {
       try {
         const audioFiles = await getFileMetaList(loginUser.userid);
@@ -85,10 +68,26 @@ const UserPage = () => {
       }
     }
   };
+  // useEffect(() => {
+  //   if (own) {
+  //     setThisOwner();
+  //   }
+  // }, [own]);
+  // const setThisOwner = async () => {
+  //   const thisOwner = await getUserInfoQuery(own).data;
+  //   setOwner(thisOwner);
+  //   console.log("I am ", owner);
+  // };
+
+  // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
+  const handleAddFriend = () => {
+    // 아몰랑
+    console.log("친구 추가 버튼이 클릭되었습니다.");
+  };
 
   return (
-    <Box className="userAudioList" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
-      <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="userAudioList">
+      <Box className="user-info">
         <div className="container">
           <div className="profile-picture">
             {loginUser?.meta.profilepictureurl ? (
@@ -99,24 +98,19 @@ const UserPage = () => {
           </div>
           <div className="user-info">
             <h2>
-              {loginUser?.name} ( {loginUser?.nickname} )
+              {loginUser?.name} ({loginUser?.nickname})
             </h2>
+            <IconButton color="primary" onClick={handleAddFriend}>
+              친추
+              <AddIcon />
+            </IconButton>
             <p>{loginUser?.meta.profilemesage}</p>
-            <p>친구: {loginUser?.friends.length}</p>
+            <p>친구 수: {loginUser?.friends.length}</p>
             <p>게시물 수: {audioList?.length}</p>
           </div>
         </div>
       </Box>
-      <h2>
-        My audio list
-        <Button
-          onClick={() => {
-            setModalIsOpen(true);
-          }}
-          style={{width: "50px", height: "50px"}}>
-          추가
-        </Button>
-      </h2>
+      <h2>이 사람의 게시물</h2>
       {audioList.length > 0 ? (
         <ul>
           {audioList.map((audioFile, index) => (
@@ -125,7 +119,6 @@ const UserPage = () => {
                 <h3>{audioFile.filename}</h3>
                 <p>Comment: {audioFile.comment}</p>
                 {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
-                <button onClick={() => handleDeleteAudio(audioFile)}>Delete</button>
               </div>
             </li>
           ))}
@@ -153,4 +146,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default UserModal;

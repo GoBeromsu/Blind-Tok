@@ -23,6 +23,7 @@ const MainComponent: React.FC = () => {
   const [audioList, setAudioList] = useState<AudioFile[]>([]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioURL, setAudioURL] = useState<any[]>([]);
+  const [audioOwn, setAudioOwn] = useState<any[]>([]);
 
   const previousLoginUser = useRef(loginUser);
   useEffect(() => {
@@ -48,15 +49,20 @@ const MainComponent: React.FC = () => {
       try {
         const audioFiles = await getFileMetaList(loginUser.userid);
         const audioMetaData = audioFiles.data;
+        console.log(audioMetaData[0].userid);
         if (Array.isArray(audioMetaData) && audioMetaData.length > 0) {
           setAudioList(audioMetaData);
           const audioURLs: any[] = [];
+          const audioOwns: any[] = [];
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
             const dataURL = URL.createObjectURL(getData.data);
+            const userId = audioMetaData[i].userid;
             audioURLs.push(dataURL);
+            audioOwns.push(userId);
           }
           setAudioURL(audioURLs);
+          setAudioOwn(audioOwns);
         }
       } catch (error) {
         console.error("오디오 파일을 가져오는 데 실패했습니다:", error);
@@ -70,7 +76,7 @@ const MainComponent: React.FC = () => {
       const componentCount = Math.min(audioURL.length, 4);
       // 처음 페이지에 접속했을 때는 첫 음악을 재생시킴
       for (let i = 0; i < componentCount; i++) {
-        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} />);
+        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} own={audioOwn[i]} />);
       }
       setComponents(initialComponents);
     }
@@ -91,7 +97,7 @@ const MainComponent: React.FC = () => {
           const nextIndex = (components.length + i) % audioURL.length;
           const isDuplicate = components.some(component => component.key === nextIndex);
           if (!isDuplicate) {
-            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} />);
+            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} own={audioOwn[nextIndex]} />);
           }
         }
         setComponents(prevComponents => [...prevComponents, ...newComponents]);
@@ -106,7 +112,7 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded, audioURL, components]);
 
   return (
-    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "320px"}}>
+    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "300px"}}>
       {components}
     </div>
   );
