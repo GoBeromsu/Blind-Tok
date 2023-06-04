@@ -6,7 +6,10 @@ import {createData} from "./ChatDataUtils";
 export let userRegistry = new UserRegistry();
 export let Participants: any = {};
 
+export function newUser(userid: string, socket: any) {
+  const userSession = new UserSession(userid, socket);
   userRegistry.register(userSession);
+  return userSession;
 }
 // 해당 유저의 roomlist에 방을 추가하는 함수
 // 유저를 찾아서 없으면 유저를 생성해준다.
