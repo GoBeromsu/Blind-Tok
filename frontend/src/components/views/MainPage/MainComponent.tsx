@@ -23,7 +23,7 @@ const MainComponent: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [audioList, setAudioList] = useState<AudioFile[]>([]);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const [audioURL, setAudioURL] = useState<any>();
+  const [audioURL, setAudioURL] = useState<any[]>([]);
 
   const previousLoginUser = useRef(loginUser);
   useEffect(() => {
@@ -51,15 +51,30 @@ const MainComponent: React.FC = () => {
         const audioMetaData = audioFiles.data;
         if (Array.isArray(audioMetaData) && audioMetaData.length > 0) {
           setAudioList(audioMetaData);
-          const getData = await getFileData(audioMetaData[0].fileid);
-          const dataURL = URL.createObjectURL(getData.data);
-          setAudioURL(dataURL);
+          const audioURLs: any[] = [];
+          for (let i = 0; i < audioMetaData.length; i++) {
+            const getData = await getFileData(audioMetaData[i].fileid);
+            const dataURL = URL.createObjectURL(getData.data);
+            audioURLs.push(dataURL);
+          }
+          setAudioURL(audioURLs);
         }
       } catch (error) {
         console.error("오디오 파일을 가져오는 데 실패했습니다:", error);
       }
     }
   };
+
+  useEffect(() => {
+    if (audioURL.length > 0) {
+      const initialComponents: JSX.Element[] = [];
+      const componentCount = Math.min(audioURL.length, 4);
+      for (let i = 0; i < componentCount; i++) {
+        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} />);
+      }
+      setComponents(initialComponents);
+    }
+  }, [audioURL]);
 
   useEffect(() => {
     const handleScroll = debounce(() => {
@@ -69,12 +84,16 @@ const MainComponent: React.FC = () => {
       if (isLoading || allLoaded) return;
 
       if (scrollTop >= threshold) {
-        setComponents(prevComponents => [
-          ...prevComponents,
-          <AudioPlayer src={audioURL} key={prevComponents.length} />,
-          <AudioPlayer src="" key={prevComponents.length + 1} />,
-          <AudioPlayer src="" key={prevComponents.length + 2} />,
-        ]);
+        const newComponents: JSX.Element[] = [];
+        const remainingComponents = Math.min(audioURL.length - components.length, 4);
+        for (let i = 0; i < remainingComponents; i++) {
+          const nextIndex = (components.length + i) % audioURL.length;
+          const isDuplicate = components.some(component => component.key === nextIndex);
+          if (!isDuplicate) {
+            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} />);
+          }
+        }
+        setComponents(prevComponents => [...prevComponents, ...newComponents]);
       }
     }, 50);
 
@@ -83,23 +102,10 @@ const MainComponent: React.FC = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isLoading, allLoaded]);
+  }, [isLoading, allLoaded, audioURL, components]);
 
   return (
     <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "320px"}}>
-      <AudioPlayer src={audioURL} />
-      <br />
-      <br />
-      <br />
-      <AudioPlayer src={{}} />
-      <br />
-      <br />
-      <br />
-      <AudioPlayer src={{}} />
-      <br />
-      <br />
-      <br />
-      <AudioPlayer src={{}} />
       {components}
     </div>
   );
