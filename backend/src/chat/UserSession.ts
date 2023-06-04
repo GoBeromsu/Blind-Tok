@@ -1,14 +1,14 @@
 export default class {
-  private userid: string;
-  private socket: any;
+  userid: string;
+  socket: any;
   private outGoingMedia: any;
   private incomingMedia: any;
   private iceCandidateQueue: any;
   roomlist: any[];
   // private roomName: string;
-  constructor(userid: string) {
+  constructor(userid: string, socket: any) {
     this.userid = userid;
-    this.socket = null;
+    this.socket = socket;
     this.outGoingMedia = null;
     this.incomingMedia = {};
     this.iceCandidateQueue = {};

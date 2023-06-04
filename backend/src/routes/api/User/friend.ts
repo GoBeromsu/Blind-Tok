@@ -5,7 +5,6 @@ import {addFriend, editFriend, getFriendInfo, getFriendsInfo, removeFriend} from
 export default async function (fastify: FastifyInstance) {
   fastify.get("/", async (req: FastifyRequest, reply: FastifyReply) => {
     const selected = await getFriendsInfo();
-    console.log(selected);
     reply.send(selected);
   });
   fastify.get("/:userid", async (req: FastifyRequest<{Params: {userid: number}}>, reply: FastifyReply) => {
