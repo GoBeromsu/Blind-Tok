@@ -2,24 +2,24 @@ import UserSession from "./UserSession";
 
 export default class {
   private usersById: {[key: string]: UserSession} = {};
-  private userByName: {[key: string]: UserSession} = {};
+  // private userByName: {[key: string]: UserSession} = {};
 
   register(user: UserSession) {
     this.usersById[user.userid] = user;
-    this.userByName[user.name] = user;
+    // this.userByName[user.name] = user;
   }
 
   unregister(userId: string) {
     const user = this.usersById[userId];
     if (user) {
       delete this.usersById[userId];
-      delete this.userByName[user.name];
+      // delete this.userByName[user.name];
     }
   }
 
-  getByName(name: string) {
-    return this.userByName[name];
-  }
+  // getByName(name: string) {
+  //   return this.userByName[name];
+  // }
 
   getById(userId: string) {
     return this.usersById[userId];
@@ -29,7 +29,7 @@ export default class {
     const userSession = this.usersById[userId];
     if (!userSession) return;
     delete this.usersById[userId];
-    delete this.userByName[userSession.name];
+    // delete this.userByName[userSession.name];
   }
 
   getUsersByRoom(roomId: string): UserSession[] {
