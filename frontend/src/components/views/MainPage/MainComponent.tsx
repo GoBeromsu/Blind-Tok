@@ -5,7 +5,6 @@ import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
 import {getFileMetaList, getFileData} from "@data/upload/axios";
 import {userState} from "@data/user/state";
 import {useRecoilState} from "recoil";
-import ReactPlayer from "react-player";
 
 interface AudioFile {
   fileid: string;
@@ -69,8 +68,9 @@ const MainComponent: React.FC = () => {
     if (audioURL.length > 0) {
       const initialComponents: JSX.Element[] = [];
       const componentCount = Math.min(audioURL.length, 4);
+      // 처음 페이지에 접속했을 때는 첫 음악을 재생시킴
       for (let i = 0; i < componentCount; i++) {
-        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} />);
+        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} />);
       }
       setComponents(initialComponents);
     }
@@ -83,6 +83,7 @@ const MainComponent: React.FC = () => {
 
       if (isLoading || allLoaded) return;
 
+      // 스크롤링 될때마다 컴포넌트 추가하는 식 (중복제외)
       if (scrollTop >= threshold) {
         const newComponents: JSX.Element[] = [];
         const remainingComponents = Math.min(audioURL.length - components.length, 4);
@@ -90,7 +91,7 @@ const MainComponent: React.FC = () => {
           const nextIndex = (components.length + i) % audioURL.length;
           const isDuplicate = components.some(component => component.key === nextIndex);
           if (!isDuplicate) {
-            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} />);
+            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} />);
           }
         }
         setComponents(prevComponents => [...prevComponents, ...newComponents]);
