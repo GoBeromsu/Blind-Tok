@@ -1,7 +1,19 @@
-﻿import React, {useState, useEffect} from "react";
+﻿import React, {useState, useEffect, useRef} from "react";
 import AudioPlayer from "./AudioPlayer";
 import "../../style/MainComponent.css";
 import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
+import {getFileMetaList, getFileData} from "@data/upload/axios";
+import {userState} from "@data/user/state";
+import {useRecoilState} from "recoil";
+import ReactPlayer from "react-player";
+
+interface AudioFile {
+  fileid: string;
+  userid: string;
+  filename: string;
+  filepath: string;
+  filetype: string;
+}
 
 const MainComponent: React.FC = () => {
   const [components, setComponents] = useState<JSX.Element[]>([]);
@@ -9,6 +21,17 @@ const MainComponent: React.FC = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const {isLoading, isError, data, error} = getUserListQuery();
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [audioList, setAudioList] = useState<AudioFile[]>([]);
+  const [loginUser, setLoginUser]: any = useRecoilState(userState);
+  const [audioURL, setAudioURL] = useState<any>();
+
+  const previousLoginUser = useRef(loginUser);
+  useEffect(() => {
+    if (loginUser !== previousLoginUser.current) {
+      fetchAudioList();
+      previousLoginUser.current = loginUser;
+    }
+  }, [loginUser]);
 
   const debounce = (func: Function, wait: number) => {
     let timeout: NodeJS.Timeout;
@@ -16,6 +39,26 @@ const MainComponent: React.FC = () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };
+  };
+  useEffect(() => {
+    fetchAudioList();
+  }, [loginUser]);
+
+  const fetchAudioList = async () => {
+    if (loginUser) {
+      try {
+        const audioFiles = await getFileMetaList(loginUser.userid);
+        const audioMetaData = audioFiles.data;
+        if (Array.isArray(audioMetaData) && audioMetaData.length > 0) {
+          setAudioList(audioMetaData);
+          const getData = await getFileData(audioMetaData[0].fileid);
+          const dataURL = URL.createObjectURL(getData.data);
+          setAudioURL(dataURL);
+        }
+      } catch (error) {
+        console.error("오디오 파일을 가져오는 데 실패했습니다:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -26,12 +69,11 @@ const MainComponent: React.FC = () => {
       if (isLoading || allLoaded) return;
 
       if (scrollTop >= threshold) {
-        console.log(AudioPlayer);
         setComponents(prevComponents => [
           ...prevComponents,
-          <AudioPlayer src="" type="" key={prevComponents.length} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 1} />,
-          <AudioPlayer src="" type="" key={prevComponents.length + 2} />,
+          <AudioPlayer src={audioURL} key={prevComponents.length} />,
+          <AudioPlayer src="" key={prevComponents.length + 1} />,
+          <AudioPlayer src="" key={prevComponents.length + 2} />,
         ]);
       }
     }, 50);
@@ -44,20 +86,20 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded]);
 
   return (
-    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "340px"}}>
-      <AudioPlayer src="" type="" />
+    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "320px"}}>
+      <AudioPlayer src={audioURL} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       <br />
       <br />
       <br />
-      <AudioPlayer src="" type="" />
+      <AudioPlayer src={{}} />
       {components}
     </div>
   );
