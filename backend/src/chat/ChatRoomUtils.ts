@@ -1,6 +1,7 @@
 import {getData, setData} from "./ChatDataUtils";
 import user from "../routes/api/User";
-import {Participants} from "../routes/socket/chat";
+import {userRegistry} from "./ChatUserUtils";
+
 interface ChatRoomData {
   roomid: number;
   roomname: string;
@@ -93,21 +94,27 @@ export function checkData(roomid: number, userid: string) {
 // 리스트에 있으면 datanum 에 num을 넣고 아니면 기존의 data를 사용한다.
 // list에 있다는 것은 현재 접속 중이며 메시지를 받는다는 의미이다.
 // 그 후 메시지와 roomid를 합쳐서 반환한다.
-export function updateRoom(roomid: number, rest: any, list: any) {
-  let room = chatRoomDatas[roomid]; //room id로 방 찾기
-  if (!room) return;
-  let num = room.maxnum + 1;
-  room.maxnum = num;
-  let userlist: {userid: string; datanum: number}[] = [];
+export function incrementMaxNum(room: any) {
+  return (room.maxnum += 1);
+}
 
-  room.userlist.map((data: any) => {
-    !list[data.userid] ? userlist.push(data) : userlist.push({userid: data.userid, datanum: num});
+export function updateUserList(room: any, num: number) {
+  room.userlist.forEach((data: any) => {
+    let userSession = userRegistry.getById(data.userid);
+    if (!userSession) return;
+    data.datanum = num;
   });
+}
+export function updateRoom(roomid: number, rest: any) {
+  let room = chatRoomDatas[roomid];
+  if (!room) return;
 
-  room.userlist = userlist;
-  rest = {num: num, ...rest};
+  let num = incrementMaxNum(room);
+  updateUserList(room, num);
+  rest = {num, ...rest};
   setData(roomid, rest);
-  return {roomid: roomid, ...rest};
+
+  return {roomid, ...rest};
 }
 
 // 방 나가기 시 실행되는 함수
@@ -126,8 +133,6 @@ export function removeUserList(roomid: number, userid: string) {
 export function getRoomData(roomid: number) {
   let room = chatRoomDatas[roomid];
   if (!room) return {};
-
-  console.log("getRoomData의 userList 호출 됨 :", Participants);
 
   return {
     roomid: roomid,
