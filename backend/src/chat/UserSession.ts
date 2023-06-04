@@ -1,5 +1,5 @@
 export default class {
-  private userid: string;
+  userid: string;
   private socket: any;
   private outGoingMedia: any;
   private incomingMedia: any;
