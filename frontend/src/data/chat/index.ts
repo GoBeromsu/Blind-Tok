@@ -12,11 +12,6 @@ socket.on("rec_message", (message: any) => {
   recMessage(message);
 });
 
-export function dataInit(userid: string) {
-  console.log("data init called user : ", userid);
-  socket.emit("data_init", userid);
-}
-
 export function sendMessage(data: any, opt: string) {
   console.log("sendMessage : ", data);
   socket.emit(opt, data);

@@ -29,7 +29,7 @@ import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
 
 import {Style} from "@material-ui/icons";
-import {dataInit} from "@data/chat";
+import {sendMessage} from "@data/chat";
 
 export default function App() {
   return (
@@ -56,8 +56,8 @@ function AppRoutes() {
   if (isLoading) {
     return <Loading />;
   }
-  setLocalStorageName(loginUser?.userid);
-  dataInit(loginUser?.userid);
+
+  sendMessage(loginUser?.userid, "data_init");
   const user = loginUser || data;
   return (
     <div className="container">
