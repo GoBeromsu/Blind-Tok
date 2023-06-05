@@ -1,7 +1,6 @@
 import UserSession from "./UserSession";
 import UserRegistry from "./UserRegistry";
-import {addRoomUser, checkData, createRoom, getRoomData, removeUserList, updateRoom} from "./ChatRoomUtils";
-import {createData} from "./ChatDataUtils";
+import {addRoomUser, checkData, getRoomData, removeUserList, updateRoom} from "./ChatRoomUtils";
 
 export let userRegistry = new UserRegistry();
 
@@ -91,25 +90,6 @@ export function leave_room(io: any, socket: any, roomid: number, userid: string)
   console.log("success leave / room : " + roomid + " / user : " + userid);
 }
 
-// 방 생성을 처리하는 함수
-// 방을 생성할 때 보내온 유저도 포함하는 리스트를 생성
-// createRoom : 방을 만들고 이에 대한 결과를 반환하는 함수 / 방 이름, 아이디, 유저리스트를 반환함
-// 이를 가지고 방에 속한 유저에게 방에 대한 정보를 전송/ 이를 통해 클라이언트가 이벤트 발생을 확인하고 처리함
-// updateRoomList : ChatUserUtils에서 해당 유저의 방 목록에 생성된 방의 아이디를 저장하는 함수
-// createData : ChatDataUtils에서 해당 방의 데이터 저장 공간을 만드는 함수
-// notifyUsersConnect : 방의 생성을 참여자에게 알리는 함수
-export function create_room(io: any, data: {user: any; userlist: any; roomname: string}) {
-  const {user, userlist, roomname} = data;
-  let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
-  let createdRoom = createRoom(updatedUserList, roomname);
-  // console.log("created Room : ", createdRoom);
-  if (createdRoom) {
-    updateRoomList(createdRoom.roomid, updatedUserList);
-    createData(createdRoom.roomid);
-    notifyUsersConnect(io, createdRoom);
-  }
-}
-
 // 연결 종료를 처리하는 함수
 // 현재 접속하고 있는 유저의 정보를 저장한 userlist에서 해당 유저의 정보를 제거
 // 이미 없다면 종료
@@ -172,7 +152,7 @@ export function make_RoomListData(list: any) {
 // 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
 // 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
 export function notifyUsersConnect(io: any, room: {roomid: number; userlist: any[]; roomname: string}) {
-  console.log("notifyUsersConnect : ", room);
+  // console.log("notifyUsersConnect : ", room);
   const {userlist} = room;
 
   userlist.map((user: any) => {

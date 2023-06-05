@@ -1,7 +1,9 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
 import {register} from "./video";
-import {add_user, create_room, data_init, disconnect, leave_room, processReceivedMessage} from "../../chat/ChatUserUtils";
+import {add_user, data_init, disconnect, leave_room, processReceivedMessage} from "../../chat/ChatUserUtils";
+
+import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 
 export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
@@ -24,7 +26,7 @@ export default async function (fastify: FastifyInstance) {
     socket.on("create_room", (data: {user: any; userlist: any; roomname: string}) => {
       const {user, userlist, roomname} = data;
       console.log("create_room", user?.userid, userlist, roomname);
-      create_room(fastify.io, data);
+      createRoomAndNotify(fastify.io, data);
     });
 
     socket.on("add_user", (data: any) => {

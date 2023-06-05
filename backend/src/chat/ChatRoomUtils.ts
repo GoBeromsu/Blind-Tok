@@ -1,6 +1,5 @@
-import {getData, setData} from "./ChatDataUtils";
-import user from "../routes/api/User";
-import {userRegistry} from "./ChatUserUtils";
+import {createData, getData, setData} from "./ChatDataUtils";
+import {notifyUsersConnect, updateRoomList, userRegistry} from "./ChatUserUtils";
 
 interface ChatRoomData {
   roomid: number;
@@ -13,52 +12,27 @@ interface ChatRoomData {
 let chatRoomDatas: {[roomid: number]: ChatRoomData} = {};
 let nextId: number = 1;
 
-// 방생성 함수
-// data 배열에 새로운 방(data_n)을 저장 및 반환 / 이는 방이 만들어졌다는 사실을 유저에게 전송할 때 사용됨.
-export function createRoom(userlist: any, roomname: string) {
-  let roomid: number = nextId;
-  // if (chatRoomDatas.find(data => data.roomid === roomid)) {
-  if (chatRoomDatas[roomid]) {
-    console.log("Error: createRoom - Room ID already exists");
-    return;
+export function findRoom(roomid: number) {
+  let room = chatRoomDatas[roomid];
+  if (!room) {
+    console.log("Room ID not found: ", roomid);
+    return null;
   }
-  // filterRooms는 userlist에 있는 유저들이 모두 있는 방을 찾는다.
-  let filteredRooms: ChatRoomData[] = Object.values(chatRoomDatas).filter(room => {
-    const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
-    return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
-  });
-
-  if (filteredRooms.length > 0) return;
-
-  let roomName: string = userlist.map((user: {datenum: number; userid: string}) => user.userid).join(", ");
-
-  let newRoom = {
-    roomid: roomid,
-    roomname: roomName,
-    minnum: 0,
-    maxnum: 0,
-    userlist: userlist,
-  };
-  chatRoomDatas[roomid] = newRoom;
-  nextId = nextId + 1;
-  return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
+  return room;
 }
 
 // 서버와 접속이 끊긴 동안의 채팅 내역을 가져오는 함수
 export function checkData(roomid: number, userid: string) {
   // 해당 방을 찾을 찾고 방의 데이터를 가져온다.
-  let roomdata: ChatRoomData = chatRoomDatas[roomid];
-  if (!roomdata) {
-    console.log("checkData : roomid not Found");
-    return;
-  }
 
+  const roomdata = findRoom(roomid);
+  if (!roomdata) return;
   let data_n;
-  let min = roomdata.minnum;
-  let max = roomdata.maxnum;
+  let min = roomdata?.minnum;
+  let max = roomdata?.maxnum;
 
   // 해당 방에서 해당 유저의 데이터를 가져온다.
-  let userdata = roomdata.userlist.find((user: {userid: string; datanum: number}) => user.userid === userid);
+  let userdata = roomdata?.userlist.find((user: {userid: string; datanum: number}) => user.userid === userid);
   if (typeof userdata === "undefined") {
     console.log("checkData : userid not Found");
     return;
@@ -88,50 +62,36 @@ export function checkData(roomid: number, userid: string) {
   return data_n;
 }
 
-// 데이터를 받았을 때 이를 처리하는 함수
-// 해당 방의 인덱스를 찾아내고 maxnum을 1증가시킨다.
-// 이 메시지를 받는 인원의 datanum이 num이 되어야되기 때문에 이를 map과 find를 통해
-// 리스트에 있으면 datanum 에 num을 넣고 아니면 기존의 data를 사용한다.
-// list에 있다는 것은 현재 접속 중이며 메시지를 받는다는 의미이다.
-// 그 후 메시지와 roomid를 합쳐서 반환한다.
-export function incrementMaxNum(room: any) {
-  return (room.maxnum += 1);
-}
-
-export function updateUserList(room: any, num: number) {
+export function updateRoom(roomid: number, rest: any) {
+  let room = findRoom(roomid);
+  if (!room) return;
+  room.maxnum += 1;
   room.userlist.forEach((data: any) => {
     let userSession = userRegistry.getById(data.userid);
     if (!userSession) return;
-    data.datanum = num;
+    data.datanum = room?.maxnum;
   });
-}
-export function updateRoom(roomid: number, rest: any) {
-  let room = chatRoomDatas[roomid];
-  if (!room) return;
 
-  let num = incrementMaxNum(room);
-  updateUserList(room, num);
-  rest = {num, ...rest};
+  rest = {num: room.maxnum, ...rest};
   setData(roomid, rest);
-
   return {roomid, ...rest};
 }
 
 // 방 나가기 시 실행되는 함수
 // 해당 방을 찾고 userlist에서 해당 userid를 제거한다.
 export function removeUserList(roomid: number, userid: string) {
-  let room = chatRoomDatas[roomid];
+  let room = findRoom(roomid);
   if (!room) {
     console.log("removeUserList : roomid not Found");
     return;
   }
-  room.userlist = room.userlist.filter(user => user.userid != userid);
+  room.userlist = room?.userlist.filter(user => user.userid != userid);
   chatRoomDatas[roomid] = room;
 }
 
 // 해당 방의 정보를 가져오는데, 필요없는 minnum과 maxnum, userlist의 num을 제외하고 반환한다.
 export function getRoomData(roomid: number) {
-  let room = chatRoomDatas[roomid];
+  let room = findRoom(roomid);
   if (!room) return {};
 
   return {
@@ -142,7 +102,50 @@ export function getRoomData(roomid: number) {
 }
 
 export function addRoomUser(roomid: number, userid: string) {
-  let room = chatRoomDatas[roomid];
+  let room = findRoom(roomid);
   if (!room) return; // 존재하지 않는 방에 유저를 추가하려는 경우 처리
   room.userlist.push({userid: userid, datanum: room.maxnum});
+}
+
+export function createRoomAndNotify(io: any, data: {user: any; userlist: any; roomname: string}) {
+  const {user, userlist, roomname} = data;
+  let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
+  let createdRoom = createRoom(updatedUserList, roomname);
+  console.log("created Room : ", createdRoom);
+  if (createdRoom) {
+    updateRoomList(createdRoom.roomid, updatedUserList);
+    createData(createdRoom.roomid);
+    notifyUsersConnect(io, createdRoom);
+  }
+}
+// 방생성 함수
+// data 배열에 새로운 방(data_n)을 저장 및 반환 / 이는 방이 만들어졌다는 사실을 유저에게 전송할 때 사용됨.
+export function createRoom(userlist: any, roomname: string) {
+  let roomid: number = nextId;
+
+  if (findRoom(roomid)) {
+    console.log("Error: createRoom - Room ID already exists");
+    return;
+  }
+  let filteredRooms: ChatRoomData[] = Object.values(chatRoomDatas).filter(room => {
+    const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
+    return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
+  });
+
+  if (filteredRooms.length > 0) return;
+
+  let roomName: string = userlist.map((user: {datenum: number; userid: string}) => user.userid).join(", ");
+
+  let newRoom = {
+    roomid: roomid,
+    roomname: roomName,
+    minnum: 0,
+    maxnum: 0,
+    userlist: userlist,
+  };
+
+  chatRoomDatas[roomid] = newRoom;
+  nextId = nextId + 1;
+
+  return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
 }
