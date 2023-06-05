@@ -81,16 +81,11 @@ export function removeUserList(roomid: number, userid: string) {
 }
 
 // 해당 방의 정보를 가져오는데, 필요없는 minnum과 maxnum, userlist의 num을 제외하고 반환한다.
-export function getRoomData(roomid: number) {
-  let room = findRoom(roomid);
-  if (!room) return {};
-
-  return {
-    roomid: roomid,
-    roomname: room.roomname,
-    userlist: room.userlist,
-  };
-}
+// export function findRoom(roomid: number) {
+//   let room = findRoom(roomid);
+//   if (!room) return {};
+//   return room;
+// }
 
 export function addRoomUser(roomid: number, userid: string) {
   let room = findRoom(roomid);

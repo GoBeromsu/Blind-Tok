@@ -57,17 +57,16 @@ const NewChatList = () => {
           break;
         // 유저가 속한 방의 리스트를 받는 경우
         case "chatList":
-          // setList(setChatList(data));
+          setRoomList(data);
           break;
         // 유저가 속한 방이 만들어졌을 경우
         // addChatList : 유저의 방목록에 추가한다.
         // setList : chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
         case "createRoom":
-          console.log("새로운 방이 생성되었습니다.", data);
+          // console.log("새로운 방이 생성되었습니다.", data);
           const {roomid, roomname, maxnum, userlist} = data;
           // setRoomList([data...roomList]);
           setRoomList([{roomid, roomname, maxnum, userlist}, ...roomList]);
-
           break;
         default:
           break;
