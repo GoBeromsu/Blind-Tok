@@ -57,7 +57,7 @@ function AppRoutes() {
     return <Loading />;
   }
 
-  sendMessage(loginUser?.userid, "data_init");
+  sendMessage(loginUser?.userid, "dataInit");
   const user = loginUser || data;
   return (
     <div className="container">

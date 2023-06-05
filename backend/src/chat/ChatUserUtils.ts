@@ -57,19 +57,19 @@ export function sendOfflineMessages(io: any, socket: any, roomList: any[], useri
   roomList.forEach(room => {
     let roomid = room.roomid;
     let data = checkData(roomid, userid);
-    sendMessageToUser(socket, {data: {roomid, data}, id: "rec_chatData"});
-    console.log("rec_chatData : " + roomid + data);
+    sendMessage(socket, {data: {roomid, data}, id: "chatData"});
+    console.log("chatData : " + roomid + data);
   });
 }
 
-export function data_init(io: any, socket: any, userid: string) {
+export function dataInit(io: any, socket: any, userid: string) {
   newUser(userid, socket);
   updateUserSocket(socket, userid);
   const roomList = getRoomList(userid);
   // 유저가 속한 방에 연결
   joinRoom(socket, roomList);
   // 유저가 속한 방 리스트
-  io.to(socket.id).emit("rec_message", {data: roomList.map((data: any) => getRoomData(data)), id: "rec_chatList"});
+  io.to(socket.id).emit("message", {data: roomList.map((data: any) => getRoomData(data)), id: "chatList"});
   sendOfflineMessages(io, socket, roomList, userid);
 }
 
@@ -79,14 +79,14 @@ export function data_init(io: any, socket: any, userid: string) {
 // removeRoomList : ChatRoomUtils의 해당 방 데이터의 유저 리스트에서 유저를 삭제한다.
 // removeUserList : ChatUserUtils의 해당 유저의 데이터의 방 리스트에서 방을 삭제한다.
 // 그 후 해당 방의 유저 목록을 가져와 어느 유저가 나갔는지 알려준다.
-export function leave_room(io: any, socket: any, roomid: number, userid: string) {
+export function leaveRoom(io: any, socket: any, roomid: number, userid: string) {
   socket.leave(roomid);
   // let userid = Participants.find((user: any) => user.mySocket === mySocket).userid;
 
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
   let userList = getRoomData(roomid).userlist;
-  if (userList) route(io, userList, "rec_leaveRoom", {roomid, userid});
+  if (userList) route(io, userList, "leaveRoom", {roomid, userid});
   console.log("success leave / room : " + roomid + " / user : " + userid);
 }
 
@@ -111,9 +111,9 @@ export function processReceivedMessage(
   let room = updateRoom(roomid, rest);
 
   // console.log("update Room : ", roomid);
-  // mySocket.broadcast.emit("receive_message", data); // 1 대 다수
-  socket.to(roomid).emit("rec_message", {data: room, id: "rec_message"}); // 방 하나만
-  io.to(socket.id).emit("rec_message", {data: room, id: "rec_message"}); // 특정 인원에게 전달 가능
+  // mySocket.broadcast.emit("ive_message", data); // 1 대 다수
+  socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
+  io.to(socket.id).emit("message", {data: room, id: "message"}); // 특정 인원에게 전달 가능
 }
 
 // 소켓과 방 아이디를 가진 리스트를 받아
@@ -146,7 +146,7 @@ export function notifyUsersConnect(io: any, room: {roomid: number; userlist: any
   userlist.map((user: any) => {
     const connectedUser = userRegistry.getById(user.userid);
     if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("rec_message", {data: room, id: "rec_createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
+      io.to(connectedUser.socket.id).emit("message", {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
       connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
     }
   });
@@ -163,12 +163,12 @@ export function route(io: any, userList: any, opt: string, data: any) {
       console.warn(`User ${user.userid} is not connected.`);
       return; // skip this iteration
     }
-    io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: opt});
+    io.to(connectedUser.socket.id).emit("message", {data: data, id: opt});
   });
 }
 
-function sendMessageToUser(socket: any, message: any) {
-  socket.emit("rec_message", message);
+function sendMessage(socket: any, message: any) {
+  socket.emit("message", message);
 }
 
 // 방에 유저가 추가되었을 경우 이를 처리하는 함수
@@ -188,6 +188,6 @@ export function add_user(io: any, data: {roomid: number; userlist: any[]}) {
     userRegistry.getById(user.userid)?.socket.join(roomid);
   });
   let currentRoomData = getRoomData(roomid);
-  route(io, currentRoomData.userlist, "rec_addUser", data);
-  route(io, userlist, "rec_addRoom", currentRoomData);
+  route(io, currentRoomData.userlist, "addUser", data);
+  route(io, userlist, "addRoom", currentRoomData);
 }

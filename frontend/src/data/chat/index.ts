@@ -8,7 +8,7 @@ socket.on("disconnect", reason => {
   console.log("socket : disconnect");
 });
 
-socket.on("rec_message", (message: any) => {
+socket.on("message", (message: any) => {
   recMessage(message);
 });
 
