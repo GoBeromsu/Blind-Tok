@@ -102,7 +102,8 @@ export function addRoomUser(roomid: number, userid: string) {
 // TODO: 하지만, 추후에는 Socket을 가지고 있지 않은 User가 들어올 수도 있도록 변경하자, 왜냐면 로그아웃 된 상태의 User는 소켓이 없잖아
 export function createRoomAndNotify(io: any, data: {user: any; userlist: any; roomname: string}) {
   const {user, userlist, roomname} = data;
-  let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
+  // let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
+  let updatedUserList = [user?.userid, ...userlist];
   // console.log("updatedUserList : ", updatedUserList);
   let createdRoom = createRoom(updatedUserList, roomname);
   // console.log("created Room : ", createdRoom);
@@ -118,18 +119,14 @@ export function createRoomAndNotify(io: any, data: {user: any; userlist: any; ro
 export function createRoom(userlist: any, roomname: string): ChatRoomData | null {
   let roomid: number = nextId;
 
-  if (findRoom(roomid)) {
-    console.log("Error: createRoom - Room ID already exists");
-    return null;
-  }
   let filteredRooms: ChatRoomData[] = Object.values(rooms).filter(room => {
-    const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
+    const foundUsers = userlist.filter((userid: any) => room?.userlist.some(u => u.userid === userid));
     return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
   });
 
   if (filteredRooms.length > 0) return null;
 
-  let roomName: string = userlist.map((user: {datenum: number; userid: string}) => user.userid).join(", ");
+  let roomName: string = userlist.map((userid: {datenum: number; userid: string}) => userid).join(", ");
 
   let newRoom: ChatRoomData = {
     roomid: roomid,
@@ -141,6 +138,6 @@ export function createRoom(userlist: any, roomname: string): ChatRoomData | null
 
   rooms[roomid] = newRoom;
   nextId += 1;
-
+  console.log("createRoom : ", newRoom);
   return newRoom;
 }

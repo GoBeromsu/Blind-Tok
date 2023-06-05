@@ -12,7 +12,7 @@ export function newUser(userid: string, socket: any) {
 // 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: number, userList: any) {
   for (let i = 0; i < userList.length; i++) {
-    const userid = userList[i].userid;
+    const userid = userList[i];
     let user = userRegistry.getById(userid);
     // 방에 초대 할 유저가 없는 경우에 예외처리를 해야 하는구만
     if (!user) return;
@@ -128,13 +128,17 @@ export function joinRoom(socket: any, room: any) {
 export function notifyUsersConnect(io: any, room: ChatRoomData) {
   // console.log("notifyUsersConnect : ", room);
   const {userlist} = room;
-
-  userlist.map((user: any) => {
-    const connectedUser = userRegistry.getById(user.userid);
+  console.log("notifyUsersConnect : ", userlist);
+  userlist.map((userid: any) => {
+    const connectedUser = userRegistry.getById(userid);
     if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("message", {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
+      // io.to(connectedUser.socket.id).emit("message", {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
+      sendMessage(connectedUser.socket, {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
       // connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
+      console.log("success join / room : " + room.roomid + " / user : " + userid);
       joinRoom(connectedUser.socket, room);
+    } else {
+      console.log("fail join / room : " + room.roomid + " / user : " + userid);
     }
   });
 }
