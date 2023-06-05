@@ -41,7 +41,11 @@ export default class {
     delete this.usersById[userId];
     delete this.usersBySocket[userSession.socket.id];
   }
-
+  getSocketById(userId: string) {
+    const userSession = this.getById(userId);
+    if (!userSession) return;
+    return userSession.socket;
+  }
   getUsersByRoom(roomId: number): UserSession[] {
     const allUsers = Object.values(this.usersById);
     return allUsers.filter(user => user.roomlist.includes(roomId));
