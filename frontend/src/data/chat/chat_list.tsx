@@ -60,14 +60,14 @@ export function subUserChat_list(roomid: number, userid: string) {
   chatList = chatList.map((chat: any) =>
     chat.roomid === roomid ? {...chat, userlist: chat.userlist.filter((user: any) => user.userid !== userid)} : chat,
   );
-  console.log(chatList);
+  // console.log(chatList);
   return chatList;
 }
 
 // subUserChat_list와 마찬가지로 유저가 참여했을 때도 목록 갱신이 필요하다.
 export function addUserChat_list(roomid: number, userid: string) {
   chatList = chatList.map((chat: any) => (chat.roomid === roomid ? {...chat, userlist: [...chat.userlist, {userid}]} : chat));
-  console.log(chatList);
+  // console.log(chatList);
   return chatList;
 }
 

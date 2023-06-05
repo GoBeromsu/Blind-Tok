@@ -32,7 +32,7 @@ const ChatList: React.FC = () => {
   const [addFriendList, setAddFriendList]: any = useState([]);
   // 유저가 속한 방의 목록을 저장하는 변수
   // init_list를 통해 유저의 chat_list에 저장된 방 목록을 초기값으로 설정한다.
-  const [chatList, setChatList] = useState<any>(init_list());
+  const [roomList, setRoomList] = useState<any>(init_list());
   // 방 생성할 때 친구를 추가할 수 있게 유저의 친구목록을 저장하는 변수
   const [friendList, setFriendList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
@@ -66,7 +66,7 @@ const ChatList: React.FC = () => {
 
   // 채팅방 목록을 업데이트하는 함수입니다.
   setList = (list: any) => {
-    setChatList(list);
+    setRoomList(list);
   };
 
   // 초대할 목록에 인원을 추가하는 함수
@@ -93,7 +93,7 @@ const ChatList: React.FC = () => {
   };
 
   // 검색을 위한 필터
-  const filteredChatRoom = chatList.filter((chat: any) => {
+  const filteredChatRoom = roomList.filter((chat: any) => {
     if (!chat.roomname) return;
     return chat.roomname.toLowerCase().includes(search.toLowerCase());
   });
