@@ -1,9 +1,10 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
-import {register} from "./video";
-import {add_user, dataInit, leaveRoom, processReceivedMessage, userRegistry} from "../../chat/ChatUserUtils";
+import {add_user, dataInit, leaveRoom, processReceivedMessage} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
+import {joinVideoChat} from "src/chat/VideoUtils";
+import {userRegistry} from "../../chat/Consonants";
 
 export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
@@ -18,7 +19,9 @@ export default async function (fastify: FastifyInstance) {
       leaveRoom(fastify.io, socket, roomid, userid);
     });
 
-    socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {});
+    socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {
+      joinVideoChat();
+    });
 
     socket.on("disconnect", (reason: any) => {
       const user = userRegistry.getBySocket(socket);
