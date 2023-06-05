@@ -97,7 +97,7 @@ export function leaveRoom(io: any, socket: any, roomid: number, userid: string) 
 // 메시지에서 roomid를 추출
 // updateRoom : ChatRoomUtils의 해당 방의 데이터를 갱신하고 데이터를 다시 반환
 // 이 반환 받은 데이터를 방에 속한 유저와 보낸 유저에게 전송
-export function processReceivedMessage(
+export function enteredMessage(
   io: any,
   socket: any,
   data: {
@@ -115,8 +115,11 @@ export function processReceivedMessage(
 
   // console.log("update Room : ", roomid);
   // mySocket.broadcast.emit("ive_message", data); // 1 대 다수
-  socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
-  io.to(socket.id).emit("message", {data: room, id: "message"}); // 특정 인원에게 전달 가능
+  // io.broadcast.emit("message", {data: room, id: "message"}); // 1 대 다수
+  console.log("update ? room : ", room);
+  room?.userlist?.map((userid: any) => sendMessage(userRegistry.getSocketById(userid), {data: room, id: "message"})); // 방에 있는 모든 유저
+  // socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
+  // io.to(socket.id).emit("message", {data: room, id: "message"}); // 특정 인원에게 전달 가능
 }
 
 // 소켓과 방 아이디를 가진 리스트를 받아
@@ -161,6 +164,7 @@ export function route(io: any, userList: any, opt: string, data: any) {
 }
 
 function sendMessage(socket: any, message: any) {
+  console.log("sendMessage : ", message, socket);
   socket.emit("message", message);
 }
 
