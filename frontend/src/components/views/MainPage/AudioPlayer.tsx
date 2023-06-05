@@ -6,7 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import UserModal from "./UserModal";
 
 interface Props {
-  src: any;
+  src: string;
   own: any;
   autoPlay: boolean;
 }
@@ -21,12 +21,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    width: "50%", // 모달 너비
-    height: "70%", // 모달 높이
-    overflowY: "auto", // 필요시 스크롤 생성
-    borderRadius: "10px", // 모달 모서리 둥글게
+    width: "50%",
+    height: "70%",
+    overflowY: "auto",
+    borderRadius: "10px",
     [theme.breakpoints.down("xs")]: {
-      // 모바일 화면 대응
       width: "80%",
       height: "80%",
     },
@@ -37,9 +36,19 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const classes = useStyles(); // 스타일 사용
-  const audioOwn = own;
+  const modalRef = useRef<HTMLDivElement>(null);
+  const classes = useStyles();
+  const [playerUrl, setPlayerUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPlayerUrl(src);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [src]);
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
@@ -55,51 +64,44 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
     if (isModalOpen) {
-      modalRef.current?.focus?.();
+      modalRef.current?.focus();
     }
   }, [isModalOpen]);
 
   return (
     <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
       <div className="audio-player" onClick={handlePlayerClick}>
-        <ReactPlayer
-          url={src}
-          playing={autoPlay}
-          type="audio/mpeg"
-          loop={true}
-          muted={false}
-          controls
-          style={{
-            paddingRight: "100px",
-            width: "100%",
-            maxWidth: "500px",
-            height: "auto",
-            margin: "0 auto",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          }}
-        />
+        {playerUrl && ( // 수정: playerUrl이 존재할 때에만 ReactPlayer 렌더링
+          <ReactPlayer
+            url={playerUrl}
+            playing={autoPlay}
+            loop={true}
+            muted={false}
+            controls
+            style={{
+              paddingRight: "100px",
+              width: "100%",
+              maxWidth: "500px",
+              height: "auto",
+              margin: "0 auto",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+        )}
       </div>
       <Modal
         open={isModalOpen}
         onClose={closeModal}
         closeAfterTransition
         BackdropComponent={Backdrop}
-        className={classes.modal} // 모달 스타일 적용
+        className={classes.modal}
         BackdropProps={{
           timeout: 500,
         }}>
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
-            <UserModal own={audioOwn} />
+            <UserModal own={own} />
           </div>
         </Fade>
       </Modal>

@@ -1,5 +1,5 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
-import {processReceivedMessage, disconnect, create_room, leave_room, data_init, add_user} from "./chat";
+import {processReceivedMessage, disconnect, create_room, leave_room, data_init, add_user} from "../../chat/ChatUserUtils";
 import {register} from "./video";
 
 export default async function (fastify: FastifyInstance) {
