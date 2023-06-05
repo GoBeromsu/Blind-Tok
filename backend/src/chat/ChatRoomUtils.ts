@@ -9,11 +9,11 @@ interface ChatRoomData {
   userlist: {userid: string; datanum: number}[];
 }
 
-let chatRoomDatas: {[roomid: number]: ChatRoomData} = {};
+let rooms: {[roomid: number]: ChatRoomData} = {};
 let nextId: number = 1;
 
 export function findRoom(roomid: number) {
-  let room = chatRoomDatas[roomid];
+  let room = rooms[roomid];
   if (!room) {
     console.log("Room ID not found: ", roomid);
     return null;
@@ -47,7 +47,7 @@ export function checkData(roomid: number, userid: string) {
     let min_Arr = roomdata.userlist.reduce((prev, value) => {
       return prev.datanum < value.datanum ? prev : value;
     });
-    chatRoomDatas[roomid].minnum = min_Arr.datanum;
+    rooms[roomid].minnum = min_Arr.datanum;
     data_n = getData(roomid, min_Arr.datanum, 1);
 
     // 만일 max와 min 사이의 값이라면 유저의 datanum에서 부터 max까지의 데이터를 가져온다. 이때 저장된 데이터는 삭제하지 않는다.
@@ -86,7 +86,7 @@ export function removeUserList(roomid: number, userid: string) {
     return;
   }
   room.userlist = room?.userlist.filter(user => user.userid != userid);
-  chatRoomDatas[roomid] = room;
+  rooms[roomid] = room;
 }
 
 // 해당 방의 정보를 가져오는데, 필요없는 minnum과 maxnum, userlist의 num을 제외하고 반환한다.
@@ -110,6 +110,7 @@ export function addRoomUser(roomid: number, userid: string) {
 export function createRoomAndNotify(io: any, data: {user: any; userlist: any; roomname: string}) {
   const {user, userlist, roomname} = data;
   let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
+  console.log("updatedUserList : ", updatedUserList);
   let createdRoom = createRoom(updatedUserList, roomname);
   console.log("created Room : ", createdRoom);
   if (createdRoom) {
@@ -127,7 +128,7 @@ export function createRoom(userlist: any, roomname: string) {
     console.log("Error: createRoom - Room ID already exists");
     return;
   }
-  let filteredRooms: ChatRoomData[] = Object.values(chatRoomDatas).filter(room => {
+  let filteredRooms: ChatRoomData[] = Object.values(rooms).filter(room => {
     const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
     return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
   });
@@ -144,7 +145,7 @@ export function createRoom(userlist: any, roomname: string) {
     userlist: userlist,
   };
 
-  chatRoomDatas[roomid] = newRoom;
+  rooms[roomid] = newRoom;
   nextId = nextId + 1;
 
   return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
