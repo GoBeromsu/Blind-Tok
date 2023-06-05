@@ -8,7 +8,8 @@ import {setList} from "@views/Chat/ChatList";
 // chatList에서 초대할 친구를 선택해서 소켓으로 전송
 export function createRoom(user: any, userlist: any[], roomname: string = "") {
   const data = {user, userlist, roomname};
-  sendMessage(data, "create_room");
+  // console.log("createRoom : ", data);
+  sendMessage(data, "createRoom");
 }
 
 // 채팅방에 유저 추가

@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
       disconnect(socket);
     });
 
-    socket.on("create_room", (data: {user: any; userlist: any; roomname: string}) => {
+    socket.on("createRoom", (data: {user: any; userlist: any; roomname: string}) => {
       const {user, userlist, roomname} = data;
       console.log("create_room", user?.userid, userlist, roomname);
       createRoomAndNotify(fastify.io, data);
