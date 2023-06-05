@@ -3,7 +3,11 @@ import UserSession from "./UserSession";
 export default class {
   private usersById: {[key: string]: UserSession} = {};
   // private userByName: {[key: string]: UserSession} = {};
-  private usersBySocket: {[key: string]: string} = {};
+  private usersBySocket: {[key: string]: UserSession} = {};
+
+  getAll() {
+    return Object.values(this.usersById);
+  }
 
   register(user: UserSession) {
     this.usersById[user.userid] = user;
@@ -28,8 +32,7 @@ export default class {
     return this.usersById[userId];
   }
   getBySocket(socketId: string) {
-    const userId = this.usersBySocket[socketId];
-    return userId ? this.getById(userId) : undefined;
+    return this.usersBySocket[socketId];
   }
 
   removeById(userId: string) {
@@ -38,8 +41,12 @@ export default class {
     delete this.usersById[userId];
     delete this.usersBySocket[userSession.socket.id];
   }
-
-  getUsersByRoom(roomId: string): UserSession[] {
+  getSocketById(userId: string) {
+    const userSession = this.getById(userId);
+    if (!userSession) return;
+    return userSession.socket;
+  }
+  getUsersByRoom(roomId: number): UserSession[] {
     const allUsers = Object.values(this.usersById);
     return allUsers.filter(user => user.roomlist.includes(roomId));
   }

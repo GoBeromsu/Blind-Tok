@@ -115,7 +115,7 @@ export function getChatData(roomid: number): any {
   };
 
   if (!savedata) {
-    console.log(roomid, data);
+    // console.log(roomid, data);
     return {roomid: roomid, data: [data]};
   }
 
