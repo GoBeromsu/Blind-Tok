@@ -78,7 +78,7 @@ export function getIcecandidateBeforeEstablished(userSession: UserSession, socke
     while (iceCandidateQueue.length) {
       const message = iceCandidateQueue.shift();
       console.error("user: " + userSession.id + " collect candidate for outgoing media");
-      console.log("icecandidate per processReceivedMessage: " + message);
+      console.log("icecandidate per enteredMessage: " + message);
       userSession.outgoingMedia.addIceCandidate(message.candidate);
     }
   }

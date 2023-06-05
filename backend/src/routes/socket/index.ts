@@ -1,6 +1,6 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
-import {add_user, dataInit, leaveRoom, processReceivedMessage} from "../../chat/ChatUserUtils";
+import {add_user, dataInit, leaveRoom, enteredMessage} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 import {joinVideoChat} from "src/chat/VideoUtils";
@@ -39,7 +39,7 @@ export default async function (fastify: FastifyInstance) {
       add_user(fastify.io, data);
     });
     socket.on("enteredMessage", (data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) => {
-      processReceivedMessage(fastify.io, socket, data);
+      enteredMessage(fastify.io, socket, data);
     });
   });
 }

@@ -62,10 +62,10 @@ export function updateRoom(roomid: number, rest: any) {
     if (!userSession) return;
     data.datanum = room?.maxnum;
   });
-
+  const updateRoom = {...room, ...rest};
   rest = {num: room.maxnum, ...rest};
   setData(roomid, rest);
-  return {roomid, ...rest};
+  return updateRoom;
 }
 
 // 방 나가기 시 실행되는 함수
