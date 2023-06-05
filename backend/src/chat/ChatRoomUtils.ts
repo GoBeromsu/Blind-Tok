@@ -107,37 +107,40 @@ export function addRoomUser(roomid: number, userid: string) {
   room.userlist.push({userid: userid, datanum: room.maxnum});
 }
 
+//TODO: 현재 로직으로는 User들이 방에 들어올 때 모두 Socket을 가지고 있는 것이 자명함,
+// TODO: 하지만, 추후에는 Socket을 가지고 있지 않은 User가 들어올 수도 있도록 변경하자, 왜냐면 로그아웃 된 상태의 User는 소켓이 없잖아
 export function createRoomAndNotify(io: any, data: {user: any; userlist: any; roomname: string}) {
   const {user, userlist, roomname} = data;
   let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
-  console.log("updatedUserList : ", updatedUserList);
+  // console.log("updatedUserList : ", updatedUserList);
   let createdRoom = createRoom(updatedUserList, roomname);
-  console.log("created Room : ", createdRoom);
+  // console.log("created Room : ", createdRoom);
   if (createdRoom) {
     updateRoomList(createdRoom.roomid, updatedUserList);
     createData(createdRoom.roomid);
     notifyUsersConnect(io, createdRoom);
   }
+  // console.log("Socket 좀 보자~ ", userRegistry.getAll());
 }
 // 방생성 함수
 // data 배열에 새로운 방(data_n)을 저장 및 반환 / 이는 방이 만들어졌다는 사실을 유저에게 전송할 때 사용됨.
-export function createRoom(userlist: any, roomname: string) {
+export function createRoom(userlist: any, roomname: string): ChatRoomData | null {
   let roomid: number = nextId;
 
   if (findRoom(roomid)) {
     console.log("Error: createRoom - Room ID already exists");
-    return;
+    return null;
   }
   let filteredRooms: ChatRoomData[] = Object.values(rooms).filter(room => {
     const foundUsers = userlist.filter((user: any) => room?.userlist.some(u => u.userid === user.userid));
     return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
   });
 
-  if (filteredRooms.length > 0) return;
+  if (filteredRooms.length > 0) return null;
 
   let roomName: string = userlist.map((user: {datenum: number; userid: string}) => user.userid).join(", ");
 
-  let newRoom = {
+  let newRoom: ChatRoomData = {
     roomid: roomid,
     roomname: roomName,
     minnum: 0,
@@ -148,5 +151,5 @@ export function createRoom(userlist: any, roomname: string) {
   rooms[roomid] = newRoom;
   nextId = nextId + 1;
 
-  return {roomid: newRoom.roomid, roomname: newRoom.roomname, userlist: newRoom.userlist};
+  return newRoom;
 }
