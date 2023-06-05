@@ -30,6 +30,7 @@ import VideoChat from "@views/Chat/VideoChat";
 
 import {Style} from "@material-ui/icons";
 import {sendMessage} from "@data/chat";
+import newChatList from "@views/Chat/newChatList";
 
 export default function App() {
   return (
@@ -69,7 +70,7 @@ function AppRoutes() {
           <Route path="/friend" element={Auth(FriendList, true, user)}>
             <Route path=":friendid" element={Auth(FriendPage, true, user)} />
           </Route>
-          <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
+          <Route path="/chat" element={Auth(newChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
         </Route>

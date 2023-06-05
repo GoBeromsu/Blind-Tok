@@ -3,7 +3,7 @@ import Button from "../Layout/Button";
 import C_Image from "../Layout/CircularImage";
 import "../../style/SideBar.css";
 import {Link, Outlet, useNavigate, useParams} from "react-router-dom";
-import {leaveRoom, addUser} from "@data/chat/ChattingController";
+import {leaveRoom, addUser, joinVideoChat} from "@data/chat/ChattingController";
 import {useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import Modal from "react-modal";
@@ -79,6 +79,9 @@ const ChatBar: React.FC = () => {
 
   const SearchChange = (event: any) => {
     setSearchInput(event.target.value);
+  };
+  const handleVideoChat = () => {
+    joinVideoChat(Number(roomid), loginUser?.userid);
   };
 
   //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
@@ -164,7 +167,7 @@ const ChatBar: React.FC = () => {
             </Box>{" "}
             <Box className="item">
               <Link to="/video">
-                <Button onClick={handleClick} label="화상 채팅" />
+                <Button onClick={handleVideoChat} label="화상 채팅" />
               </Link>
             </Box>
             <Box className="item">
