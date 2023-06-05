@@ -4,7 +4,7 @@ import {Box} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import Loading from "@loading/Loading";
 import {getFriendListQuery} from "@data/Friend/state";
-import {Button, TextField} from "@mui/material";
+import {Button, List, ListItem, TextField} from "@mui/material";
 import {Link} from "react-router-dom";
 import ChatUserDialog from "@data/chat/ChatUserDialog";
 import {createRoom} from "@data/chat/ChattingController";
@@ -90,15 +90,17 @@ const NewChatList = () => {
       </Box>
       <Box>
         <Box>방 리스트가 들어갈 공간</Box>
-        {roomList?.map((room: any) => {
-          return (
-            <Box key={room?.roomid}>
-              <Link to={`/ChatRoom/${room?.roomid}`}>
-                <Box>{room?.roomname}</Box>
-              </Link>
-            </Box>
-          );
-        })}
+        <List sx={{padding: 0}}>
+          {roomList?.map((room: any) => {
+            return (
+              <Box key={room?.roomid}>
+                <Link to={`/ChatRoom/${room?.roomid}`}>
+                  <ListItem sx={{backgroundColor: "#bbb"}}>{room?.roomname}</ListItem>
+                </Link>
+              </Box>
+            );
+          })}
+        </List>
       </Box>
     </Box>
   );
