@@ -15,45 +15,41 @@ const ChatBar: React.FC = () => {
   const navigate = useNavigate();
   const loginUser: any = useRecoilValue(userState);
   const {isLoading, isError, data, error, refetch} = getFriendListQuery(loginUser?.userid);
+
   // 유저의 친구 목록을 불러와 저장할 변수
   const [friendList, setFriendList] = useState<any>([]);
   // 방에 유저를 초대할 때 그 유저의 리스트를 저장할 변수
-  const [addFriendList, setAddFriendList]: any = useState([]);
+  const [friendToInvite, setFriendToInvite]: any = useState([]);
   // 검색을 위한 변수
-  const [search_f, setSearch_f] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   // 모달의 on,off를 저장할 상태 변수
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const handleClick = () => {};
   // 방 나갈 때 실행되는 이벤트 함수
-  const leave = () => {
+  const handleLeaveRoom = () => {
     if (Number(roomid)) {
-      leaveRoom(Number(roomid), loginUser.userid);
+      leaveRoom(Number(roomid), loginUser?.userid);
       navigate("/chat");
     } else "leaveRoom error : roomid undefined";
   };
   // 친구 목록을 불러와 friendList에 저장하는 이벤트 함수
   // 이미 속해있는 친구를 제외해줘야됨. 이를 추후 추가 예정
-  const getFriendList = (list: any) => {
-    let friendlist = list;
-    if (friendlist) {
-      friendlist = friendlist.map((data: any) => {
-        return {userid: data.friendid};
-      });
-      console.log(friendlist);
-      setFriendList(friendlist);
-    }
+  const handleGetFriendList = (friendList: any) => {
+    const formattedFriends = friendList?.map((data: any) => ({userid: data.friendid})) || [];
+    console.log(formattedFriends);
+    setFriendList(formattedFriends);
   };
   // 초대할 목록에 인원을 추가하는 함수
   // 초대할 목록에 이미 있는지 확인하고 없으면 추가
-  const add_list = (friend_n: any) => {
-    if (!addFriendList.find((friend: any) => friend.userid === friend_n.userid)) {
-      setAddFriendList([friend_n, ...addFriendList]);
+  const handleAddToInviteList = (friend: any) => {
+    if (!friendToInvite.find((friend: any) => friend.userid === friend.userid)) {
+      setFriendToInvite([friend, ...friendToInvite]);
     }
   };
   // 초대할 목록에서 인원을 뺄 함수
-  const sub_list = (friend_n: any) => {
-    setAddFriendList(addFriendList.filter((friend: any) => friend.userid !== friend_n.userid));
+  const handleRemoveFromInviteList = (friend_n: any) => {
+    setFriendToInvite(friendToInvite.filter((friend: any) => friend.userid !== friend_n.userid));
   };
   const M_style: any = {
     overlay: {
@@ -82,21 +78,17 @@ const ChatBar: React.FC = () => {
   };
 
   const SearchChange = (event: any) => {
-    setSearch_f(event.target.value);
+    setSearchInput(event.target.value);
   };
 
-  const filteredFriends = friendList; //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
-
+  //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      setSidebarOpen(window.innerWidth >= 768);
     };
-    handleResize();
+
     window.addEventListener("resize", handleResize);
+    handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -109,29 +101,29 @@ const ChatBar: React.FC = () => {
         isOpen={modalIsOpen}
         onRequestClose={() => {
           setModalIsOpen(false);
-          setAddFriendList([]);
+          setFriendToInvite([]);
         }}
         style={M_style}>
         <Box className="modal" style={{display: "flex", overflow: "auto", gap: "30px"}}>
-          {addFriendList.map((friend: any, index: number) => (
+          {friendToInvite.map((friend: any, index: number) => (
             <Box
               key={index}
               style={{height: "50px"}}
               onClick={() => {
-                sub_list(friend);
+                handleRemoveFromInviteList(friend);
               }}>
               {friend.userid}
             </Box>
           ))}
         </Box>
-        <input type="text" placeholder="Search" value={search_f} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
+        <input type="text" placeholder="Search" value={searchInput} onChange={SearchChange} style={{position: "sticky", top: "0px"}} />
         <Box className="f_item">
-          {filteredFriends.map((friend: any, index: number) => (
+          {friendList.map((friend: any, index: number) => (
             <Box
               key={index}
               style={{width: `30px`, height: "50px"}}
               onClick={() => {
-                add_list(friend);
+                handleAddToInviteList(friend);
               }}>
               {friend.userid}
             </Box>
@@ -139,9 +131,9 @@ const ChatBar: React.FC = () => {
         </Box>
         <button
           onClick={() => {
-            addUser(Number(roomid), addFriendList);
+            addUser(Number(roomid), friendToInvite);
             setModalIsOpen(false);
-            setAddFriendList([]);
+            setFriendToInvite([]);
           }}
           style={{width: "50px", height: "50px"}}>
           확인
@@ -162,7 +154,7 @@ const ChatBar: React.FC = () => {
               <Button
                 onClick={() => {
                   setModalIsOpen(true);
-                  getFriendList(data);
+                  handleGetFriendList(data);
                 }}
                 label="추가"
               />
@@ -181,7 +173,7 @@ const ChatBar: React.FC = () => {
               </Link>
             </Box>
             <Box className="item">
-              <Button onClick={leave} label="방 나가기" />
+              <Button onClick={handleLeaveRoom} label="방 나가기" />
             </Box>
           </Box>
         </Box>
