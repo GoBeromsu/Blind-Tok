@@ -42,7 +42,7 @@ export default class {
     delete this.usersBySocket[userSession.socket.id];
   }
 
-  getUsersByRoom(roomId: string): UserSession[] {
+  getUsersByRoom(roomId: number): UserSession[] {
     const allUsers = Object.values(this.usersById);
     return allUsers.filter(user => user.roomlist.includes(roomId));
   }

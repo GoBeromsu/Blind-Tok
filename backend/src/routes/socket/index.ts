@@ -1,7 +1,7 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
 import {register} from "./video";
-import {add_user, data_init, disconnect, leave_room, processReceivedMessage} from "../../chat/ChatUserUtils";
+import {add_user, data_init, leave_room, processReceivedMessage, userRegistry} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 
@@ -19,8 +19,10 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("disconnect", (reason: any) => {
-      //TODO: Socket id가 아니라, userid로 모두 처리하도록 변경해야 함
-      disconnect(socket);
+      const user = userRegistry.getBySocket(socket);
+      if (user) {
+        userRegistry.unregister(user.userid);
+      }
     });
 
     socket.on("createRoom", (data: {user: any; userlist: any; roomname: string}) => {

@@ -4,7 +4,7 @@ export default class {
   private outGoingMedia: any;
   private incomingMedia: any;
   private iceCandidateQueue: any;
-  roomlist: any[];
+  roomlist: number[];
   // private roomName: string;
   constructor(userid: string, socket: any) {
     this.userid = userid;
