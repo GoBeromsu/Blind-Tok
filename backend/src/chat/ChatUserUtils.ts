@@ -1,8 +1,6 @@
 import UserSession from "./UserSession";
-import UserRegistry from "./UserRegistry";
 import {addRoomUser, checkData, getRoomData, removeUserList, updateRoom} from "./ChatRoomUtils";
-
-export let userRegistry = new UserRegistry();
+import {ChatRoomData, userRegistry} from "./Consonants";
 
 export function newUser(userid: string, socket: any) {
   const userSession = new UserSession(userid, socket);
@@ -34,7 +32,7 @@ export function removeRoomList(roomid: number, userid: string) {
 }
 // 유저가 속한 방 리스트를 가져오는 함수
 // 유저를 찾아서 roomlist를 반환한다.
-export function getRoomList(userid: string) {
+export function getUserRooms(userid: string) {
   const user = userRegistry.getById(userid);
   return user?.roomlist;
 }
@@ -65,9 +63,12 @@ export function sendOfflineMessages(io: any, socket: any, roomList: any[], useri
 export function dataInit(io: any, socket: any, userid: string) {
   newUser(userid, socket);
   updateUserSocket(socket, userid);
-  const roomList = getRoomList(userid);
+  const roomList = getUserRooms(userid);
   // 유저가 속한 방에 연결
-  joinRoom(socket, roomList);
+  roomList.map(room => {
+    joinRoom(socket, room);
+  });
+
   // 유저가 속한 방 리스트
   io.to(socket.id).emit("message", {data: roomList.map((data: any) => getRoomData(data)), id: "chatList"});
   sendOfflineMessages(io, socket, roomList, userid);
@@ -118,28 +119,13 @@ export function processReceivedMessage(
 
 // 소켓과 방 아이디를 가진 리스트를 받아
 // 해당 소켓을 방에 연결시키는 함수
-export function joinRoom(socket: any, roomList: any) {
-  console.log("joinRoom : ", roomList);
-  roomList.map((room: any) => socket.join(room) && console.log("join : ", room));
+export function joinRoom(socket: any, room: any) {
+  // console.log("joinRoom : ", roomList);
+  socket.join(room);
+  // roomList.map((room: any) => socket.join(room) && console.log("join : ", room));
 }
 
-// ChatRoomUtils에 저장된 데이터는 maxnum과 minnum등 불필요한 정보가 있다.
-// 따라서 이를 제거하고 방의 이름, userid, 속한 유저 아이디 리스트만 가공하여 반환하는 함수
-// getRoomData : 방 하나를 가공하는 함수
-// 이 함수는 방 목록을 받아 목록에 있는 모든 방을 가공하여 반환한다.
-export function make_RoomListData(roomList: any) {
-  return;
-}
-
-// 방의 생성을 방에 속한 유저에게 알리고 유저를 방에 연결시키는 함수
-// 방을 생성하면 그 방에 속한 유저를 연결시켜야된다.
-// 또한 방에 속한 것을 유저에게 알려 유저의 방리스트 즉 chatList의 목록을 갱신시켜
-// 실시간으로 방에 참여할수 있도록 만들어야된다.
-// data.Participants.map : 주어진 유저리스트 마다 반복한다.
-// Participants.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
-// 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
-// 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
-export function notifyUsersConnect(io: any, room: {roomid: number; userlist: any[]; roomname: string}) {
+export function notifyUsersConnect(io: any, room: ChatRoomData) {
   // console.log("notifyUsersConnect : ", room);
   const {userlist} = room;
 
@@ -147,7 +133,8 @@ export function notifyUsersConnect(io: any, room: {roomid: number; userlist: any
     const connectedUser = userRegistry.getById(user.userid);
     if (connectedUser) {
       io.to(connectedUser.socket.id).emit("message", {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
-      connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
+      // connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
+      joinRoom(connectedUser.socket, room);
     }
   });
 }
