@@ -42,7 +42,7 @@ export function getRoomList(userid: string) {
 export function addRoomList(roomid: number, userid: string) {
   let user = userRegistry.getById(userid);
 
-  user?.roomlist.push({roomid});
+  user?.roomlist.push(roomid);
 }
 
 // 유저와 유저의 소켓을 묶어서 저장하는 변수
@@ -53,9 +53,9 @@ export function updateUserSocket(socket: any, userid: string) {
   user.socket = socket;
 }
 
-export function sendOfflineMessages(io: any, socket: any, list: any[], userid: string) {
-  list.forEach(item => {
-    let roomid = item.roomid;
+export function sendOfflineMessages(io: any, socket: any, roomList: any[], userid: string) {
+  roomList.forEach(room => {
+    let roomid = room.roomid;
     let data = checkData(roomid, userid);
     sendMessageToUser(socket, {data: {roomid, data}, id: "rec_chatData"});
     console.log("rec_chatData : " + roomid + data);
@@ -65,11 +65,11 @@ export function sendOfflineMessages(io: any, socket: any, list: any[], userid: s
 export function data_init(io: any, socket: any, userid: string) {
   newUser(userid, socket);
   updateUserSocket(socket, userid);
-  const roomList = getRoomList(userid) || [];
+  const roomList = getRoomList(userid);
   // 유저가 속한 방에 연결
-  userJoin(socket, roomList);
+  joinRoom(socket, roomList);
   // 유저가 속한 방 리스트
-  io.to(socket.id).emit("rec_message", {data: make_RoomListData(roomList), id: "rec_chatList"});
+  io.to(socket.id).emit("rec_message", {data: roomList.map((data: any) => getRoomData(data)), id: "rec_chatList"});
   sendOfflineMessages(io, socket, roomList, userid);
 }
 
@@ -85,19 +85,9 @@ export function leave_room(io: any, socket: any, roomid: number, userid: string)
 
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
-  let list = getRoomData(roomid).userlist;
-  if (list) route(io, list, "rec_leaveRoom", {roomid, userid});
+  let userList = getRoomData(roomid).userlist;
+  if (userList) route(io, userList, "rec_leaveRoom", {roomid, userid});
   console.log("success leave / room : " + roomid + " / user : " + userid);
-}
-
-// 연결 종료를 처리하는 함수
-// 현재 접속하고 있는 유저의 정보를 저장한 userlist에서 해당 유저의 정보를 제거
-// 이미 없다면 종료
-export function disconnect(socket: any) {
-  const user = userRegistry.getBySocket(socket);
-  if (user) {
-    userRegistry.unregister(user.userid);
-  }
 }
 
 // 메시지를 받았을 경우 처리 함수
@@ -128,19 +118,17 @@ export function processReceivedMessage(
 
 // 소켓과 방 아이디를 가진 리스트를 받아
 // 해당 소켓을 방에 연결시키는 함수
-export function userJoin(socket: any, roomList: any) {
-  console.log("userJoin : ", roomList);
-  for (let l = 0; l < roomList.length; l++) {
-    socket.join(roomList[l].roomid);
-  }
+export function joinRoom(socket: any, roomList: any) {
+  console.log("joinRoom : ", roomList);
+  roomList.map((room: any) => socket.join(room) && console.log("join : ", room));
 }
 
 // ChatRoomUtils에 저장된 데이터는 maxnum과 minnum등 불필요한 정보가 있다.
 // 따라서 이를 제거하고 방의 이름, userid, 속한 유저 아이디 리스트만 가공하여 반환하는 함수
 // getRoomData : 방 하나를 가공하는 함수
 // 이 함수는 방 목록을 받아 목록에 있는 모든 방을 가공하여 반환한다.
-export function make_RoomListData(list: any) {
-  return list.map((data: any) => getRoomData(data));
+export function make_RoomListData(roomList: any) {
+  return;
 }
 
 // 방의 생성을 방에 속한 유저에게 알리고 유저를 방에 연결시키는 함수
