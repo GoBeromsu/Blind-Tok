@@ -1,17 +1,8 @@
 import {createData, getData, setData} from "./ChatDataUtils";
-import {notifyUsersConnect, updateRoomList, userRegistry} from "./ChatUserUtils";
+import {notifyUsersConnect, updateRoomList} from "./ChatUserUtils";
+import {ChatRoomData, rooms, userRegistry} from "./Consonants";
 
-interface ChatRoomData {
-  roomid: number;
-  roomname: string;
-  minnum: number;
-  maxnum: number;
-  userlist: {userid: string; datanum: number}[];
-}
-
-let rooms: {[roomid: number]: ChatRoomData} = {};
 let nextId: number = 1;
-
 export function findRoom(roomid: number) {
   let room = rooms[roomid];
   if (!room) {
@@ -149,7 +140,7 @@ export function createRoom(userlist: any, roomname: string): ChatRoomData | null
   };
 
   rooms[roomid] = newRoom;
-  nextId = nextId + 1;
+  nextId += 1;
 
   return newRoom;
 }
