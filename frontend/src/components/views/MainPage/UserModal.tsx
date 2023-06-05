@@ -1,4 +1,4 @@
-import {Box, Button, Input, IconButton} from "@mui/material";
+import {Box, Button, IconButton} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
@@ -6,10 +6,8 @@ import AudioUploadPage, {handleFileUpload} from "@views/User/AudioUpload";
 import {getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
-import {getUserInfoQuery} from "@data/user/query";
+import {getUserInfo} from "@data/user/axios";
 import "@style/UserPage.css";
-
-export let fetchAudioList: any = () => {};
 
 Modal.setAppElement("#root");
 
@@ -18,10 +16,9 @@ interface Props {
 }
 
 const UserModal: React.FC<Props> = ({own}) => {
-  const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [owner, setOwner]: any = useState();
+  const [owner, setOwner] = useState<any>();
 
   const M_style: any = {
     overlay: {
@@ -53,35 +50,41 @@ const UserModal: React.FC<Props> = ({own}) => {
   };
 
   useEffect(() => {
-    if (loginUser) {
+    if (owner) {
       fetchAudioList();
     }
-  }, [loginUser]);
+  }, [owner]);
 
-  fetchAudioList = async () => {
-    if (loginUser) {
+  const fetchAudioList = async () => {
+    if (owner) {
       try {
-        const audioFiles = await getFileMetaList(loginUser.userid);
+        const audioFiles = await getFileMetaList(owner.userid);
         setAudioList(audioFiles.data.reverse());
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
       }
     }
   };
-  // useEffect(() => {
-  //   if (own) {
-  //     setThisOwner();
-  //   }
-  // }, [own]);
-  // const setThisOwner = async () => {
-  //   const thisOwner = await getUserInfoQuery(own).data;
-  //   setOwner(thisOwner);
-  //   console.log("I am ", owner);
-  // };
+
+  useEffect(() => {
+    if (own) {
+      getOwnerData(own);
+    }
+  }, [own]);
+
+  const getOwnerData = async (own: any) => {
+    try {
+      const getData = await getUserInfo(own);
+      const ownerData = getData.data;
+      setOwner(ownerData);
+    } catch (error) {
+      console.error("Failed to get owner information:", error);
+      throw error;
+    }
+  };
 
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
-    // 아몰랑
     console.log("친구 추가 버튼이 클릭되었습니다.");
   };
 
@@ -90,22 +93,22 @@ const UserModal: React.FC<Props> = ({own}) => {
       <Box className="user-info">
         <div className="container">
           <div className="profile-picture">
-            {loginUser?.meta.profilepictureurl ? (
-              <img src={loginUser?.meta.profilepictureurl} alt="Profile Picture" />
+            {owner && owner.meta?.profilepictureurl ? (
+              <img src={owner.meta.profilepictureurl} alt="Profile Picture" />
             ) : (
               <div className="empty-image"></div>
             )}
           </div>
           <div className="user-info">
             <h2>
-              {loginUser?.name} ({loginUser?.nickname})
+              {owner?.name} ({owner?.nickname})
             </h2>
             <IconButton color="primary" onClick={handleAddFriend}>
               친추
               <AddIcon />
             </IconButton>
-            <p>{loginUser?.meta.profilemesage}</p>
-            <p>친구 수: {loginUser?.friends.length}</p>
+            <p>{owner?.meta?.profilemesage}</p>
+            <p>친구 수: {owner?.friends?.length}</p>
             <p>게시물 수: {audioList?.length}</p>
           </div>
         </div>
