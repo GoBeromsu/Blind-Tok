@@ -4,7 +4,6 @@ import {addRoomUser, checkData, createRoom, getRoomData, removeUserList, updateR
 import {createData} from "./ChatDataUtils";
 
 export let userRegistry = new UserRegistry();
-export let Participants: any = {};
 
 export function newUser(userid: string, socket: any) {
   const userSession = new UserSession(userid, socket);
@@ -15,11 +14,11 @@ export function newUser(userid: string, socket: any) {
 // 유저를 찾아서 없으면 유저를 생성해준다.
 // 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: number, userList: any) {
-  if (!userList) return;
-
   for (let i = 0; i < userList.length; i++) {
     const userid = userList[i].userid;
     let user = userRegistry.getById(userid);
+    // 방에 초대 할 유저가 없는 경우에 예외처리를 해야 하는구만
+    if (!user) return;
     user.roomlist = [roomid, ...user?.roomlist];
   }
 }
@@ -103,6 +102,7 @@ export function create_room(io: any, data: {user: any; userlist: any; roomname: 
   const {user, userlist, roomname} = data;
   let updatedUserList = [{userid: user.userid, nickname: user.nickname}, ...userlist];
   let createdRoom = createRoom(updatedUserList, roomname);
+  // console.log("created Room : ", createdRoom);
   if (createdRoom) {
     updateRoomList(createdRoom.roomid, updatedUserList);
     createData(createdRoom.roomid);
@@ -171,15 +171,15 @@ export function make_RoomListData(list: any) {
 // Participants.find : 해당 방의 유저가 현재 접속해있는지 확인하고 그에 대한 소켓을 가져와야된다.
 // 접속해있다면 해당 방에게 방이 만들어졌다는 사실을 알리고 방에 접속시킨다.
 // 접속해있지 않다면 접속할 때 자신이 속한 방목록을 받게 되고 그때 접속되기 때문에 여기서 아무런 작업을 하지 않아도 된다.
-export function notifyUsersConnect(io: any, data: {roomid: number; userlist: any[]; roomname: string}) {
-  console.log("notifyUsersConnect : ", data);
-  const {userlist} = data;
+export function notifyUsersConnect(io: any, room: {roomid: number; userlist: any[]; roomname: string}) {
+  console.log("notifyUsersConnect : ", room);
+  const {userlist} = room;
 
   userlist.map((user: any) => {
     const connectedUser = userRegistry.getById(user.userid);
     if (connectedUser) {
-      io.to(connectedUser.socket.id).emit("rec_message", {data: data, id: "rec_createRoom"});
-      connectedUser.socket.join(data.roomid);
+      io.to(connectedUser.socket.id).emit("rec_message", {data: room, id: "rec_createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
+      connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
     }
   });
 }
