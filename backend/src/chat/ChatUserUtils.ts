@@ -1,5 +1,5 @@
 import UserSession from "./UserSession";
-import {addRoomUser, checkData, getRoomData, removeUserList, updateRoom} from "./ChatRoomUtils";
+import {addRoomUser, checkData, findRoom, removeUserList, updateRoom} from "./ChatRoomUtils";
 import {ChatRoomData, userRegistry} from "./Consonants";
 
 export function newUser(userid: string, socket: any) {
@@ -70,7 +70,7 @@ export function dataInit(io: any, socket: any, userid: string) {
   });
 
   // 유저가 속한 방 리스트
-  io.to(socket.id).emit("message", {data: roomList.map((data: any) => getRoomData(data)), id: "chatList"});
+  io.to(socket.id).emit("message", {data: roomList.map((data: any) => findRoom(data)), id: "chatList"});
   sendOfflineMessages(io, socket, roomList, userid);
 }
 
@@ -86,7 +86,9 @@ export function leaveRoom(io: any, socket: any, roomid: number, userid: string) 
 
   removeRoomList(roomid, userid);
   removeUserList(roomid, userid);
-  let userList = getRoomData(roomid).userlist;
+  const room = findRoom(roomid);
+  if (!room) return;
+  let userList = room?.userlist;
   if (userList) route(io, userList, "leaveRoom", {roomid, userid});
   console.log("success leave / room : " + roomid + " / user : " + userid);
 }
@@ -178,7 +180,7 @@ export function add_user(io: any, data: {roomid: number; userlist: any[]}) {
     addRoomList(roomid, user.userid);
     userRegistry.getById(user.userid)?.socket.join(roomid);
   });
-  let currentRoomData = getRoomData(roomid);
-  route(io, currentRoomData.userlist, "addUser", data);
+  let currentRoomData = findRoom(roomid);
+  route(io, currentRoomData?.userlist, "addUser", data);
   route(io, userlist, "addRoom", currentRoomData);
 }
