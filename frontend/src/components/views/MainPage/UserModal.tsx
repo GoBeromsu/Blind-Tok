@@ -4,9 +4,6 @@ import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
 import AudioUploadPage, {handleFileUpload} from "@views/User/AudioUpload";
 import {getFileMetaList} from "@data/upload/axios";
-import {useRecoilState} from "recoil";
-import {userState} from "@data/user/state";
-import {getUserInfo} from "@data/user/axios";
 import "@style/UserPage.css";
 
 Modal.setAppElement("#root");
@@ -18,7 +15,6 @@ interface Props {
 const UserModal: React.FC<Props> = ({own}) => {
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [owner, setOwner] = useState<any>();
 
   const M_style: any = {
     overlay: {
@@ -50,15 +46,15 @@ const UserModal: React.FC<Props> = ({own}) => {
   };
 
   useEffect(() => {
-    if (owner) {
+    if (own) {
       fetchAudioList();
     }
-  }, [owner]);
+  }, [own]);
 
   const fetchAudioList = async () => {
-    if (owner) {
+    if (own) {
       try {
-        const audioFiles = await getFileMetaList(owner.userid);
+        const audioFiles = await getFileMetaList(own.userid);
         setAudioList(audioFiles.data.reverse());
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
@@ -66,26 +62,10 @@ const UserModal: React.FC<Props> = ({own}) => {
     }
   };
 
-  useEffect(() => {
-    if (own) {
-      getOwnerData(own);
-    }
-  }, [own]);
-
-  const getOwnerData = async (own: any) => {
-    try {
-      const getData = await getUserInfo(own);
-      const ownerData = getData.data;
-      setOwner(ownerData);
-    } catch (error) {
-      console.error("Failed to get owner information:", error);
-      throw error;
-    }
-  };
-
-  // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
+  // 여기가 친추버튼 트리거
   const handleAddFriend = () => {
-    console.log("친구 추가 버튼이 클릭되었습니다.");
+    // 친추 버튼 클릭 시 실행될 동작 ㅇㅇ
+    console.log("친추 버튼 클릭됐다");
   };
 
   return (
@@ -93,22 +73,22 @@ const UserModal: React.FC<Props> = ({own}) => {
       <Box className="user-info">
         <div className="container">
           <div className="profile-picture">
-            {owner && owner.meta?.profilepictureurl ? (
-              <img src={owner.meta.profilepictureurl} alt="Profile Picture" />
+            {own && own.meta?.profilepictureurl ? (
+              <img src={own.meta.profilepictureurl} alt="Profile Picture" />
             ) : (
               <div className="empty-image"></div>
             )}
           </div>
           <div className="user-info">
             <h2>
-              {owner?.name} ({owner?.nickname})
+              {own?.name} ({own?.nickname})
             </h2>
             <IconButton color="primary" onClick={handleAddFriend}>
               친추
               <AddIcon />
             </IconButton>
-            <p>{owner?.meta?.profilemesage}</p>
-            <p>친구 수: {owner?.friends?.length}</p>
+            <p>{own?.meta?.profilemesage}</p>
+            <p>친구 수: {own?.friends?.length}</p>
             <p>게시물 수: {audioList?.length}</p>
           </div>
         </div>

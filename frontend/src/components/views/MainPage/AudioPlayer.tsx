@@ -4,6 +4,7 @@ import ReactPlayer from "react-player";
 import {Modal, Backdrop, Fade} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import UserModal from "./UserModal";
+import {getUserInfo} from "@data/user/axios";
 
 interface Props {
   src: string;
@@ -39,6 +40,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
   const [playerUrl, setPlayerUrl] = useState<string | null>(null);
+  const [owner, setOwner] = useState<any>();
 
   useEffect(() => {
     setPlayerUrl(src);
@@ -69,10 +71,27 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
     }
   }, [isModalOpen]);
 
+  useEffect(() => {
+    if (own) {
+      getOwnerData(own);
+    }
+  }, [own]);
+
+  const getOwnerData = async (own: any) => {
+    try {
+      const getData = await getUserInfo(own);
+      const ownerData = getData.data;
+      setOwner(ownerData);
+    } catch (error) {
+      console.error("Failed to get owner information:", error);
+      throw error;
+    }
+  };
+
   return (
     <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
-      <div className="audio-player" onClick={handlePlayerClick}>
-        {playerUrl && ( // 수정: playerUrl이 존재할 때에만 ReactPlayer 렌더링
+      <div className="audio-player" style={{backgroundImage: ""}} onClick={handlePlayerClick}>
+        {playerUrl && ( // playerUrl이 존재할 때에만 ReactPlayer 렌더링
           <ReactPlayer
             url={playerUrl}
             playing={autoPlay}
@@ -101,7 +120,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
         }}>
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
-            <UserModal own={own} />
+            <UserModal own={owner} />
           </div>
         </Fade>
       </Modal>
