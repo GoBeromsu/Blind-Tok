@@ -3,15 +3,15 @@ import {ChatRoomData} from "./Consonants";
 export default class {
   userid: string;
   socket: any;
-  private outGoingMedia: any;
-  private incomingMedia: any;
-  private iceCandidateQueue: any;
+  outgoingMedia: any;
+  incomingMedia: any;
+  iceCandidateQueue: any;
   roomlist: ChatRoomData[];
   // private roomName: string;
   constructor(userid: string, socket: any) {
     this.userid = userid;
     this.socket = socket;
-    this.outGoingMedia = null;
+    this.outgoingMedia = null;
     this.incomingMedia = {};
     this.iceCandidateQueue = {};
     this.roomlist = [];
@@ -20,10 +20,10 @@ export default class {
 
   addIceCandidate(data: any, candidate: any) {
     if (data?.sender === this.userid) {
-      if (this.outGoingMedia) {
-        this.outGoingMedia.addIceCandidate(candidate);
+      if (this.outgoingMedia) {
+        this.outgoingMedia.addIceCandidate(candidate);
       } else {
-        console.error(data?.sender + "outGoingMedia is null");
+        console.error(data?.sender + "outgoingMedia is null");
         this.iceCandidateQueue[data?.sender].push({data: data, candidate: candidate});
       }
     } else {
