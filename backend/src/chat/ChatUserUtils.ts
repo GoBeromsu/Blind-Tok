@@ -1,6 +1,6 @@
 import UserSession from "./UserSession";
 import {addRoomUser, checkData, findRoom, removeUserList, updateRoom} from "./ChatRoomUtils";
-import {ChatRoomData, userRegistry} from "./Consonants";
+import {ChatRoomData, sendMessage, userRegistry} from "./Consonants";
 
 export function newUser(userid: string, socket: any) {
   const userSession = new UserSession(userid, socket);
@@ -11,13 +11,12 @@ export function newUser(userid: string, socket: any) {
 // 유저를 찾아서 없으면 유저를 생성해준다.
 // 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: number, userList: any) {
-  for (let i = 0; i < userList.length; i++) {
-    const userid = userList[i];
+  userList.map((userid: string) => {
     let user = userRegistry.getById(userid);
-    // 방에 초대 할 유저가 없는 경우에 예외처리를 해야 하는구만
     if (!user) return;
     user.roomlist = [roomid, ...user?.roomlist];
-  }
+  });
+  console.log("user's roomlist : ", userRegistry.getById(userList[0])?.roomlist);
 }
 
 // 해당 유저의 roomlist에서 해당 방을 삭제하는 함수
@@ -130,6 +129,13 @@ export function joinRoom(socket: any, room: any) {
   // roomList.map((room: any) => socket.join(room) && console.log("join : ", room));
 }
 
+export function getRooms(socket: any) {
+  const user = userRegistry.getBySocket(socket?.id);
+  const rooms = getUserRooms(user?.userid);
+  console.log("getRooms", rooms, userRegistry.getAll());
+  sendMessage(socket, {id: "getRooms", data: rooms});
+}
+
 export function notifyUsersConnect(io: any, room: ChatRoomData) {
   // console.log("notifyUsersConnect : ", room);
   const {userlist} = room;
@@ -146,6 +152,7 @@ export function notifyUsersConnect(io: any, room: ChatRoomData) {
       console.log("fail join / room : " + room.roomid + " / user : " + userid);
     }
   });
+  // console.log(userRegistry.getAll());
 }
 
 // 특정 유저리스트에 무언가를 보내고 싶을 때 사용하는 함수
@@ -161,11 +168,6 @@ export function route(io: any, userList: any, opt: string, data: any) {
     }
     io.to(connectedUser.socket.id).emit("message", {data: data, id: opt});
   });
-}
-
-function sendMessage(socket: any, message: any) {
-  console.log("sendMessage : ", message, socket);
-  socket.emit("message", message);
 }
 
 // 방에 유저가 추가되었을 경우 이를 처리하는 함수
