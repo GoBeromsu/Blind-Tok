@@ -7,7 +7,7 @@ import {getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {getUserInfo} from "@data/user/axios";
-import {addFriend, getRelation} from "@data/Friend/axios";
+import {addFriend, editFriendStatus, acceptFriend} from "@data/Friend/axios";
 
 import "@style/UserPage.css";
 
@@ -18,10 +18,16 @@ interface Props {
 }
 
 const UserModal: React.FC<Props> = ({own}) => {
-  let user: any = useRecoilState(userState);
+  let user: any = useRecoilState(userState)[0];
+  const [relationid, setRelationid] = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [owner, setOwner] = useState<any>();
+
+  // 상태를 알려주는 변수
+  // 1 1 : 친구, 0 0 : 아무요청도 없음, 1 0 : 저쪽에서 요청, 0 1 : 유저가 요청
+  const [flag1, setFlag1] = useState<any>(false);
+  const [flag2, setFlag2] = useState<any>(false);
 
   const M_style: any = {
     overlay: {
@@ -80,6 +86,24 @@ const UserModal: React.FC<Props> = ({own}) => {
       const getData = await getUserInfo(own);
       const ownerData = getData.data;
       setOwner(ownerData);
+      let index = user?.friends?.find((user: any) => user.userid === ownerData.userid);
+      console.log(user);
+      console.log(ownerData);
+      // 친구인지 구별
+      if (index && index != -1) {
+        // 일단 저쪽에서 유저에게 보낸 정황이 있음
+        setFlag1(true);
+        setRelationid(user?.friends[index]?.relationid);
+      } else {
+        setFlag1(false);
+      }
+      index = user?.friends?.find((user: any) => user.userid === ownerData.userid);
+      if (index && index != -1) {
+        // 유저에서 저쪽으로 보낸 정황이 있음
+        setFlag2(true);
+      } else {
+        setFlag2(false);
+      }
     } catch (error) {
       console.error("Failed to get owner information:", error);
       throw error;
@@ -88,9 +112,14 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
-    console.log(`${user[0]?.userid} -> ${own}`);
-    console.log(addFriend(user[0]?.userid, 1));
-    console.log(getRelation(user[0]?.userid));
+    console.log(`${user?.userid} -> ${own}`);
+    addFriend(user?.userid, own);
+  };
+  const handleAcceptFriend = () => {
+    console.log(`${user?.userid} -> ${own}`);
+    editFriendStatus(relationid, "normal");
+    acceptFriend(user?.userid, own);
+    setFlag2(true);
   };
 
   return (
@@ -108,9 +137,11 @@ const UserModal: React.FC<Props> = ({own}) => {
             <h2>
               {owner?.name} ({owner?.nickname})
             </h2>
-            <IconButton color="primary" onClick={handleAddFriend}>
-              친추
-              <AddIcon />
+            <IconButton color="primary" onClick={!flag1 && !flag2 ? handleAddFriend : flag1 && !flag2 ? handleAcceptFriend : () => {}}>
+              {!flag1 && !flag2 && "친추"}
+              {flag1 && !flag2 && "수락"}
+              {!flag1 && flag2 && "요청보냄"}
+              {flag1 && flag2 && "친구"}
             </IconButton>
             <p>{owner?.meta?.profilemesage}</p>
             <p>친구 수: {owner?.friends?.length}</p>

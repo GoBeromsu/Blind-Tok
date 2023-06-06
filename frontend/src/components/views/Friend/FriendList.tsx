@@ -53,7 +53,11 @@ const FriendList = () => {
 
   useEffect(() => {
     if (loginUser) {
-      let friendIdList = loginUser.friends?.map((user: any) => ({userid: user.friendid}));
+      let list = loginUser.friends?.filter((user: any) => user.status === "normal");
+      console.log(loginUser.friends);
+      let friendIdList = list?.map((user: any) => ({
+        userid: user.friendid,
+      }));
       setFriendList(friendIdList);
     }
   }, [loginUser]);

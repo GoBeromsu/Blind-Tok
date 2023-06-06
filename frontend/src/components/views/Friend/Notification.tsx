@@ -4,13 +4,15 @@ import {userState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
-import {getRelation, editFriendStatus} from "@data/Friend/axios";
+import {getRelation, editFriendStatus, removeRelation, acceptFriend} from "@data/Friend/axios";
+import {send} from "vite";
 
 Modal.setAppElement("#root");
 
 const Notification = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const [notificationList, setNotificationList] = useState<any>([]);
+  const [receiveList, setReciveList] = useState<any>([]);
+  const [sendList, setSendList] = useState<any>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const M_style: any = {
     overlay: {
@@ -40,17 +42,24 @@ const Notification = () => {
     },
   };
 
-  const ok = (relationid: number, status: string) => {
-    editFriendStatus(relationid, status);
+  const ok = async (relationid: number, status: string) => {
+    try {
+      await editFriendStatus(relationid, status);
+    } catch (error) {
+      throw error;
+    }
   };
 
   useEffect(() => {
     if (loginUser) {
       getRelation(loginUser.userid).then(data => {
-        setNotificationList(data.data);
+        let list = data.data;
+        console.log(list);
+        list = list?.filter((relation: any) => relation.status === "wait");
+        console.log(list);
+        setReciveList(list.filter((relation: any) => relation.friendid === loginUser.userid));
+        setSendList(list.filter((relation: any) => relation.userid === loginUser.userid));
       });
-      console.log(getRelation(loginUser.userid));
-      console.log(loginUser);
     }
   }, [loginUser]);
 
@@ -59,39 +68,79 @@ const Notification = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
-
+  /*
   const filteredFriends = notificationList?.filter(
     (friend: any) => friend.userid?.toLowerCase().includes(search.toLowerCase()) && friend.userid === loginUser.userid,
   );
+  */
+
+  const cancleEvent = async (relationid: number) => {
+    try {
+      await removeRelation(relationid);
+      setSendList(sendList.filter((message: any) => message.relationid !== relationid));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const acceptEvent = async (relationid: number, userid: number) => {
+    try {
+      ok(relationid, "normal");
+      await acceptFriend(loginUser.userid, userid);
+      setReciveList(receiveList.filter((message: any) => message.relationid !== relationid));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const refuseEvent = async (relationid: number) => {
+    try {
+      await removeRelation(relationid);
+      setReciveList(receiveList.filter((message: any) => message.relationid !== relationid));
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <Box className="f_list" style={{paddingLeft: "350px"}}>
       <h1>Friend List</h1>
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">
-        {filteredFriends?.map((friend: any, index: any) => (
-          <Box
-            key={index}
-            className="friend-item"
-            style={{/*width: `${W}px`,*/ height: "50px", backgroundColor: friend.status === "ban" ? "red" : "black"}}
-            onClick={() => {}}>
-            {friend.friendid}에게 친구요청이 왔습니다.
+        {receiveList?.map((req: any, index: any) => (
+          <Box key={index} className="friend-item" style={{/*width: `${W}px`,*/ height: "50px"}} onClick={() => {}}>
+            {req.userid}에게 친구요청이 왔습니다.
             <Button
               onClick={() => {
-                ok(Number(friend.relationid), "normal");
-                let relationid = notificationList.find((user: any) => user.userid === friend.friendid).relationid;
-                ok(Number(relationid), "normal");
+                acceptEvent(req.relationid, req.userid);
               }}>
               수락
             </Button>
             <Button
               onClick={() => {
-                ok(Number(friend.relationid), "ban");
-                console.log(notificationList);
-                let relationid = notificationList.find((user: any) => user.userid === friend.friendid).relationid;
-                ok(Number(relationid), "ban");
+                refuseEvent(req.relationid);
               }}>
               거절
+            </Button>
+          </Box>
+        ))}
+      </Box>
+      <Box className="f_item">
+        {sendList?.map((req: any, index: any) => (
+          <Box
+            key={index}
+            className="friend-item"
+            style={{/*width: `${W}px`,*/ height: "50px"}}
+            onClick={() => {
+              console.log(receiveList);
+              console.log(sendList);
+            }}>
+            {req.friendid}에게 친구요청을 보냈습니다.
+            <Button
+              onClick={() => {
+                cancleEvent(req.relationid);
+              }}>
+              취소
             </Button>
           </Box>
         ))}
