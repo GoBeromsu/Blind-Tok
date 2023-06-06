@@ -52,7 +52,8 @@ export function addRoomList(roomid: number, userid: string) {
 
 export function updateUserSocket(socket: any, userid: string) {
   // user.socket = socket;
-  userRegistry.updateSocketId(userid, socket.id);
+  console.log("update User Socket ", userid, socket.id);
+  userRegistry.updateSocket(userid, socket);
 }
 
 export function sendOfflineMessages(io: any, socket: any, roomList: any[], userid: string) {
@@ -66,6 +67,7 @@ export function sendOfflineMessages(io: any, socket: any, roomList: any[], useri
 
 export function dataInit(io: any, socket: any, userid: string) {
   newUser(userid, socket);
+
   updateUserSocket(socket, userid);
   // const roomList = getUserRooms(userid);
   // 유저가 속한 방에 연결
@@ -124,7 +126,7 @@ export function enteredMessage(
       console.log("user not found : 유저가 아직 접속을 하지 않았습니다");
       return;
     }
-    console.log("userSocket : ", userSocket, " / userid : ", userid, " / room : ", room);
+    console.log("userSocket : ", userSocket?.id, " / userid : ", userid, " / room : ", room);
     // console.log("All User :", userRegistry.getAll());
     sendMessage(userSocket, {data: room, id: "message"});
   }); // 방에 있는 모든 유저
