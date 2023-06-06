@@ -6,6 +6,9 @@ export interface ChatRoomData {
   minnum: number;
   maxnum: number;
   userlist: {userid: string; datanum: number}[];
+  pipeline: any;
+  kurentoClient: any;
+  participants: any;
 }
 
 export let rooms: {[roomid: number]: ChatRoomData} = {};

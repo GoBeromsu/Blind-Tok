@@ -10,7 +10,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
     // console.log("User Connected: ", userRegistry.getAll());
     socket.on("dataInit", (userid: string) => {
-      console.log("dataInit : ", userid, socket.id);
+      // console.log("dataInit : ", userid, socket.id);
       dataInit(fastify.io, socket, userid);
       // console.log("called dataInit");
     });
@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
     socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {
       const {roomid, userlist} = data;
       console.log("joinVideoChat : ", roomid, userlist);
-      joinVideoChat(roomid, userlist);
+      joinVideoChat(socket, roomid, userlist);
     });
     socket.on("getRooms", (data: any) => {
       getRooms(socket);
