@@ -134,6 +134,9 @@ export function createRoom(userlist: any, roomname: string): ChatRoomData | null
     minnum: 0,
     maxnum: 0,
     userlist: userlist,
+    kurentoClient: null,
+    pipeline: null,
+    participants: {},
   };
 
   rooms[roomid] = newRoom;

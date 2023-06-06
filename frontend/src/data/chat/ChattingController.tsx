@@ -1,5 +1,5 @@
 import {sendMessage} from "@data/chat/index";
-import {getRooms, setChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {getRooms, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {subData} from "@data/chat/chat_data";
 import {setList} from "@views/Chat/ChatList";
 

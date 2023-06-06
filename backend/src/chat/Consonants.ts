@@ -5,7 +5,10 @@ export interface ChatRoomData {
   roomname: string;
   minnum: number;
   maxnum: number;
-  userlist: {userid: string; offlineData: any[]; datanum: number}[];
+  userlist: {userid: string; datanum: number; offlineData: []}[];
+  pipeline: any;
+  kurentoClient: any;
+  participants: any;
 }
 
 export let rooms: {[roomid: number]: ChatRoomData} = {};

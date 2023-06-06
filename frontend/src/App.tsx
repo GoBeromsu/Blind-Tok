@@ -32,6 +32,7 @@ import VideoChat from "@views/Chat/VideoChat";
 import {Style} from "@material-ui/icons";
 import {sendMessage} from "@data/chat";
 import newChatList from "@views/Chat/newChatList";
+import videoChat from "@views/Chat/VideoChat";
 
 export default function App() {
   return (
@@ -79,7 +80,7 @@ function AppRoutes() {
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
         //그 외에는 그냥 접근 해도 되는 것들임 ㅇㅇ
-        <Route path="/video" element={Auth(VideoChat, false)}></Route>
+        {/*<Route path="/video" element={Auth(VideoChat, false)}></Route>*/}
         {/**/}
         {/*  <Route index element={<MainComponent />} />*/}
         {/*  <Route path="/friend" element={<FriendList user={user} />} />*/}
@@ -92,6 +93,7 @@ function AppRoutes() {
         <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
           <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
         </Route>
+        <Route path="/ChatRoom/:roomid/video" element={Auth(videoChat, true, user)} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
