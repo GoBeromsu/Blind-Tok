@@ -82,7 +82,7 @@ const UserModal: React.FC<Props> = ({own}) => {
   const handdleFriend = async (own: any) => {
     try {
       let index = user?.friends?.find((user: any) => user.userid === own.userid);
-      console.log("my name", user);
+      // console.log("my name", user);
       // console.log(own);
       // 친구인지 구별
       if (index && index != -1) {
@@ -123,7 +123,7 @@ const UserModal: React.FC<Props> = ({own}) => {
       <Box className="user-info">
         <div className="container">
           <div className="profile-picture">
-            /* own.meta?.profilepictureurl가 undefine이라 익명 아이콘 나오는거 */
+            {/* own.meta?.profilepictureurl가 undefined 이라 익명 아이콘 나오는거 */}
             {(user.userid === own.userid || (flag1 && flag2)) && own && own.meta?.profilepictureurl ? (
               <img src={own.meta.profilepictureurl} alt="Profile Picture" />
             ) : (
