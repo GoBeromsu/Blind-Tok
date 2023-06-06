@@ -10,3 +10,8 @@ export interface ChatRoomData {
 
 export let rooms: {[roomid: number]: ChatRoomData} = {};
 export let userRegistry = new UserRegistry();
+
+export function sendMessage(socket: any, message: any) {
+  console.log("sendMessage : ", message);
+  socket.emit("message", message);
+}
