@@ -62,7 +62,7 @@ export function updateRoom(roomid: number, rest: any) {
     if (!userSession) return;
     data.datanum = room?.maxnum;
   });
-  const updateRoom = {...room, ...rest};
+  const updateRoom: ChatRoomData = {...room, ...rest};
   rest = {num: room.maxnum, ...rest};
   setData(roomid, rest);
   return updateRoom;

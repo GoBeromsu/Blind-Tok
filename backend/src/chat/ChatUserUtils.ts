@@ -121,7 +121,10 @@ export function enteredMessage(
     const userSocket = userRegistry.getSocketById(userid);
     if (!userSocket) {
       console.log("user not found : 유저가 아직 접속을 하지 않았습니다");
+      return;
     }
+    console.log("userSocket : ", userSocket, " / userid : ", userid, " / room : ", room);
+    console.log("All User :", userRegistry.getAll());
     sendMessage(userSocket, {data: room, id: "message"});
   }); // 방에 있는 모든 유저
   // socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
