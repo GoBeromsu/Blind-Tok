@@ -6,8 +6,8 @@ import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
 import {useSocket} from "@data/chat/useSocket";
-
-export let updateChat: any = () => {}; //
+import {sendMessage} from "@data/chat";
+import {getRooms} from "@data/chat/chat_list";
 
 const ChatRoom: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
@@ -22,16 +22,21 @@ const ChatRoom: React.FC = () => {
 
   const socket = useSocket();
 
-  updateChat = (data: any) => {
-    console.log("updateChat : ", data);
-    let {roomid, ...rest} = data;
-    if (roomid == chatData.roomid) {
-      setChatDataState([...chatDataState, rest]);
-    }
-  };
+  // updateChat = (data: any) => {
+  //   console.log("updateChat : ", data);
+  //   let {roomid, ...rest} = data;
+  //   if (roomid == chatData.roomid) {
+  //     setChatDataState([...chatDataState, rest]);
+  //   }
+  // };
+  useEffect(() => {
+    sendMessage(loginUser?.userid, "dataInit");
+    // getRooms();
+  }, []);
   useEffect(() => {
     socket.on("message", (message: any) => {
       let {id, data} = message;
+      console.log("message : ", message);
       switch (id) {
         case "message":
           updateChat(data);
