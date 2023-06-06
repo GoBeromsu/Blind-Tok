@@ -1,7 +1,7 @@
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import {Box} from "@material-ui/core";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Loading from "@loading/Loading";
 import {getFriendListQuery} from "@data/Friend/state";
 import {Button, List, ListItem, TextField} from "@mui/material";
@@ -9,8 +9,10 @@ import {Link} from "react-router-dom";
 import ChatUserDialog from "@views/Chat/ChatUserDialog";
 import {createRoom} from "@data/chat/ChattingController";
 import {chatListState, ChatRoom} from "@data/chat/state";
-import {socket} from "@data/chat";
-import {getChatList} from "@data/chat/chat_list";
+
+import {getRooms} from "@data/chat/chat_list";
+import {useSocket} from "@data/chat/useSocket";
+import {sendMessage} from "@data/chat";
 
 const NewChatList = () => {
   const loginUser: any = useRecoilValue(userState);
@@ -30,20 +32,22 @@ const NewChatList = () => {
     setWindowHeight(window.innerHeight);
     setW(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
   };
+  const socket = useSocket();
 
   const handleInvited = (newFriend: any) => {
     console.log("새로운 user가 선택 되었습니다", newFriend);
     setInvitedFriend(newFriend);
+
     createRoom(loginUser, [newFriend]);
   };
   const onChangeUser = (e: any) => {
     setOepn(true);
   };
   useEffect(() => {
-    getChatList();
+    sendMessage(loginUser?.userid, "dataInit");
+    getRooms();
   }, []);
-  useEffect(() => {
-    // console.log(roomList);
+  if (socket) {
     socket.on("message", (message: any) => {
       let {id, data} = message;
       switch (id) {
@@ -79,8 +83,7 @@ const NewChatList = () => {
           break;
       }
     });
-    // return () => socket.off("message");
-  }, []);
+  }
 
   return (
     <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
