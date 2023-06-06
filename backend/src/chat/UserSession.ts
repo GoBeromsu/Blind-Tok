@@ -1,10 +1,12 @@
+import {ChatRoomData} from "./Consonants";
+
 export default class {
   userid: string;
   socket: any;
   private outGoingMedia: any;
   private incomingMedia: any;
   private iceCandidateQueue: any;
-  roomlist: number[];
+  roomlist: ChatRoomData[];
   // private roomName: string;
   constructor(userid: string, socket: any) {
     this.userid = userid;
