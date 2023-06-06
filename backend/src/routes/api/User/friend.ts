@@ -12,8 +12,8 @@ export default async function (fastify: FastifyInstance) {
     const userRelations = await getFriendInfo(userid);
     // console.log(userRelations);
 
-    // const friends = userRelations.map(relation => (relation.userid === userid ? relation.friend : relation.user));
-    reply.send(userRelations);
+    const friendIdList = userRelations.map(relation => (relation.userid === userid ? relation.friendid : relation.userid));
+    reply.send(friendIdList);
   });
   fastify.post("/:userid/:friendid", async (req: FastifyRequest<{Params: {userid: number; friendid: number}}>, reply: FastifyReply) => {
     const {userid, friendid} = req.params;

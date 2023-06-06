@@ -30,7 +30,8 @@ import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
 
 import {Style} from "@material-ui/icons";
-import {dataInit} from "@data/chat";
+import {sendMessage} from "@data/chat";
+import newChatList from "@views/Chat/newChatList";
 
 export default function App() {
   return (
@@ -57,8 +58,8 @@ function AppRoutes() {
   if (isLoading) {
     return <Loading />;
   }
-  setLocalStorageName(loginUser?.userid);
-  dataInit(loginUser?.userid);
+
+  sendMessage(loginUser?.userid, "dataInit");
   const user = loginUser || data;
   return (
     <div className="container">
@@ -70,7 +71,7 @@ function AppRoutes() {
           <Route path="/friend" element={Auth(FriendList, true, user)}>
             <Route path=":friendid" element={Auth(FriendPage, true, user)} />
           </Route>
-          <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
+          <Route path="/chat" element={Auth(newChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
           <Route path="/notification" element={Auth(Notification, true, user)}></Route>

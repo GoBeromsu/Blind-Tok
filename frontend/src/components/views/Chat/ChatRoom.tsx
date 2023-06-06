@@ -5,6 +5,7 @@ import {userState} from "@data/user/state";
 import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
+import {socket} from "@data/chat";
 
 export let updateChat: any = () => {}; //
 
@@ -26,7 +27,16 @@ const ChatRoom: React.FC = () => {
       setChatDataState([...chatDataState, rest]);
     }
   };
-
+  useEffect(() => {
+    socket.on("message", (message: any) => {
+      let {id, data} = message;
+      switch (id) {
+        case "message":
+          updateChat(data);
+          break;
+      }
+    });
+  }, [chatDataState]);
   const handleSendMessage = () => {
     sendEnteredMessage(chatData.roomid, loginUser, string);
     setString(""); //입력 칸을 초기화 해준다
