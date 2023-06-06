@@ -1,6 +1,12 @@
 import React, {useEffect, useState, useRef} from "react";
 import {getAudio, getVideo, mergeStreams} from "../../../utils/MediaStream";
 import {Box, Button} from "@mui/material";
+import {useParams} from "react-router-dom";
+import {useSocket} from "@data/chat/useSocket";
+import {sendMessage} from "@data/chat";
+import {getRooms} from "@data/chat/chat_list";
+import {useRecoilValue} from "recoil";
+import {userState} from "@data/user/state";
 
 const VideoChat: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -9,6 +15,10 @@ const VideoChat: React.FC = () => {
   const [audioSource, setAudioSource] = useState<string>("");
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [mute, setMute] = useState<boolean>(false);
+
+  const loginUser: any = useRecoilValue(userState);
+  const {roomid}: any = useParams();
+  const socket = useSocket();
 
   useEffect(() => {
     const getMediaSources = async () => {
@@ -21,7 +31,9 @@ const VideoChat: React.FC = () => {
     };
     getMediaSources();
   }, []);
-
+  useEffect(() => {
+    sendMessage(loginUser?.userid, "dataInit"); // 유저 화면 재로딩 되면, Socket 업데이트 해줘야해서 추가해둠
+  }, []);
   useEffect(() => {
     const initializeMediaStream = async () => {
       const audioStream = await getAudio(audioSource);
@@ -36,6 +48,20 @@ const VideoChat: React.FC = () => {
 
     initializeMediaStream();
   }, [audioSource, videoSource]);
+  useEffect(() => {
+    if (socket) {
+      socket.on("message", (message: any) => {
+        let {id, data} = message;
+        switch (id) {
+          default:
+            break;
+        }
+      });
+    }
+    return () => {
+      socket.off();
+    };
+  }, [socket]);
 
   const handleMuteClick = () => {
     setMute(prevMute => !prevMute);
@@ -87,7 +113,7 @@ const VideoChat: React.FC = () => {
       </Box>
       <Box>
         <Button onClick={handleMuteClick}>{mute ? "Unmute" : "Mute"}</Button>
-        <Button>Join Room</Button>
+        <Button>Join Room : 기능 없음</Button>
         <Button onClick={() => createVideoForParticipant("test")}>Create Video</Button>
       </Box>
       <Box id="videolist"></Box>
