@@ -1,6 +1,6 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
-import {add_user, dataInit, leaveRoom, enteredMessage} from "../../chat/ChatUserUtils";
+import {add_user, dataInit, leaveRoom, enteredMessage, getRooms} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 import {joinVideoChat} from "src/chat/VideoUtils";
@@ -8,10 +8,10 @@ import {userRegistry} from "../../chat/Consonants";
 
 export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
-    // console.log(`User Connected: ${socket.userid}`);
-
+    // console.log("User Connected: ", userRegistry.getAll());
     socket.on("dataInit", (userid: string) => {
       dataInit(fastify.io, socket, userid);
+      // console.log("called dataInit");
     });
 
     socket.on("leaveRoom", (data: {roomid: number; userid: string}) => {
@@ -22,12 +22,18 @@ export default async function (fastify: FastifyInstance) {
     socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {
       joinVideoChat();
     });
+    socket.on("getRooms", (data: any) => {
+      getRooms(socket);
+    });
 
     socket.on("disconnect", (reason: any) => {
+      //TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
+      console.log("disconnect : ", userRegistry.getAll());
       const user = userRegistry.getBySocket(socket);
       if (user) {
         userRegistry.unregister(user.userid);
       }
+      console.log("disconnect : ", reason, " / user : ", user?.userid);
     });
 
     socket.on("createRoom", (data: {user: any; userlist: any; roomname: string}) => {
