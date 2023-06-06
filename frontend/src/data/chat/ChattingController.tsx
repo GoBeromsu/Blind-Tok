@@ -1,5 +1,5 @@
 import {sendMessage} from "@data/chat/index";
-import {getChatList, setChatList, addChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {getRooms, setChatList, addChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
 import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
 import {updateChat} from "@views/Chat/ChatRoom";
 import {setList} from "@views/Chat/ChatList";
@@ -57,5 +57,5 @@ export function sendEnteredMessage(roomid: number, loginUser: any, data: string)
 // 유저가 속한 방의 리스트 목록 반환 함수
 // getChat_list : chatList에서 처음 실행시 chat_list의 chat_list변수에서 유저 방목록을 가져온다.
 export function init_list() {
-  return getChatList();
+  return getRooms();
 }

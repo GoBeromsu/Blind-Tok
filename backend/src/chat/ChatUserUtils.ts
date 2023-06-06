@@ -1,8 +1,11 @@
 import UserSession from "./UserSession";
 import {addRoomUser, checkData, findRoom, removeUserList, updateRoom} from "./ChatRoomUtils";
-import {ChatRoomData, userRegistry} from "./Consonants";
+import {ChatRoomData, sendMessage, userRegistry} from "./Consonants";
 
 export function newUser(userid: string, socket: any) {
+  if (userRegistry.getById(userid)) {
+    return userRegistry.getById(userid);
+  }
   const userSession = new UserSession(userid, socket);
   userRegistry.register(userSession);
   return userSession;
@@ -11,13 +14,12 @@ export function newUser(userid: string, socket: any) {
 // 유저를 찾아서 없으면 유저를 생성해준다.
 // 그 후 roomlist에 방을 추가한다.
 export function updateRoomList(roomid: number, userList: any) {
-  for (let i = 0; i < userList.length; i++) {
-    const userid = userList[i];
+  userList.map((userid: string) => {
     let user = userRegistry.getById(userid);
-    // 방에 초대 할 유저가 없는 경우에 예외처리를 해야 하는구만
     if (!user) return;
     user.roomlist = [roomid, ...user?.roomlist];
-  }
+  });
+  console.log("user's roomlist : ", userRegistry.getById(userList[0])?.roomlist);
 }
 
 // 해당 유저의 roomlist에서 해당 방을 삭제하는 함수
@@ -47,8 +49,8 @@ export function addRoomList(roomid: number, userid: string) {
 // [{userid : string, mySocket : any}]
 
 export function updateUserSocket(socket: any, userid: string) {
-  let user = userRegistry.getById(userid);
-  user.socket = socket;
+  // user.socket = socket;
+  userRegistry.updateSocketId(userid, socket.id);
 }
 
 export function sendOfflineMessages(io: any, socket: any, roomList: any[], userid: string) {
@@ -56,22 +58,22 @@ export function sendOfflineMessages(io: any, socket: any, roomList: any[], useri
     let roomid = room.roomid;
     let data = checkData(roomid, userid);
     sendMessage(socket, {data: {roomid, data}, id: "chatData"});
-    console.log("chatData : " + roomid + data);
+    // console.log("chatData : " + roomid + data);
   });
 }
 
 export function dataInit(io: any, socket: any, userid: string) {
   newUser(userid, socket);
   updateUserSocket(socket, userid);
-  const roomList = getUserRooms(userid);
+  // const roomList = getUserRooms(userid);
   // 유저가 속한 방에 연결
-  roomList.map(room => {
-    joinRoom(socket, room);
-  });
+  // roomList.map(room => {
+  //   joinRoom(socket, room);
+  // });
 
   // 유저가 속한 방 리스트
-  io.to(socket.id).emit("message", {data: roomList.map((data: any) => findRoom(data)), id: "chatList"});
-  sendOfflineMessages(io, socket, roomList, userid);
+  // io.to(socket.id).emit("message", {data: roomList.map((data: any) => findRoom(data)), id: "chatList"});
+  // sendOfflineMessages(io, socket, roomList, userid);
 }
 
 // 유저가 방을 나갈때 이를 처리하는 함수
@@ -112,12 +114,14 @@ export function enteredMessage(
   // console.log("rest : ", rest);
 
   let room = updateRoom(roomid, rest);
-
-  // console.log("update Room : ", roomid);
-  // mySocket.broadcast.emit("ive_message", data); // 1 대 다수
-  // io.broadcast.emit("message", {data: room, id: "message"}); // 1 대 다수
   console.log("update ? room : ", room);
-  room?.userlist?.map((userid: any) => sendMessage(userRegistry.getSocketById(userid), {data: room, id: "message"})); // 방에 있는 모든 유저
+  room?.userlist?.map((userid: any) => {
+    const userSocket = userRegistry.getSocketById(userid);
+    if (!userSocket) {
+      console.log("user not found : 유저가 아직 접속을 하지 않았습니다");
+    }
+    sendMessage(userSocket, {data: room, id: "message"});
+  }); // 방에 있는 모든 유저
   // socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
   // io.to(socket.id).emit("message", {data: room, id: "message"}); // 특정 인원에게 전달 가능
 }
@@ -130,6 +134,14 @@ export function joinRoom(socket: any, room: any) {
   // roomList.map((room: any) => socket.join(room) && console.log("join : ", room));
 }
 
+export function getRooms(socket: any) {
+  const user = userRegistry.getBySocket(socket?.id);
+  const rooms = getUserRooms(user?.userid);
+  // console.log("getRooms", rooms, userRegistry.getAll());
+  // console.log("getRooms : ", user, user?.userid, rooms);
+  sendMessage(socket, {id: "getRooms", data: rooms});
+}
+
 export function notifyUsersConnect(io: any, room: ChatRoomData) {
   // console.log("notifyUsersConnect : ", room);
   const {userlist} = room;
@@ -137,6 +149,7 @@ export function notifyUsersConnect(io: any, room: ChatRoomData) {
   userlist.map((userid: any) => {
     const connectedUser = userRegistry.getById(userid);
     if (connectedUser) {
+      // console.log("처음 유저의 소켓 : ", connectedUser.socket.id);
       // io.to(connectedUser.socket.id).emit("message", {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
       sendMessage(connectedUser.socket, {data: room, id: "createRoom"}); // 방에 참여한 유저에게 방이 생성되었다는 사실을 알림
       // connectedUser.socket.join(room.roomid); // 방에 참여한 유저를 방에 연결
@@ -146,6 +159,7 @@ export function notifyUsersConnect(io: any, room: ChatRoomData) {
       console.log("fail join / room : " + room.roomid + " / user : " + userid);
     }
   });
+  // console.log(userRegistry.getAll());
 }
 
 // 특정 유저리스트에 무언가를 보내고 싶을 때 사용하는 함수
@@ -161,11 +175,6 @@ export function route(io: any, userList: any, opt: string, data: any) {
     }
     io.to(connectedUser.socket.id).emit("message", {data: data, id: opt});
   });
-}
-
-function sendMessage(socket: any, message: any) {
-  console.log("sendMessage : ", message, socket);
-  socket.emit("message", message);
 }
 
 // 방에 유저가 추가되었을 경우 이를 처리하는 함수
