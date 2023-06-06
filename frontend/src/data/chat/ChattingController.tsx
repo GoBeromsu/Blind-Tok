@@ -1,7 +1,6 @@
 import {sendMessage} from "@data/chat/index";
 import {getRooms, setChatList, addChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
-import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
-import {updateChat} from "@views/Chat/ChatRoom";
+import {subData} from "@data/chat/chat_data";
 import {setList} from "@views/Chat/ChatList";
 
 // 채팅방 생성
@@ -10,6 +9,10 @@ export function createRoom(user: any, userlist: any[], roomname: string = "") {
   const data = {user, userlist, roomname};
   // console.log("createRoom : ", data);
   sendMessage(data, "createRoom");
+}
+
+export function updateChat(data: any) {
+  sendMessage(data, "updateChat");
 }
 
 // 채팅방에 유저 추가

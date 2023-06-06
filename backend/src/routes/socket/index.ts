@@ -10,6 +10,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
     // console.log("User Connected: ", userRegistry.getAll());
     socket.on("dataInit", (userid: string) => {
+      console.log("dataInit : ", userid, socket.id);
       dataInit(fastify.io, socket, userid);
       // console.log("called dataInit");
     });
@@ -29,13 +30,13 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("disconnect", (reason: any) => {
-      //TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
-      console.log("disconnect : ", userRegistry.getAll());
-      const user = userRegistry.getBySocket(socket);
-      if (user) {
-        userRegistry.unregister(user.userid);
-      }
-      console.log("disconnect : ", reason, " / user : ", user?.userid);
+      // TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
+      // console.log("disconnect : ", userRegistry.getAll());
+      // const user = userRegistry.getBySocket(socket);
+      // if (user) {
+      //   userRegistry.unregister(user.userid);
+      // }
+      // console.log("disconnect : ", reason, " / user : ", user?.userid);
     });
 
     socket.on("createRoom", (data: {user: any; userlist: any; roomname: string}) => {
