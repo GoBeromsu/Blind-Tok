@@ -81,6 +81,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
     try {
       const getData = await getUserInfo(own);
       const ownerData = getData.data;
+      console.log(ownerData);
       setOwner(ownerData);
     } catch (error) {
       console.error("Failed to get owner information:", error);
