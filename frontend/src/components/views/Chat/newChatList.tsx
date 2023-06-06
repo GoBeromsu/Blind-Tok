@@ -6,7 +6,7 @@ import Loading from "@loading/Loading";
 import {getFriendListQuery} from "@data/Friend/state";
 import {Button, List, ListItem, TextField} from "@mui/material";
 import {Link} from "react-router-dom";
-import ChatUserDialog from "@data/chat/ChatUserDialog";
+import ChatUserDialog from "@views/Chat/ChatUserDialog";
 import {createRoom} from "@data/chat/ChattingController";
 import {chatListState, ChatRoom} from "@data/chat/state";
 import {socket} from "@data/chat";
