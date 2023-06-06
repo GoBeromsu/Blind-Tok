@@ -5,7 +5,7 @@ export interface ChatRoomData {
   roomname: string;
   minnum: number;
   maxnum: number;
-  userlist: {userid: string; datanum: number; offlineData: []}[];
+  userlist: {userid: string; datanum: number; offlineData: any[]}[];
   pipeline: any;
   kurentoClient: any;
   participants: any;
