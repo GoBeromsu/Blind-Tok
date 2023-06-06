@@ -1,1 +1,1 @@
-export function joinVideoChat() {}
+export function joinVideoChat(roomid: number, userlist: any) {}
