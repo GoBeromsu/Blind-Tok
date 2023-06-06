@@ -116,7 +116,8 @@ export function enteredMessage(
   // console.log("rest : ", rest);
 
   let room = updateRoom(roomid, rest);
-  console.log("update ? room : ", room);
+  // console.log("update ? room : ", room);
+  // const room = findRoom(roomid);
   room?.userlist?.map((userid: any) => {
     const userSocket = userRegistry.getSocketById(userid);
     if (!userSocket) {
@@ -124,7 +125,7 @@ export function enteredMessage(
       return;
     }
     console.log("userSocket : ", userSocket, " / userid : ", userid, " / room : ", room);
-    console.log("All User :", userRegistry.getAll());
+    // console.log("All User :", userRegistry.getAll());
     sendMessage(userSocket, {data: room, id: "message"});
   }); // 방에 있는 모든 유저
   // socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만

@@ -5,7 +5,7 @@ import {userState} from "@data/user/state";
 import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData} from "@data/chat/chat_data";
-import {socket} from "@data/chat";
+import {useSocket} from "@data/chat/useSocket";
 
 export let updateChat: any = () => {}; //
 
@@ -19,6 +19,8 @@ const ChatRoom: React.FC = () => {
   const [string, setString]: any = useState("");
 
   let check_n = "";
+
+  const socket = useSocket();
 
   updateChat = (data: any) => {
     console.log("updateChat : ", data);
@@ -36,7 +38,10 @@ const ChatRoom: React.FC = () => {
           break;
       }
     });
-  }, [chatDataState]);
+    return () => {
+      socket.off();
+    };
+  }, [socket, chatDataState]);
   const handleSendMessage = () => {
     sendEnteredMessage(chatData.roomid, loginUser, string);
     setString(""); //입력 칸을 초기화 해준다
@@ -59,21 +64,21 @@ const ChatRoom: React.FC = () => {
       <Box style={{width: `100%`, height: "100%", paddingLeft: "350px"}}>
         <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState?.map((friend: any, index: number) => (
-            <div
+            <Box
               key={index}
               className="text"
               style={{width: "800px"}}
               onLoad={() => {
                 textspace.scrollTop = textspace.scrollHeight;
               }}>
-              <div style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
+              <Box style={loginUser?.userid === friend?.userid ? {...nameCSS, textAlign: "right"} : {...nameCSS, textAlign: "left"}}>
                 {check_name(friend.nickname) === 1 ? "" : friend.nickname}
-              </div>
-              <div style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
-                <div style={dataCSS}>{friend.data_s}</div>
-                <div style={{fontSize: "10px"}}>{friend.time}</div>
-              </div>
-            </div>
+              </Box>
+              <Box style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
+                <Box style={dataCSS}>{friend.data_s}</Box>
+                <Box style={{fontSize: "10px"}}>{friend.time}</Box>
+              </Box>
+            </Box>
           ))}
         </Box>
         <Box>

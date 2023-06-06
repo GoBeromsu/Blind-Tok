@@ -20,7 +20,9 @@ export default async function (fastify: FastifyInstance) {
     });
 
     socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {
-      joinVideoChat();
+      const {roomid, userlist} = data;
+      console.log("joinVideoChat : ", roomid, userlist);
+      joinVideoChat(roomid, userlist);
     });
     socket.on("getRooms", (data: any) => {
       getRooms(socket);
