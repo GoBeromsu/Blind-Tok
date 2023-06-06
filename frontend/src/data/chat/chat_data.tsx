@@ -22,7 +22,8 @@ function getData(key: string): any {
 // 마지막으로 데이터가 존재하면서 해당 방의 정보도 있다면
 // 해당 방의 정보를 가져와서 받은 데이터를 추가하고 다시 저장한다.
 export function updateChatData(datas: any): any {
-  let {roomid, ...rest} = datas;
+  let roomid = datas.roomid;
+  let rest = {data_s: datas.data_s, nickname: datas.nickname, time: datas.time, userid: datas.userid};
   let savedata = getData(localStorageName);
   if (!savedata) {
     updateData(localStorageName, [{roomid: roomid, data: [rest]}]);
@@ -39,7 +40,7 @@ export function updateChatData(datas: any): any {
     }
     updateData(localStorageName, savedata);
   }
-  return datas;
+  return {roomid: roomid, data: rest};
 }
 
 // 지역 저장소에 데이터 저장

@@ -54,9 +54,7 @@ const Notification = () => {
     if (loginUser) {
       getRelation(loginUser.userid).then(data => {
         let list = data.data;
-        console.log(list);
         list = list?.filter((relation: any) => relation.status === "wait");
-        console.log(list);
         setReciveList(list.filter((relation: any) => relation.friendid === loginUser.userid));
         setSendList(list.filter((relation: any) => relation.userid === loginUser.userid));
       });

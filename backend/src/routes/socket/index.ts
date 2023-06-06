@@ -1,6 +1,6 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
-import {add_user, dataInit, leaveRoom, enteredMessage, getRooms} from "../../chat/ChatUserUtils";
+import {add_user, dataInit, leaveRoom, enteredMessage, getRooms, sendOfflineMessage} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 import {joinVideoChat} from "src/chat/VideoUtils";
@@ -28,6 +28,9 @@ export default async function (fastify: FastifyInstance) {
     socket.on("getRooms", (data: any) => {
       getRooms(socket);
     });
+    socket.on("getOfflineMessage", (data: any)=>{
+      sendOfflineMessage(fastify.io, socket, data.roomid);
+    })
 
     socket.on("disconnect", (reason: any) => {
       // TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
@@ -47,6 +50,7 @@ export default async function (fastify: FastifyInstance) {
     socket.on("addUser", (data: any) => {
       add_user(fastify.io, data);
     });
+
     socket.on("enteredMessage", (data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) => {
       enteredMessage(fastify.io, socket, data);
     });

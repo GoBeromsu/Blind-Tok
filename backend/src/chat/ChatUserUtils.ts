@@ -1,6 +1,6 @@
 import UserSession from "./UserSession";
 import {addRoomUser, checkData, findRoom, removeUserList, updateRoom} from "./ChatRoomUtils";
-import {ChatRoomData, rooms, sendMessage, userRegistry} from "./Consonants";
+import {getOfflineData, ChatRoomData, rooms, sendMessage, userRegistry} from "./Consonants";
 
 export function newUser(userid: string, socket: any) {
   if (userRegistry.getById(userid)) {
@@ -69,7 +69,7 @@ export function dataInit(io: any, socket: any, userid: string) {
   newUser(userid, socket);
 
   updateUserSocket(socket, userid);
-  // const roomList = getUserRooms(userid);
+  const roomList = getUserRooms(userid);
   // 유저가 속한 방에 연결
   // roomList.map(room => {
   //   joinRoom(socket, room);
@@ -77,9 +77,19 @@ export function dataInit(io: any, socket: any, userid: string) {
 
   // 유저가 속한 방 리스트
   // io.to(socket.id).emit("message", {data: roomList.map((data: any) => findRoom(data)), id: "chatList"});
-  // sendOfflineMessages(io, socket, roomList, userid);
+  //sendOfflineMessages(io, socket, roomList, userid);
 }
 
+export function sendOfflineMessage(io: any, socket: any, roomid: number) {
+  let userid = userRegistry.getBySocket(socket?.id).userid;
+  let index = rooms[roomid]?.userlist?.findIndex(user => user.userid === userid);
+  console.log(index);
+  if (!rooms[roomid].userlist) return;
+  if (index === -1 || rooms[roomid].userlist[index].offlineData.length === 0) return;
+  let data = getOfflineData(roomid, index);
+  sendMessage(socket, {data: {roomid, data}, id: "chatData"});
+  // console.log("chatData : " + roomid + data);
+}
 // 유저가 방을 나갈때 이를 처리하는 함수
 // 유저와 해당 방의 접속을 끊는다.
 // 유저의 id를 받지 않기 때문에 userlist에서 해당 소켓이 가진 유저 userid 를 찾는다.
@@ -117,18 +127,25 @@ export function enteredMessage(
   let {roomid, ...rest} = data;
   // console.log("rest : ", rest);
 
-  let room = updateRoom(roomid, rest);
+  //let room = updateRoom(roomid, rest);
   // console.log("update ? room : ", room);
   // const room = findRoom(roomid);
-  room?.userlist?.map((userid: any) => {
+  let list = rooms[roomid]?.userlist;
+  list?.map((userid: any) => {
     const userSocket = userRegistry.getSocketById(userid);
     if (!userSocket) {
+      let index = rooms[roomid].userlist.findIndex(user => {
+        user.userid === userid;
+      });
+      if (index === -1) return;
+      rooms[roomid].userlist[index].offlineData.push(data);
+      console.log(rooms[roomid].userlist[index].offlineData);
       console.log("user not found : 유저가 아직 접속을 하지 않았습니다");
       return;
     }
-    console.log("userSocket : ", userSocket?.id, " / userid : ", userid, " / room : ", room);
+    console.log("userSocket : ", userSocket?.id, " / userid : ", userid, " / room : ", data);
     // console.log("All User :", userRegistry.getAll());
-    sendMessage(userSocket, {data: room, id: "message"});
+    sendMessage(userSocket, {data: data, id: "message"});
   }); // 방에 있는 모든 유저
   // socket.to(roomid).emit("message", {data: room, id: "message"}); // 방 하나만
   // io.to(socket.id).emit("message", {data: room, id: "message"}); // 특정 인원에게 전달 가능

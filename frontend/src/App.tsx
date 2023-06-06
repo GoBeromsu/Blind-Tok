@@ -53,6 +53,7 @@ function AppRoutes() {
   useEffect(() => {
     if (loginUser == null && data != null) {
       setLoginUser(data);
+      setLocalStorageName(data.userid);
     }
   }, [data]);
 
