@@ -24,6 +24,7 @@ import ChatList from "@views/Chat/ChatList";
 import ChatBar from "@views/Chat/ChatBar";
 import UserProfile from "@views/User/UserProfile";
 import UserPage from "@views/User/UserPage";
+import Notification from "@views/Friend/Notification";
 
 import AudioUploadPage from "@views/MainPage/AudioUpload";
 import VideoChat from "@views/Chat/VideoChat";
@@ -72,6 +73,7 @@ function AppRoutes() {
           <Route path="/chat" element={Auth(ChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
+          <Route path="/notification" element={Auth(Notification, true, user)}></Route>
         </Route>
         // Auth 페이지에 true를 주는 이유는 로그인이 되어있어야만 접근 가능 하도록 하기 위함
         <Route path="/login" element={Auth(Login, false)}></Route>
