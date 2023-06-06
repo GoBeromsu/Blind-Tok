@@ -13,7 +13,6 @@ import {chatListState, ChatRoom} from "@data/chat/state";
 import {getRooms} from "@data/chat/chat_list";
 import {useSocket} from "@data/chat/useSocket";
 import {sendMessage} from "@data/chat";
-import {ChatRoomData} from "@views/Chat/ChatList";
 
 const NewChatList = () => {
   const loginUser: any = useRecoilValue(userState);
@@ -23,7 +22,7 @@ const NewChatList = () => {
   const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   const [invitedFriend, setInvitedFriend] = useState<any>(0);
   const [oepn, setOepn] = useState(false);
-  const [roomList, setRoomList] = useRecoilState<ChatRoomData[]>(chatListState);
+  const [roomList, setRoomList] = useRecoilState<any>(chatListState);
 
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
@@ -40,6 +39,7 @@ const NewChatList = () => {
     setInvitedFriend(newFriend);
 
     createRoom(loginUser, [newFriend]);
+    getRooms();
   };
   const onChangeUser = (e: any) => {
     setOepn(true);
@@ -48,39 +48,44 @@ const NewChatList = () => {
     sendMessage(loginUser?.userid, "dataInit");
     getRooms();
   }, []);
-  if (socket) {
-    socket.on("message", (message: any) => {
-      let {id, data} = message;
-      switch (id) {
-        // 채팅 메시지를 받았을 경우
-        case "message":
-          // updateChat(updateChatData(data));
-          // setList(setListMessage(data.roomid, data.data_s));
-          break;
-        // 서버와 접속이 끊긴 동안 쌓인 데이터를 받는 경우
-        case "chatData":
-          if (data && data.data) {
-            // updateData_s(data);
-            // setList(setListMessage(data.roomid, data.data.at(-1).data_s));
-          }
-          break;
-        // 유저가 속한 방이 만들어졌을 경우
-        // addChatList : 유저의 방목록에 추가한다.
-        // setList : chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
-        case "createRoom":
-          // console.log("새로운 방이 생성되었습니다.", data);
-          const {roomid, roomname, maxnum, userlist} = data;
-          // setRoomList([data...roomList]);
-          setRoomList([{roomid, roomname, maxnum, userlist}, ...roomList]);
-          break;
-        case "getRooms":
-          console.log("Get rooms", data);
-          setRoomList(data);
-        default:
-          break;
-      }
-    });
-  }
+  useEffect(() => {
+    if (socket) {
+      socket.on("message", (message: any) => {
+        let {id, data} = message;
+        switch (id) {
+          // 채팅 메시지를 받았을 경우
+          case "message":
+            // updateChat(updateChatData(data));
+            // setList(setListMessage(data.roomid, data.data_s));
+            break;
+          // 서버와 접속이 끊긴 동안 쌓인 데이터를 받는 경우
+          case "chatData":
+            if (data && data.data) {
+              // updateData_s(data);
+              // setList(setListMessage(data.roomid, data.data.at(-1).data_s));
+            }
+            break;
+          // 유저가 속한 방이 만들어졌을 경우
+          // addChatList : 유저의 방목록에 추가한다.
+          // setList : chatList의 목록을 갱신한다. => 목록의 리렌더링이 발생
+          case "createRoom":
+            console.log("새로운 방이 생성되었습니다.", data);
+            const {roomid, roomname, maxnum, userlist} = data;
+            // setRoomList([data...roomList]);
+            setRoomList([{roomid, roomname, maxnum, userlist}, ...roomList]);
+            break;
+          case "getRooms":
+            // console.log("Get rooms", data);
+            setRoomList(data);
+          default:
+            break;
+        }
+      });
+    }
+    return () => {
+      socket.off();
+    };
+  }, [socket, open]);
 
   return (
     <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
