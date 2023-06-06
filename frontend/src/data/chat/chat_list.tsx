@@ -24,7 +24,7 @@ export function setChatList(data: {roomid: number; roomname: string; userlist: a
 }
 
 // 변수 chat_list의 값을 반환하는 함수
-export function getChatList() {
+export function getRooms() {
   // return chatList;
   // socket.emit("getRooms")
   sendMessage([], "getRooms");
