@@ -16,37 +16,42 @@ export function findRoom(roomid: number) {
 export function checkData(roomid: number, userid: string) {
   // 해당 방을 찾을 찾고 방의 데이터를 가져온다.
 
-  const roomdata = findRoom(roomid);
+  let roomdata = findRoom(roomid);
+  console.log(roomdata);
   if (!roomdata) return;
   let data_n;
   let min = roomdata?.minnum;
   let max = roomdata?.maxnum;
+  let index = roomdata?.userlist?.findIndex((user: {userid: string; datanum: number}) => user.userid === userid);
 
   // 해당 방에서 해당 유저의 데이터를 가져온다.
-  let userdata = roomdata?.userlist.find((user: {userid: string; datanum: number}) => user.userid === userid);
+  let userdata = roomdata?.userlist[index];
   if (typeof userdata === "undefined") {
     console.log("checkData : userid not Found");
     return;
   }
 
   // 만일 유저의 정보가 없거나 유저의 datanum이 max와 같으면 종료
-  if (max === userdata.datanum || !userdata) return 0; // 추가 내용 없음
+  //if (max === userdata.datanum || !userdata) return 0; // 추가 내용 없음
   // 그렇지 않고 min과 동일하다면 방에 해당하는 데이터를 전부 가져오고
   // 다음 minnum을 찾고 그 다음 minnum까지 데이터를 삭제해준다. / 이는 minnum과 다음 minnum 사이의 데이터를 가지지 않은 인원이
   // 해당 유저뿐이기 때문이다. 따라서 더이상 그 데이터를 저장해놓을 필요가 없다.
-  else if (min === userdata.datanum) {
-    let min_Arr = roomdata.userlist.reduce((prev, value) => {
-      return prev.datanum < value.datanum ? prev : value;
-    });
-    rooms[roomid].minnum = min_Arr.datanum;
-    data_n = getData(roomid, min_Arr.datanum, 1);
+  //else if (min === userdata.datanum) {
+  //let min_Arr = roomdata.userlist.reduce((prev, value) => {
+  //  return prev.datanum < value.datanum ? prev : value;
+  //});
+  //rooms[roomid].minnum = min_Arr.datanum;
+  //data_n = getData(roomid, min_Arr.datanum, 1);
 
-    // 만일 max와 min 사이의 값이라면 유저의 datanum에서 부터 max까지의 데이터를 가져온다. 이때 저장된 데이터는 삭제하지 않는다.
-    // 이는 옵션 0을 통해 구별 가능하다.
-  } else {
-    data_n = getData(roomid, userdata.datanum, 0);
+  // 만일 max와 min 사이의 값이라면 유저의 datanum에서 부터 max까지의 데이터를 가져온다. 이때 저장된 데이터는 삭제하지 않는다.
+  // 이는 옵션 0을 통해 구별 가능하다.
+  //} else {
+  //data_n = getData(roomid, userdata.datanum, 0);
+  //}
+  if (max === userdata.datanum || !userdata) return 0;
+  else {
+    min = max;
   }
-
   // 그 후 데이터를 가져간 해당 유저의 datanum을 max로 바꿔준다.
   userdata.datanum = max;
   // 가져온 데이터 반환
@@ -90,7 +95,7 @@ export function removeUserList(roomid: number, userid: string) {
 export function addRoomUser(roomid: number, userid: string) {
   let room = findRoom(roomid);
   if (!room) return; // 존재하지 않는 방에 유저를 추가하려는 경우 처리
-  room.userlist.push({userid: userid, datanum: room.maxnum});
+  //room.userlist.push({userid: userid, datanum: room.maxnum});
 }
 
 //TODO: 현재 로직으로는 User들이 방에 들어올 때 모두 Socket을 가지고 있는 것이 자명함,
@@ -105,7 +110,7 @@ export function createRoomAndNotify(io: any, data: {user: any; userlist: any; ro
   if (createdRoom) {
     updateRoomList(createdRoom.roomid, updatedUserList);
     createData(createdRoom.roomid);
-    notifyUsersConnect(io, createdRoom);
+    //(io, createdRoom);
   }
   // console.log("Socket 좀 보자~ ", userRegistry.getAll());
 }
