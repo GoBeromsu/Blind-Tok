@@ -11,7 +11,7 @@ export default class {
 
   register(user: UserSession) {
     this.usersById[user.userid] = user;
-    this.usersBySocket[user.socket.id] = user?.socket.id;
+    this.usersBySocket[user?.socket.id] = user;
     // this.userByName[user.name] = user;
   }
 
@@ -27,12 +27,18 @@ export default class {
   // getByName(name: string) {
   //   return this.userByName[name];
   // }
-
+  updateSocketId(userId: any, socketId: any) {
+    const userSession = this.usersById[userId];
+    delete this.usersBySocket[userSession?.socket?.id];
+    this.usersBySocket[socketId] = userSession;
+  }
   getById(userId: string) {
     return this.usersById[userId];
   }
   getBySocket(socketId: string) {
-    return this.usersBySocket[socketId];
+    const userSession = this.usersBySocket[socketId];
+    // console.log("userSession : " + userSession);
+    return userSession;
   }
 
   removeById(userId: string) {
