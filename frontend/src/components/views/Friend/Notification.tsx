@@ -4,7 +4,7 @@ import {userState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
-import {getFriendlist, editFriendStatus} from "@data/Friend/axios";
+import {getRelation, editFriendStatus} from "@data/Friend/axios";
 
 Modal.setAppElement("#root");
 
@@ -46,9 +46,11 @@ const Notification = () => {
 
   useEffect(() => {
     if (loginUser) {
-      getFriendlist(loginUser.userid).then(data => {
+      getRelation(loginUser.userid).then(data => {
         setNotificationList(data.data);
       });
+      console.log(getRelation(loginUser.userid));
+      console.log(loginUser);
     }
   }, [loginUser]);
 
@@ -72,18 +74,13 @@ const Notification = () => {
             key={index}
             className="friend-item"
             style={{/*width: `${W}px`,*/ height: "50px", backgroundColor: friend.status === "ban" ? "red" : "black"}}
-            onClick={() => {
-              console.log(getFriendlist(loginUser?.userid));
-            }}>
+            onClick={() => {}}>
             {friend.friendid}에게 친구요청이 왔습니다.
             <Button
               onClick={() => {
                 ok(Number(friend.relationid), "normal");
                 let relationid = notificationList.find((user: any) => user.userid === friend.friendid).relationid;
                 ok(Number(relationid), "normal");
-                getFriendlist(loginUser.userid).then(data => {
-                  setNotificationList(data.data);
-                });
               }}>
               수락
             </Button>
@@ -93,9 +90,6 @@ const Notification = () => {
                 console.log(notificationList);
                 let relationid = notificationList.find((user: any) => user.userid === friend.friendid).relationid;
                 ok(Number(relationid), "ban");
-                getFriendlist(loginUser.userid).then(data => {
-                  setNotificationList(data.data);
-                });
               }}>
               거절
             </Button>

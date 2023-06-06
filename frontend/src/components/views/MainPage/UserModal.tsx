@@ -7,6 +7,8 @@ import {getFileMetaList} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {getUserInfo} from "@data/user/axios";
+import {addFriend, getRelation} from "@data/Friend/axios";
+
 import "@style/UserPage.css";
 
 Modal.setAppElement("#root");
@@ -16,6 +18,7 @@ interface Props {
 }
 
 const UserModal: React.FC<Props> = ({own}) => {
+  let user: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [owner, setOwner] = useState<any>();
@@ -85,7 +88,9 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
-    console.log("친구 추가 버튼이 클릭되었습니다.");
+    console.log(`${user[0]?.userid} -> ${own}`);
+    console.log(addFriend(user[0]?.userid, 100));
+    console.log(getRelation(user[0]?.userid));
   };
 
   return (

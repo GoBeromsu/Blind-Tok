@@ -15,12 +15,18 @@ export default async function (fastify: FastifyInstance) {
     const friendIdList = userRelations.map(relation => (relation.userid === userid ? relation.friendid : relation.userid));
     reply.send(friendIdList);
   });
+  fastify.get("/relation/:userid", async (req: FastifyRequest<{Params: {userid: number}}>, reply: FastifyReply) => {
+    const {userid} = req.params;
+    const userRelations = await getFriendInfo(userid);
+    // console.log(userRelations);
+    const relationList = userRelations.filter(relation => relation.userid === userid || relation.friendid === userid);
+    reply.send(relationList);
+  });
   fastify.post("/:userid/:friendid", async (req: FastifyRequest<{Params: {userid: number; friendid: number}}>, reply: FastifyReply) => {
     const {userid, friendid} = req.params;
     const selected = await addFriend({userid, friendid});
     reply.send(selected);
   });
-
   fastify.put("/:relationid", async (req: FastifyRequest<{Params: {relationid: number}; Body: {status: string}}>, reply: FastifyReply) => {
     const {relationid} = req.params;
     const result = await editFriend(relationid, req.body);
