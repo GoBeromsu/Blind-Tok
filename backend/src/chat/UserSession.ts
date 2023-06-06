@@ -39,13 +39,4 @@ export default class {
       }
     }
   }
-
-  sendMessage(data: any) {
-    this.socket.emit("send_message", data);
-  }
-
-  //TODO: 그냥 room name 대신 id를 주는게 더 유효할거 같기도?
-  // setRoom(roomName: string) {
-  //   this.roomName = roomName;
-  // }
 }

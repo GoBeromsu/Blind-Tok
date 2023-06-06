@@ -1,6 +1,6 @@
 import kurento from "kurento-client";
 import {KURENTO_URI} from "@config/adam.config";
-import {rooms, userRegistry} from "./Consonants";
+import {rooms, sendMessage, userRegistry} from "./Consonants";
 
 import {Socket} from "socket.io";
 import UserSession from "./UserSession";
@@ -32,14 +32,34 @@ export async function joinVideoChat(socket: any, roomid: number, userlist: any) 
 
     // @ts-ignore
     const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
-    userSession.sendMessage({
+    //TODO: 클라 단에서 icecandidate 처리할 함수 추가해야 함
+    sendMessage(socket, {
       id: "iceCandidate",
-      sessionId: userSession.userid,
-      candidate: candidate,
+      data: {
+        sessionId: userSession.userid,
+        candidate: candidate,
+      },
     });
   });
-  console.log("userSession.outgoingMedia : ", userSession.outgoingMedia);
-  //이제 notify 하고 나서 addIceCandidate를 해야 함
+
+  //TODO: 클라 단에서 newParticipantArrived 처리할 함수 추가해야 함
+  // Pariticpant에[ 지금 데이터 저장하는게 없음 ㅋㅋ
+  const usersInRoom = room.participants; // 방 안의 유저들을 불러온다
+  // usersInRoom.map((user: any) => {
+  //   sendMessage(user.socket, {
+  //     id: "newParticipantArrived",
+  //     new_user_id: userSession.userid,
+  //   });
+  // });
+  Object.values(room.participants).forEach((user: any) => {
+    sendMessage(user.socket, {
+      id: "newParticipantArrived",
+      new_user_id: user.userid,
+    });
+  });
+
+  room.participants[userSession.userid] = userSession;
+  // console.log(room.participants);
 }
 
 export async function setRoomPipeline(roomid: number) {
