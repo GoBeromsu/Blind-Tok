@@ -13,7 +13,7 @@ import {getRooms} from "@data/chat/chat_list";
 import {useSocket} from "@data/chat/useSocket";
 import {sendMessage} from "@data/chat";
 
-export let setList: any = () => {};
+// export let setList: any = () => {};
 
 const NewChatList = () => {
   const loginUser: any = useRecoilValue(userState);
@@ -73,9 +73,9 @@ const NewChatList = () => {
     };
   }, [socket, open]);
 
-  setList = (list: any) => {
-    setRoomList(list);
-  };
+  // setList = (list: any) => {
+  //   setRoomList(list);
+  // };
 
   return (
     <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
