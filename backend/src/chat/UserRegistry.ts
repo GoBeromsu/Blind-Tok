@@ -27,7 +27,11 @@ export default class {
   // getByName(name: string) {
   //   return this.userByName[name];
   // }
-
+  updateSocketId(userId: any, socketId: any) {
+    const userSession = this.usersById[userId];
+    delete this.usersBySocket[userSession?.socket?.id];
+    this.usersBySocket[socketId] = userSession;
+  }
   getById(userId: string) {
     return this.usersById[userId];
   }
