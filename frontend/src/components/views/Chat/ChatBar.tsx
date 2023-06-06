@@ -166,7 +166,7 @@ const ChatBar: React.FC = () => {
               <Button onClick={handleClick} label="알림" />
             </Box>{" "}
             <Box className="item">
-              <Link to="/video">
+              <Link to={`/ChatRoom/${roomid}/video`}>
                 <Button onClick={handleVideoChat} label="화상 채팅" />
               </Link>
             </Box>
