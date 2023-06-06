@@ -10,6 +10,7 @@ import ChatUserDialog from "@views/Chat/ChatUserDialog";
 import {createRoom} from "@data/chat/ChattingController";
 import {chatListState, ChatRoom} from "@data/chat/state";
 import {socket} from "@data/chat";
+import {getChatList} from "@data/chat/chat_list";
 
 const NewChatList = () => {
   const loginUser: any = useRecoilValue(userState);
@@ -19,7 +20,7 @@ const NewChatList = () => {
   const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   const [invitedFriend, setInvitedFriend] = useState<any>(0);
   const [oepn, setOepn] = useState(false);
-  const [roomList, setRoomList] = useRecoilState<ChatRoom[]>(chatListState);
+  const [roomList, setRoomList] = useRecoilState<any[]>(chatListState);
 
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
@@ -39,7 +40,10 @@ const NewChatList = () => {
     setOepn(true);
   };
   useEffect(() => {
-    // console.log("새로운 친구 목록이 들어왔습니다.", data);
+    getChatList();
+  }, []);
+  useEffect(() => {
+    // console.log(roomList);
     socket.on("message", (message: any) => {
       let {id, data} = message;
       switch (id) {
@@ -68,11 +72,15 @@ const NewChatList = () => {
           // setRoomList([data...roomList]);
           setRoomList([{roomid, roomname, maxnum, userlist}, ...roomList]);
           break;
+        case "getRooms":
+          console.log("Get rooms", data);
+          setRoomList(data);
         default:
           break;
       }
     });
-  });
+    // return () => socket.off("message");
+  }, []);
 
   return (
     <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>

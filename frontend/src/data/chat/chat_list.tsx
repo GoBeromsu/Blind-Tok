@@ -1,4 +1,6 @@
-﻿let chatList: any[] = [];
+﻿import {sendMessage} from "@data/chat/index";
+
+let chatList: any[] = [];
 
 // 유저가 속한 방 목록을 data로 받아서 chat_list에 저장하는 함수
 // 서버에서 유저가 속한 방의 room_id 리스트를 받아온다.
@@ -23,7 +25,9 @@ export function setChatList(data: {roomid: number; roomname: string; userlist: a
 
 // 변수 chat_list의 값을 반환하는 함수
 export function getChatList() {
-  return chatList;
+  // return chatList;
+  // socket.emit("getRooms")
+  sendMessage([], "getRooms");
 }
 
 // 방에 초대 받았을 경우 방에 대한 정보가 들어온다.
