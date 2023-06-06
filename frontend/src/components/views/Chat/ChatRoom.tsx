@@ -4,7 +4,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {userState} from "@data/user/state";
 import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
-import {getChatData} from "@data/chat/chat_data";
+import {getChatData, updateChatData, updateData_s} from "@data/chat/chat_data";
 import {useSocket} from "@data/chat/useSocket";
 import {sendMessage} from "@data/chat";
 import {getRooms} from "@data/chat/chat_list";
@@ -22,24 +22,27 @@ const ChatRoom: React.FC = () => {
 
   const socket = useSocket();
 
-  // updateChat = (data: any) => {
-  //   console.log("updateChat : ", data);
-  //   let {roomid, ...rest} = data;
-  //   if (roomid == chatData.roomid) {
-  //     setChatDataState([...chatDataState, rest]);
-  //   }
-  // };
   useEffect(() => {
     sendMessage(loginUser?.userid, "dataInit");
     // getRooms();
   }, []);
   useEffect(() => {
+    sendMessage(loginUser?.userid, "getRooms");
+    socket.emit("getOfflineMessage", {roomid: roomid});
     socket.on("message", (message: any) => {
       let {id, data} = message;
       console.log("message : ", message);
       switch (id) {
         case "message":
-          updateChat(data);
+          let receiveData = updateChatData(data);
+          if (receiveData.roomid === Number(roomid)) setChatDataState([...chatDataState, receiveData.data]);
+          break;
+        case "chatData":
+          console.log(data);
+          if (data && data.data) {
+            updateData_s(data);
+            // setList(setListMessage(data.roomid, data.data.at(-1).data_s));
+          }
           break;
       }
     });
@@ -47,6 +50,7 @@ const ChatRoom: React.FC = () => {
       socket.off();
     };
   }, [socket, chatDataState]);
+
   const handleSendMessage = () => {
     sendEnteredMessage(chatData.roomid, loginUser, string);
     setString(""); //입력 칸을 초기화 해준다

@@ -1,5 +1,4 @@
 import {atom, selector} from "recoil";
-import {getRooms} from "@data/chat/index";
 
 export interface ChatRoom {
   roomid: number;

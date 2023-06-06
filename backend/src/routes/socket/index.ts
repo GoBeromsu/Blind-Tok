@@ -1,6 +1,6 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 
-import {add_user, dataInit, leaveRoom, enteredMessage, getRooms} from "../../chat/ChatUserUtils";
+import {add_user, dataInit, leaveRoom, enteredMessage, getRooms, sendOfflineMessage} from "../../chat/ChatUserUtils";
 
 import {createRoomAndNotify} from "../../chat/ChatRoomUtils";
 import {joinVideoChat} from "src/chat/VideoUtils";
@@ -10,7 +10,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.io.on("connection", (socket: any) => {
     // console.log("User Connected: ", userRegistry.getAll());
     socket.on("dataInit", (userid: string) => {
-      console.log("dataInit : ", userid, socket.id);
+      // console.log("dataInit : ", userid, socket.id);
       dataInit(fastify.io, socket, userid);
       // console.log("called dataInit");
     });
@@ -23,11 +23,14 @@ export default async function (fastify: FastifyInstance) {
     socket.on("joinVideoChat", (data: {roomid: number; userlist: any[]}) => {
       const {roomid, userlist} = data;
       console.log("joinVideoChat : ", roomid, userlist);
-      joinVideoChat(roomid, userlist);
+      joinVideoChat(socket, roomid, userlist);
     });
     socket.on("getRooms", (data: any) => {
       getRooms(socket);
     });
+    socket.on("getOfflineMessage", (data: any)=>{
+      sendOfflineMessage(fastify.io, socket, data.roomid);
+    })
 
     socket.on("disconnect", (reason: any) => {
       // TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
@@ -47,6 +50,7 @@ export default async function (fastify: FastifyInstance) {
     socket.on("addUser", (data: any) => {
       add_user(fastify.io, data);
     });
+
     socket.on("enteredMessage", (data: {roomid: number; userid: number; nickname: string; time: string; data_s: any}) => {
       enteredMessage(fastify.io, socket, data);
     });
