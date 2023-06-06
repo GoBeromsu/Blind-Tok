@@ -47,9 +47,11 @@ const IconBar = () => {
           <Br />
         </div>
         <div className="item">
-          <IconButton>
-            <NotificationsIcon style={{fontSize: 28}} />
-          </IconButton>
+          <Link to="/notification">
+            <IconButton>
+              <NotificationsIcon style={{fontSize: 28}} />
+            </IconButton>
+          </Link>
           <Br />
         </div>
         <div className="item">
