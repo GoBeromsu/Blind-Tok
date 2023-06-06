@@ -33,6 +33,7 @@ export default async function (fastify: FastifyInstance) {
     reply.send(result);
   });
   fastify.delete("/:friendid", async (req: FastifyRequest<{Params: {userid: number; friendid: number}}>, reply: FastifyReply) => {
+    console.log(req.params);
     const result = await removeFriend(req.params);
     reply.send(result);
   });

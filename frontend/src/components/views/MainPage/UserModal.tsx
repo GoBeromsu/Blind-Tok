@@ -89,7 +89,7 @@ const UserModal: React.FC<Props> = ({own}) => {
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
     console.log(`${user[0]?.userid} -> ${own}`);
-    console.log(addFriend(user[0]?.userid, 100));
+    console.log(addFriend(user[0]?.userid, 1));
     console.log(getRelation(user[0]?.userid));
   };
 
