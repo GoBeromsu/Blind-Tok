@@ -8,7 +8,7 @@ export async function getFriendInfo(userid: number) {
 export async function getFriendsInfo() {
   return await UserRelation.find();
 }
-export async function addFriend(relation: {userid: number; friendid: number}) {
+export async function addFriend(relation: {userid: number; friendid: number; status: string}) {
   return await txProcess(async manager => {
     const userRelationRepository = manager.getRepository(UserRelation);
     return await userRelationRepository.save(relation);
@@ -27,7 +27,7 @@ export async function editFriend(
     return repository.update(relationid, {status});
   });
 }
-export async function removeFriend(relation: {userid: number; friendid: number}) {
+export async function removeFriend(relation: {relationid: number}) {
   return await txProcess(async manager => {
     const userRelationRepository = manager.getRepository(UserRelation);
     return await userRelationRepository.delete(relation);

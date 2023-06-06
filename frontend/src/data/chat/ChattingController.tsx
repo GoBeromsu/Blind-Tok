@@ -1,7 +1,6 @@
 import {sendMessage} from "@data/chat/index";
-import {getChatList, setChatList, addChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
-import {getChatData, updateChatData, updateData_s, subData} from "@data/chat/chat_data";
-import {updateChat} from "@views/Chat/ChatRoom";
+import {getRooms, setChatList, addChatList, removeChat_list, setListMessage, addUserChat_list, subUserChat_list} from "@data/chat/chat_list";
+import {subData} from "@data/chat/chat_data";
 import {setList} from "@views/Chat/ChatList";
 
 // 채팅방 생성
@@ -10,6 +9,10 @@ export function createRoom(user: any, userlist: any[], roomname: string = "") {
   const data = {user, userlist, roomname};
   // console.log("createRoom : ", data);
   sendMessage(data, "createRoom");
+}
+
+export function updateChat(data: any) {
+  sendMessage(data, "updateChat");
 }
 
 // 채팅방에 유저 추가
@@ -57,5 +60,5 @@ export function sendEnteredMessage(roomid: number, loginUser: any, data: string)
 // 유저가 속한 방의 리스트 목록 반환 함수
 // getChat_list : chatList에서 처음 실행시 chat_list의 chat_list변수에서 유저 방목록을 가져온다.
 export function init_list() {
-  return getChatList();
+  return getRooms();
 }

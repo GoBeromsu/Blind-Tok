@@ -91,8 +91,8 @@ const UserPage = () => {
       <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
         <div className="container">
           <div className="profile-picture">
-            {loginUser?.meta.profilepictureurl ? (
-              <img src={loginUser?.meta.profilepictureurl} alt="Profile Picture" />
+            {loginUser?.meta?.profilepictureurl ? (
+              <img src={loginUser?.meta?.profilepictureurl} alt="Profile Picture" />
             ) : (
               <div className="empty-image"></div>
             )}
