@@ -107,17 +107,18 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
-    console.log(`${user?.userid} -> ${own}`);
-    addFriend(user?.userid, own);
+    console.log(`${user?.userid} -> ${own.userid}`);
+    addFriend(user?.userid, own.userid);
   };
   const handleAcceptFriend = () => {
-    console.log(`${user?.userid} -> ${own}`);
+    console.log(`${user?.userid} -> ${own.userid}`);
     editFriendStatus(relationid, "normal");
-    acceptFriend(user?.userid, own);
+    acceptFriend(user?.userid, own.userid);
 
     setFlag2(true);
   };
-
+  // 친추 버튼 텍스트
+  const text = !flag1 && !flag2 ? "친추" : flag1 && !flag2 ? "수락" : !flag1 && flag2 ? "요청보냄" : "친구";
   return (
     <Box className="userAudioList">
       <Box className="user-info">
@@ -137,10 +138,7 @@ const UserModal: React.FC<Props> = ({own}) => {
               <h2>익명</h2>
             )}
             <IconButton color="primary" onClick={!flag1 && !flag2 ? handleAddFriend : flag1 && !flag2 ? handleAcceptFriend : () => {}}>
-              {!flag1 && !flag2 && "친추"}
-              {flag1 && !flag2 && "수락"}
-              {!flag1 && flag2 && "요청보냄"}
-              {flag1 && flag2 && "친구"}
+              {text}
             </IconButton>
             <p>{own?.meta?.profilemesage}</p>
             <p>친구 수: {own?.friends?.length}</p>
