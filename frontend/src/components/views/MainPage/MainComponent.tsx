@@ -3,7 +3,7 @@ import AudioPlayer from "./AudioPlayer";
 import "../../style/MainComponent.css";
 import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
 import {getFileMetaList, getFileData} from "@data/upload/axios";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 
 interface AudioFile {
@@ -24,6 +24,7 @@ const MainComponent: React.FC = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioURL, setAudioURL] = useState<any[]>([]);
   const [audioOwn, setAudioOwn] = useState<any[]>([]);
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
 
   const previousLoginUser = useRef(loginUser);
   useEffect(() => {
@@ -112,7 +113,7 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded, audioURL, components]);
 
   return (
-    <div className="maincomponent" style={{width: `${windowWidth - 200}px`, paddingLeft: "300px"}}>
+    <div className="maincomponent" style={sidebarOpen ? {width: `${windowWidth - 200}px`, paddingLeft: "300px"} : {width: `${windowWidth - 200}px`}}>
       {components}
     </div>
   );

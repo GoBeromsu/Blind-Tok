@@ -5,6 +5,8 @@ import {Box, Button, Input} from "@mui/material";
 import {getFileMetaList} from "@data/upload/axios";
 import {getUserInfo} from "@data/user/axios";
 import "@style/UserPage.css";
+import {sideState} from "@data/user/state";
+import {useRecoilState} from "recoil";
 
 const FriendPage = () => {
   const {friendid}: any = useParams();
@@ -12,7 +14,7 @@ const FriendPage = () => {
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [loginUser, setLoginUser]: any = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
-
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
@@ -47,7 +49,9 @@ const FriendPage = () => {
   };
 
   return (
-    <Box className="userAudioList" style={{width: `${windowWidth - 300}px`}}>
+    <Box
+      className="userAudioList"
+      style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "340px"} : {width: `${windowWidth - 300}px`, paddingLeft: "40px"}}>
       <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
         <div className="container">
           <div className="profile-picture">

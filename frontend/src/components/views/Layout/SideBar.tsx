@@ -6,10 +6,12 @@ import "@style/SideBar.css";
 import Br from "./Br";
 import IconBar from "./IconBar";
 import IconBarOpen from "./IconBarOpen";
+import {sideState} from "@data/user/state";
+import {useRecoilState} from "recoil";
 
 const SideBar = () => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const defaultImg = "/image/l.png";
 
   useEffect(() => {

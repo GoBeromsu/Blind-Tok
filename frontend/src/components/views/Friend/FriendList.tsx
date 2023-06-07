@@ -1,6 +1,6 @@
 ﻿import React, {useState, useEffect} from "react";
 import {Link, Outlet} from "react-router-dom";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
@@ -12,6 +12,7 @@ interface Friend {
 Modal.setAppElement("#root");
 
 const FriendList = () => {
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [friendList, setFriendList] = useState<Friend[]>([]);
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
@@ -77,7 +78,9 @@ const FriendList = () => {
   const filteredFriends = friendList?.filter(friend => friend.userid?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "350px"}}>
+    <Box
+      className="f_list"
+      style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "350px"} : {width: `${windowWidth - 300}px`, paddingLeft: "100px"}}>
       <h1>Friend List</h1>
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">
