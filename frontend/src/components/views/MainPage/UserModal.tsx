@@ -22,13 +22,11 @@ const UserModal: React.FC<Props> = ({own}) => {
   const [relationid, setRelationid] = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [owner, setOwner] = useState<any>();
-
   // 상태를 알려주는 변수
   // 1 1 : 친구, 0 0 : 아무요청도 없음, 1 0 : 저쪽에서 요청, 0 1 : 유저가 요청
   const [flag1, setFlag1] = useState<any>(false);
   const [flag2, setFlag2] = useState<any>(false);
-
+  const blindImg = "/image/blindProfile.jpg";
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -59,15 +57,15 @@ const UserModal: React.FC<Props> = ({own}) => {
   };
 
   useEffect(() => {
-    if (owner) {
+    if (own) {
       fetchAudioList();
     }
-  }, [owner]);
+  }, [own]);
 
   const fetchAudioList = async () => {
-    if (owner) {
+    if (own) {
       try {
-        const audioFiles = await getFileMetaList(owner.userid);
+        const audioFiles = await getFileMetaList(own.userid);
         setAudioList(audioFiles.data.reverse());
       } catch (error) {
         console.error("Failed to fetch audio files:", error);
@@ -77,18 +75,15 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   useEffect(() => {
     if (own) {
-      getOwnerData(own);
+      handdleFriend(own);
     }
   }, [own]);
 
-  const getOwnerData = async (own: any) => {
+  const handdleFriend = async (own: any) => {
     try {
-      const getData = await getUserInfo(own);
-      const ownerData = getData.data;
-      setOwner(ownerData);
-      let index = user?.friends?.find((user: any) => user.userid === ownerData.userid);
-      console.log(user);
-      console.log(ownerData);
+      let index = user?.friends?.find((user: any) => user.userid === own.userid);
+      // console.log("my name", user);
+      // console.log(own);
       // 친구인지 구별
       if (index && index != -1) {
         // 일단 저쪽에서 유저에게 보낸 정황이 있음
@@ -97,7 +92,7 @@ const UserModal: React.FC<Props> = ({own}) => {
       } else {
         setFlag1(false);
       }
-      index = user?.friends?.find((user: any) => user.userid === ownerData.userid);
+      index = user?.friends?.find((user: any) => user.userid === own.userid);
       if (index && index != -1) {
         // 유저에서 저쪽으로 보낸 정황이 있음
         setFlag2(true);
@@ -119,6 +114,7 @@ const UserModal: React.FC<Props> = ({own}) => {
     console.log(`${user?.userid} -> ${own}`);
     editFriendStatus(relationid, "normal");
     acceptFriend(user?.userid, own);
+
     setFlag2(true);
   };
 
@@ -127,24 +123,27 @@ const UserModal: React.FC<Props> = ({own}) => {
       <Box className="user-info">
         <div className="container">
           <div className="profile-picture">
-            {owner && owner.meta?.profilepictureurl ? (
-              <img src={owner.meta.profilepictureurl} alt="Profile Picture" />
+            {/* own.meta?.profilepictureurl가 undefined 이라 익명 아이콘 나오는거 */}
+            {(user.userid === own.userid || (flag1 && flag2)) && own && own.meta?.profilepictureurl ? (
+              <img src={own.meta.profilepictureurl} alt="Profile Picture" />
             ) : (
-              <div className="empty-image"></div>
+              <img src={blindImg} />
             )}
           </div>
           <div className="user-info">
-            <h2>
-              {owner?.name} ({owner?.nickname})
-            </h2>
+            {user.userid === own.userid || (flag1 && flag2) ? (
+              <h2>{own && own.name && own.nickname ? `${own.name} (${own.nickname})` : "익명"}</h2>
+            ) : (
+              <h2>익명</h2>
+            )}
             <IconButton color="primary" onClick={!flag1 && !flag2 ? handleAddFriend : flag1 && !flag2 ? handleAcceptFriend : () => {}}>
               {!flag1 && !flag2 && "친추"}
               {flag1 && !flag2 && "수락"}
               {!flag1 && flag2 && "요청보냄"}
               {flag1 && flag2 && "친구"}
             </IconButton>
-            <p>{owner?.meta?.profilemesage}</p>
-            <p>친구 수: {owner?.friends?.length}</p>
+            <p>{own?.meta?.profilemesage}</p>
+            <p>친구 수: {own?.friends?.length}</p>
             <p>게시물 수: {audioList?.length}</p>
           </div>
         </div>

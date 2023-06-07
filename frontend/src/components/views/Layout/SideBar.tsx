@@ -5,6 +5,7 @@ import C_Image from "@views/Layout/CircularImage";
 import "@style/SideBar.css";
 import Br from "./Br";
 import IconBar from "./IconBar";
+import IconBarOpen from "./IconBarOpen";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -31,19 +32,27 @@ const SideBar = () => {
     <div style={{display: "flex"}}>
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", flexDirection: "row"}}>
         <div className="sidebar_main">
-          <div onClick={() => navigate("/")}>
-            <Link to="/">
-              <BTlogo />
-            </Link>
+          <div className="sidebar_top">
+            <div onClick={() => navigate("/")}>
+              <Link to="/">
+                <BTlogo />
+              </Link>
+            </div>
+            <Br />
+            <Br />
+            <C_Image src={defaultImg} alt="Profile image" size="130" />
           </div>
           <Br />
-          <Br />
-          <C_Image src={defaultImg} alt="Profile image" size="130" />
-          <Br />
+          {sidebarOpen && (
+            <div style={{display: "flex", justifyContent: "center"}}>
+              <IconBarOpen />
+            </div>
+          )}
         </div>
         <div className="sidebar_separator"></div>
-        <IconBar />
+        {!sidebarOpen && <IconBar />}
       </div>
+
       <Outlet />
     </div>
   );
