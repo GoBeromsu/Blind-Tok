@@ -6,11 +6,12 @@ import "@style/SideBar.css";
 import Br from "./Br";
 import IconBar from "./IconBar";
 import IconBarOpen from "./IconBarOpen";
-import {sideState} from "@data/user/state";
-import {useRecoilState} from "recoil";
+import {userState, sideState} from "@data/user/state";
+import {useRecoilState, useRecoilValue} from "recoil";
 
 const SideBar = () => {
   const navigate = useNavigate();
+  const loginUser: any = useRecoilValue(userState);
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const defaultImg = "/image/l.png";
 
@@ -42,8 +43,9 @@ const SideBar = () => {
             </div>
             <Br />
             <Br />
-            <C_Image src={defaultImg} alt="Profile image" size="130" />
+            <C_Image src={defaultImg /* 원래 들어가야하는 거 -> loginUser.meta.profilepictureurl */} alt="Profile image" size="130" />
           </div>
+          <Br />
           <Br />
           {sidebarOpen && (
             <div style={{display: "flex", justifyContent: "center"}}>

@@ -27,7 +27,7 @@
 }
 .sidebar.closed {
   justify-content: flex-end;
-  width: 70px;
+  width: 66px;
   transform: translateX(-10px);
 }
 
@@ -46,7 +46,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  margin-top: 100px;
+  margin-top: 40px;
   height: 100vh;
 }
 

@@ -4,7 +4,7 @@ import "../../style/MainComponent.css";
 import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
 import {getFileMetaList, getFileData} from "@data/upload/axios";
 import {userState, sideState} from "@data/user/state";
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 
 interface AudioFile {
   fileid: string;
@@ -24,7 +24,8 @@ const MainComponent: React.FC = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioURL, setAudioURL] = useState<any[]>([]);
   const [audioOwn, setAudioOwn] = useState<any[]>([]);
-  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
+  const [audioTitles, setAudioTitles] = useState<any[]>([]);
+  const sidebarOpen: any = useRecoilValue(sideState);
 
   const previousLoginUser = useRef(loginUser);
   useEffect(() => {
@@ -55,13 +56,18 @@ const MainComponent: React.FC = () => {
           setAudioList(audioMetaData);
           const audioURLs: any[] = [];
           const audioOwns: any[] = [];
+          const audioNames: any[] = [];
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
+            const getFileName = audioMetaData[i].filename;
+            const fileName = getFileName.split(".mp3")[0];
             const dataURL = URL.createObjectURL(getData.data);
             const userId = audioMetaData[i].userid;
+            audioNames.push(fileName);
             audioURLs.push(dataURL);
             audioOwns.push(userId);
           }
+          setAudioTitles(audioNames);
           setAudioURL(audioURLs);
           setAudioOwn(audioOwns);
         }
@@ -77,7 +83,7 @@ const MainComponent: React.FC = () => {
       const componentCount = Math.min(audioURL.length, 4);
       // 처음 페이지에 접속했을 때는 첫 음악을 재생시킴
       for (let i = 0; i < componentCount; i++) {
-        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} own={audioOwn[i]} />);
+        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} own={audioOwn[i]} title={audioTitles[i]} />);
       }
       setComponents(initialComponents);
     }
@@ -98,7 +104,9 @@ const MainComponent: React.FC = () => {
           const nextIndex = (components.length + i) % audioURL.length;
           const isDuplicate = components.some(component => component.key === nextIndex);
           if (!isDuplicate) {
-            newComponents.push(<AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} own={audioOwn[nextIndex]} />);
+            newComponents.push(
+              <AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} own={audioOwn[nextIndex]} title={audioTitles[nextIndex]} />,
+            );
           }
         }
         setComponents(prevComponents => [...prevComponents, ...newComponents]);
