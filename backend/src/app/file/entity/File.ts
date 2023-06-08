@@ -10,6 +10,10 @@ export default class File extends BaseEntity {
   @Column()
   userid: number;
 
+  // @Column({type: COLUMN_TYPE_TEXT})
+  // fileimage: any;
+  // @Column({type: COLUMN_TYPE_TEXT})
+  // filecomment: string;
   @Column({type: COLUMN_TYPE_TEXT})
   filename: string;
   @Column({type: COLUMN_TYPE_TEXT})

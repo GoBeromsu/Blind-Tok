@@ -13,11 +13,14 @@ export async function getFilesByUser(userid: number) {
 export async function addFile(file: {
   userid: number;
   fileid: string;
+  // fileimage: any;
+  // filecomment:string;
   filename: string;
   filepath: string;
   filesize: number;
   filetype: string;
   mimetype: string;
+  
 }) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(File);
@@ -27,6 +30,8 @@ export async function addFile(file: {
 export async function editFile({
   fileid,
   userid,
+  // fileimage,
+  // filecomment,
   filename,
   filepath,
   filetype,
@@ -35,6 +40,8 @@ export async function editFile({
 }: {
   fileid: string;
   userid: number;
+  // fileimage:any;
+  // filecomment:string;
   filename: string;
   filepath: string;
   filetype: string;
@@ -45,6 +52,8 @@ export async function editFile({
     const repository = manager.getRepository(File);
     return repository.update(fileid, {
       userid,
+      // fileimage,
+      // filecomment,
       filename,
       filepath,
       filetype,
