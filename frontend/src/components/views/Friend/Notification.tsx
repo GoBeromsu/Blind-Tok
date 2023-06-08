@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Link, Outlet} from "react-router-dom";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
@@ -14,6 +14,7 @@ const Notification = () => {
   const [receiveList, setReciveList] = useState<any>([]);
   const [sendList, setSendList] = useState<any>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -101,7 +102,7 @@ const Notification = () => {
   };
 
   return (
-    <Box className="f_list" style={{paddingLeft: "350px"}}>
+    <Box className="f_list" style={sidebarOpen ? {paddingLeft: "400px"} : {paddingLeft: "120px"}}>
       <h1>Friend List</h1>
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">

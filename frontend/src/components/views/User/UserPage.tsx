@@ -4,8 +4,8 @@ import Modal from "react-modal";
 import {Box, Button, Input} from "@mui/material";
 import AudioUploadPage, {handleFileUpload} from "@views/User/AudioUpload";
 import {getFileMetaList, deleteAudioFile} from "@data/upload/axios";
-import {useRecoilState} from "recoil";
-import {userState} from "@data/user/state";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {userState, sideState} from "@data/user/state";
 import "@style/UserPage.css";
 
 export let fetchAudioList: any = () => {};
@@ -17,6 +17,7 @@ const UserPage = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const sidebarOpen: any = useRecoilValue(sideState);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -87,7 +88,9 @@ const UserPage = () => {
   };
 
   return (
-    <Box className="userAudioList" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
+    <Box
+      className="userAudioList"
+      style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "380px"} : {width: `${windowWidth - 300}px`, paddingLeft: "80px"}}>
       <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
         <div className="container">
           <div className="profile-picture">

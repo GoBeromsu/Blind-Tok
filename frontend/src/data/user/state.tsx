@@ -5,3 +5,8 @@ export const userState = atom({
   // default: userSelector,
   default: null,
 });
+
+export const sideState = atom({
+  key: "sideState",
+  default: true,
+});

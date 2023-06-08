@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useState, useEffect} from "react";
 import {postAudioFile, getFileMetaList, deleteAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 
 const AudioUploadPage: React.FC = () => {
   const [selectedAudio, setSelectedAudio]: any = useState<File | null>(null);
@@ -9,7 +9,7 @@ const AudioUploadPage: React.FC = () => {
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [comment, setComment] = useState<string>("");
-
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   useEffect(() => {
     if (loginUser) {
       fetchAudioList();
@@ -69,7 +69,7 @@ const AudioUploadPage: React.FC = () => {
 
   return (
     <>
-      <div style={{paddingLeft: "340px"}}>
+      <div style={sidebarOpen ? {paddingLeft: "350px"} : {paddingLeft: "90px"}}>
         <h2>Upload your audio file</h2>
         <input type="file" accept="audio/*" onChange={handleAudioChange} />
         <h2>Upload your image file (optional)</h2>

@@ -36,6 +36,7 @@ const IconBarOpen = () => {
           </IconButton>
         </Link>
         <Br />
+        <br />
         <Link to="/User">
           <IconButton style={{paddingRight: "30px"}}>
             <SearchIcon style={{fontSize: 30}} />
@@ -50,6 +51,7 @@ const IconBarOpen = () => {
           </IconButton>
         </Link>
         <Br />
+        <br />
         <Link to="/notification">
           <IconButton style={{paddingRight: "35px"}}>
             <NotificationsIcon style={{fontSize: 30}} />
@@ -62,6 +64,7 @@ const IconBarOpen = () => {
             <span style={{fontSize: 14}}>&nbsp;&nbsp; Setting</span>
           </IconButton>
         </Link>
+        <Br />
         <Br />
         <div className="item" onClick={handleLogout} style={{paddingLeft: "125px"}}>
           <IconButton>

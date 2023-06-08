@@ -10,6 +10,8 @@ interface Props {
   src: string;
   own: any;
   autoPlay: boolean;
+  title: string;
+  fileImg?: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -33,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
+const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,7 +93,11 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
 
   return (
     <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
-      <div className="audio-player" style={{backgroundImage: ""}} onClick={handlePlayerClick}>
+      <div
+        className="audio-player"
+        style={fileImg ? {backgroundImage: fileImg} : {backgroundImage: 'url("/image/defaultImage.png")'}}
+        onClick={handlePlayerClick}>
+        {title}
         {playerUrl && ( // playerUrl이 존재할 때에만 ReactPlayer 렌더링
           <ReactPlayer
             url={playerUrl}
@@ -100,12 +106,12 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay}) => {
             muted={false}
             controls
             style={{
-              paddingRight: "100px",
               width: "100%",
               maxWidth: "500px",
               height: "auto",
               margin: "0 auto",
               boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              opacity: "0.7",
             }}
           />
         )}
