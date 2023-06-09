@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {IconButton} from "@mui/material";
@@ -14,6 +14,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Br from "./Br";
 import Modal from "react-modal";
 import {Cookies} from "react-cookie";
+import {SearchState} from "@data/user/state";
+import {useRecoilState} from "recoil";
 
 Modal.setAppElement("#root");
 
@@ -21,6 +23,7 @@ const IconBarOpen = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any>([]);
+  const [searchAudio, setSearchAudio] = useRecoilState<any>(SearchState);
   let navigate = useNavigate();
   const cookies = new Cookies();
   const handleLogout = () => {
@@ -31,10 +34,14 @@ const IconBarOpen = () => {
   const handleChange = (event: {target: {value: React.SetStateAction<string>}}) => {
     setQuery(event.target.value);
   };
+  useEffect(() => {
+    console.log("searchAudio changed:", searchAudio);
+  }, [searchAudio]);
 
   const handleSubmit = (event: {preventDefault: () => void}) => {
     event.preventDefault();
     console.log(query);
+    setSearchAudio(query);
     setSearchResults([query, ...searchResults]);
     setQuery("");
     setModalIsOpen(false);
@@ -63,7 +70,7 @@ const IconBarOpen = () => {
       //transform: "translate(-50%, -50%)",
       backgroundColor: "white",
       //padding: "20px",
-      width: "600px",
+      width: "500px",
       borderRadius: "20px",
       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
     },
@@ -89,7 +96,7 @@ const IconBarOpen = () => {
         <IconButton
           style={{paddingRight: "30px"}}
           onClick={() => {
-            setModalIsOpen(true);
+            setModalIsOpen(!modalIsOpen);
           }}>
           <SearchIcon style={{fontSize: 30}} />
           <span style={{fontSize: 14}}>&nbsp;&nbsp; Search</span>
@@ -143,7 +150,7 @@ const IconBarOpen = () => {
             onChange={handleChange}
             autoFocus
             sx={{
-              width: "600px",
+              width: "500px",
               borderRadius: "20px",
               "& fieldset": {
                 borderRadius: "20px",

@@ -3,7 +3,7 @@ import AudioPlayer from "./AudioPlayer";
 import "../../style/MainComponent.css";
 import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
 import {getFileMetaList, getFileData} from "@data/upload/axios";
-import {userState, sideState} from "@data/user/state";
+import {userState, sideState, SearchState} from "@data/user/state";
 import {useRecoilState, useRecoilValue} from "recoil";
 
 interface AudioFile {
@@ -26,7 +26,8 @@ const MainComponent: React.FC = () => {
   const [audioOwn, setAudioOwn] = useState<any[]>([]);
   const [audioTitles, setAudioTitles] = useState<any[]>([]);
   const sidebarOpen: any = useRecoilValue(sideState);
-
+  const [search, setSearch]: any = useRecoilState(SearchState);
+  const [fileNameList, setFileNameList]: any = useState<any[]>([]);
   const previousLoginUser = useRef(loginUser);
   useEffect(() => {
     if (loginUser !== previousLoginUser.current) {
@@ -46,6 +47,10 @@ const MainComponent: React.FC = () => {
     fetchAudioList();
   }, [loginUser]);
 
+  useEffect(() => {
+    console.log("searchAudio changed:", search);
+  }, [search]);
+
   const fetchAudioList = async () => {
     if (loginUser) {
       try {
@@ -60,6 +65,8 @@ const MainComponent: React.FC = () => {
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
             const getFileName = audioMetaData[i].filename;
+            // console.log(search);
+            // if (!getFileName.find(search)) continue;
             const fileName = getFileName.split(".mp3")[0];
             const dataURL = URL.createObjectURL(getData.data);
             const userId = audioMetaData[i].userid;

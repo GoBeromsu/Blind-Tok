@@ -4,6 +4,9 @@ import File from "../entity/File";
 export async function getFileInfo(fileid: string) {
   return await File.findOne({where: {fileid}, relations: {user: true}});
 }
+export async function getFileNameInfo(filename: string) {
+  return await File.find({where: {filename}, relations: {user: true}});
+}
 export async function getFilesInfo() {
   return await File.find({relations: {user: true}});
 }
@@ -20,7 +23,6 @@ export async function addFile(file: {
   filesize: number;
   filetype: string;
   mimetype: string;
-  
 }) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(File);
