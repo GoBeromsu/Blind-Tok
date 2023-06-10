@@ -2,7 +2,6 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {userState, sideState} from "@data/user/state";
 import {Box} from "@material-ui/core";
 import React, {useEffect, useRef, useState} from "react";
-import {getRelation} from "@data/Friend/axios";
 import Loading from "@loading/Loading";
 import {getFriendListQuery} from "@data/Friend/state";
 import {Button, List, ListItem, TextField} from "@mui/material";
@@ -22,7 +21,6 @@ const NewChatList = () => {
   if (!loginUser) {
     return <Loading />;
   }
-  const [list, setList] = useState<any>([]);
   const {isLoading, isError, data, error} = getFriendListQuery(loginUser?.userid);
   const [invitedFriend, setInvitedFriend] = useState<any>(0);
   const [oepn, setOepn] = useState(false);
@@ -46,14 +44,10 @@ const NewChatList = () => {
     getRooms();
   };
   const onChangeUser = (e: any) => {
-    console.log(list);
     setOepn(true);
   };
   useEffect(() => {
     sendMessage(loginUser?.userid, "dataInit");
-    getRelation(loginUser?.userid).then(data => {
-      setList(data.data.filter((data: any) => data.status === "normal"));
-    });
     getRooms();
   }, []);
   useEffect(() => {
@@ -98,7 +92,13 @@ const NewChatList = () => {
             새로운 방 생성
           </Button>
         </Box>
-        <ChatUserDialog open={oepn} setOpen={setOepn} users={list} selectedUser={invitedFriend} handleUser={handleInvited} />
+        <ChatUserDialog
+          open={oepn}
+          setOpen={setOepn}
+          users={data.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
+          selectedUser={invitedFriend}
+          handleUser={handleInvited}
+        />
       </Box>
       <Box>
         <Box>방 리스트가 들어갈 공간</Box>

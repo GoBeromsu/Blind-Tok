@@ -4,7 +4,7 @@ import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
-import {getRelation, editFriendStatus, removeRelation, acceptFriend} from "@data/Friend/axios";
+import {getFriendlist, editFriendStatus, removeRelation, acceptFriend} from "@data/Friend/axios";
 import {send} from "vite";
 
 Modal.setAppElement("#root");
@@ -67,7 +67,7 @@ const Notification = () => {
 
   useEffect(() => {
     if (loginUser) {
-      getRelation(loginUser.userid).then(data => {
+      getFriendlist(loginUser.userid).then(data => {
         let list = data.data;
         console.log(list);
         list = list?.filter((relation: any) => relation.status === "wait");
@@ -124,7 +124,7 @@ const Notification = () => {
       <Box className="fitem" style={{width: "100%", overflowY: "auto"}}>
         {receiveList?.map((req: any, index: any) => (
           <Box key={index} className="friend-item" style={list_style} onClick={() => {}}>
-            {req.userid}에게 친구요청이 왔습니다.
+            {req.userName}에게 친구요청이 왔습니다.
             <Box>
               <Button
                 onClick={() => {
