@@ -127,7 +127,7 @@ const UserPage = () => {
         <ul>
           {audioList.map((audioFile, index) => (
             <li key={index}>
-              <div>
+              <div className="audio-item">
                 <h3>{audioFile.filename}</h3>
                 <p>Comment: {audioFile.comment}</p>
                 {audioFile.image ? <img src={audioFile.image} alt="Audio Image" />: <img src="/image/defaultImage.png"/>}
