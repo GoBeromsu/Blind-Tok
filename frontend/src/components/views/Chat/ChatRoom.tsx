@@ -1,7 +1,7 @@
 ﻿import React, {useState, useEffect} from "react";
 import {useParams, useLocation, useSearchParams, Link} from "react-router-dom";
 import {useRecoilState, useRecoilValue} from "recoil";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {sendEnteredMessage} from "@data/chat/ChattingController";
 import {Box, Button, Input} from "@mui/material";
 import {getChatData, updateChatData, updateData_s} from "@data/chat/chat_data";
@@ -17,7 +17,7 @@ const ChatRoom: React.FC = () => {
   const chatData: any = getChatData(Number(roomid)); //가존의 채팅방 데이터를 가져온다
   const [chatDataState, setChatDataState]: any = useState(chatData.data ? chatData.data : []);
   const [string, setString]: any = useState("");
-
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   let check_n = "";
 
   const socket = useSocket();
@@ -70,7 +70,7 @@ const ChatRoom: React.FC = () => {
 
   return (
     <Box>
-      <Box style={{width: `100%`, height: "100%", paddingLeft: "350px"}}>
+      <Box style={sidebarOpen ? {width: `100%`, height: "100%", paddingLeft: "350px"} : {width: `100%`, height: "100%", paddingLeft: "50px"}}>
         <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
           {chatDataState?.map((friend: any, index: number) => (
             <Box

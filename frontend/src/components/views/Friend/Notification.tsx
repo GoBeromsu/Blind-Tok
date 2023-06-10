@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Link, Outlet} from "react-router-dom";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
@@ -14,6 +14,7 @@ const Notification = () => {
   const [receiveList, setReciveList] = useState<any>([]);
   const [sendList, setSendList] = useState<any>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -40,6 +41,20 @@ const Notification = () => {
       padding: "10px 30px",
       height: "70vh",
     },
+  };
+
+  const list_style: any = {
+    height: "50px",
+    width: "600px", // 너비 일정하게 설정
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: "10px 0",
+    borderRadius: "8px",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    cursor: "pointer",
+    paddingLeft: "10px", // 텍스트 왼쪽 정렬을 위한 padding
+    transition: "background-color 0.3s", // 호버 효과를 위한 트랜지션
   };
 
   const ok = async (relationid: number, status: string) => {
@@ -101,34 +116,38 @@ const Notification = () => {
   };
 
   return (
-    <Box className="f_list" style={{paddingLeft: "350px"}}>
-      <h1>Friend List</h1>
-      <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
-      <Box className="f_item">
+    <Box className="flist" style={sidebarOpen ? {paddingLeft: "850px"} : {paddingLeft: "120px"}}>
+      <h1 style={{textAlign: "center"}}>Alarm</h1>
+      {/*<Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />*/}
+      <h3>Receive</h3>
+      <Box className="fitem" style={{width: "100%", overflowY: "auto"}}>
         {receiveList?.map((req: any, index: any) => (
-          <Box key={index} className="friend-item" style={{/*width: `${W}px`,*/ height: "50px"}} onClick={() => {}}>
+          <Box key={index} className="friend-item" style={list_style} onClick={() => {}}>
             {req.userid}에게 친구요청이 왔습니다.
-            <Button
-              onClick={() => {
-                acceptEvent(req.relationid, req.userid);
-              }}>
-              수락
-            </Button>
-            <Button
-              onClick={() => {
-                refuseEvent(req.relationid);
-              }}>
-              거절
-            </Button>
+            <Box>
+              <Button
+                onClick={() => {
+                  acceptEvent(req.relationid, req.userid);
+                }}>
+                수락
+              </Button>
+              <Button
+                onClick={() => {
+                  refuseEvent(req.relationid);
+                }}>
+                거절
+              </Button>
+            </Box>
           </Box>
         ))}
       </Box>
-      <Box className="f_item">
+      <h3>Send</h3>
+      <Box className="fitem" style={{width: "100%", overflowY: "auto"}}>
         {sendList?.map((req: any, index: any) => (
           <Box
             key={index}
             className="friend-item"
-            style={{/*width: `${W}px`,*/ height: "50px"}}
+            style={list_style}
             onClick={() => {
               console.log(receiveList);
               console.log(sendList);

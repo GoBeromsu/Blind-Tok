@@ -36,6 +36,10 @@
   margin-bottom: 4px;
 }
 
+.userAudioList {
+  padding-top: 40px;
+}
+
 .userAudioList ul {
   list-style: none;
   padding: 5px;

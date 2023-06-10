@@ -1,5 +1,5 @@
 import {useRecoilState, useRecoilValue} from "recoil";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {Box} from "@material-ui/core";
 import React, {useEffect, useRef, useState} from "react";
 import Loading from "@loading/Loading";
@@ -17,6 +17,7 @@ import {sendMessage} from "@data/chat";
 
 const NewChatList = () => {
   const loginUser: any = useRecoilValue(userState);
+  const sidebarOpen: any = useRecoilValue(sideState);
   if (!loginUser) {
     return <Loading />;
   }
@@ -78,7 +79,9 @@ const NewChatList = () => {
   // };
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
+    <Box
+      className="f_list"
+      style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "360px"} : {width: `${windowWidth - 300}px`, paddingLeft: "140px"}}>
       <h1>Chatting Room</h1>
       <Box className="Search Input">
         <TextField size="small" fullWidth />

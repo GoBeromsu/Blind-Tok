@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import {getFriendListQuery} from "@data/Friend/state";
 import "@style/ChatList.css";
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import {userState} from "@data/user/state";
+import {userState, sideState} from "@data/user/state";
 import {createRoom, init_list} from "@data/chat/ChattingController";
 import Loading from "@loading/Loading";
 import Error from "@views/Error/Error";
@@ -21,7 +21,7 @@ export let setList: any = () => {};
 
 const ChatList: React.FC = () => {
   const loginUser: any = useRecoilValue(userState);
-
+  const sidebarOpen: any = useRecoilValue(sideState);
   if (!loginUser) {
     return <Loading />;
   }
@@ -104,7 +104,7 @@ const ChatList: React.FC = () => {
   };
 
   return (
-    <Box className="f_list" style={{width: `${windowWidth - 300}px`, paddingLeft: "340px"}}>
+    <Box className="f_list" style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "330px"} : {width: `${windowWidth - 300}px`}}>
       <h1>Chating Room</h1>
       <Input type="text" placeholder="Search" value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Button onClick={() => setModalIsOpen(true)}> 새로운 방 생성</Button>

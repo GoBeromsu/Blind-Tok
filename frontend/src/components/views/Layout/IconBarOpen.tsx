@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {IconButton} from "@mui/material";
@@ -9,15 +9,64 @@ import ChatIcon from "@mui/icons-material/Chat";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import {Button, TextField, List, ListItem} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Br from "./Br";
+import Modal from "react-modal";
 import {Cookies} from "react-cookie";
 
+Modal.setAppElement("#root");
+
 const IconBarOpen = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any>([]);
   let navigate = useNavigate();
   const cookies = new Cookies();
   const handleLogout = () => {
     cookies.remove("access_token", {path: "/", domain: "localhost"});
     navigate("/login");
+  };
+
+  const handleChange = (event: {target: {value: React.SetStateAction<string>}}) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSubmit = (event: {preventDefault: () => void}) => {
+    event.preventDefault();
+    console.log(query);
+    setSearchResults([query, ...searchResults]);
+    setQuery("");
+    setModalIsOpen(false);
+    navigate("/");
+  };
+
+  const removeSearchResult = (index: number) => {
+    const updatedResults = [...searchResults];
+    updatedResults.splice(index, 1);
+    setSearchResults(updatedResults);
+  };
+
+  const M_style: any = {
+    overlay: {
+      backgroundColor: "0, 0, 0, 0.5",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 10,
+    },
+    content: {
+      zIndex: 10,
+      position: "fixed",
+      top: "30px",
+      left: "44.6%",
+      //transform: "translate(-50%, -50%)",
+      backgroundColor: "white",
+      //padding: "20px",
+      width: "600px",
+      borderRadius: "20px",
+      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    },
   };
 
   return (
@@ -36,12 +85,15 @@ const IconBarOpen = () => {
           </IconButton>
         </Link>
         <Br />
-        <Link to="/User">
-          <IconButton style={{paddingRight: "30px"}}>
-            <SearchIcon style={{fontSize: 30}} />
-            <span style={{fontSize: 14}}>&nbsp;&nbsp; Search</span>
-          </IconButton>
-        </Link>
+        <br />
+        <IconButton
+          style={{paddingRight: "30px"}}
+          onClick={() => {
+            setModalIsOpen(true);
+          }}>
+          <SearchIcon style={{fontSize: 30}} />
+          <span style={{fontSize: 14}}>&nbsp;&nbsp; Search</span>
+        </IconButton>
 
         <Link to="/chat">
           <IconButton>
@@ -50,6 +102,7 @@ const IconBarOpen = () => {
           </IconButton>
         </Link>
         <Br />
+        <br />
         <Link to="/notification">
           <IconButton style={{paddingRight: "35px"}}>
             <NotificationsIcon style={{fontSize: 30}} />
@@ -63,6 +116,7 @@ const IconBarOpen = () => {
           </IconButton>
         </Link>
         <Br />
+        <Br />
         <div className="item" onClick={handleLogout} style={{paddingLeft: "125px"}}>
           <IconButton>
             <LogoutIcon style={{fontSize: 30}} />
@@ -71,6 +125,49 @@ const IconBarOpen = () => {
           <Br />
         </div>
       </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+        }}
+        contentLabel="검색 창"
+        className="search-modal"
+        overlayClassName="search-modal-overlay"
+        style={M_style}>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            type="text"
+            label="검색어를 입력하세요"
+            variant="outlined"
+            value={query}
+            onChange={handleChange}
+            autoFocus
+            sx={{
+              width: "600px",
+              borderRadius: "20px",
+              "& fieldset": {
+                borderRadius: "20px",
+              },
+            }}
+          />
+          {searchResults.length != 0 && (
+            <List>
+              {searchResults.map((result: any, index: any) => (
+                <ListItem key={index}>
+                  {result}
+                  <IconButton
+                    onClick={() => {
+                      removeSearchResult(index);
+                    }}
+                    style={{marginLeft: "auto"}}>
+                    <CloseIcon style={{fontSize: 16}} />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </form>
+      </Modal>
     </>
   );
 };
