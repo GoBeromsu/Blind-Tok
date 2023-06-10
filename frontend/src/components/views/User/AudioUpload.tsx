@@ -1,8 +1,10 @@
-import React, {ChangeEvent, useState, useEffect} from "react";
-import {postAudioFile, getFileMetaList} from "@data/upload/axios";
+import React, {ChangeEvent, useState} from "react";
+import {postAudioFile} from "@data/upload/axios";
 import {useRecoilState} from "recoil";
 import {userState} from "@data/user/state";
 import {fetchAudioList} from "@views/User/UserPage";
+import {Button, Container, TextField, Typography, Grid} from '@material-ui/core';
+import Br from "@views/Layout/Br";
 
 export let handleFileUpload: any = () => {};
 
@@ -51,13 +53,58 @@ const AudioUploadPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Upload your audio file</h2>
-      <input type="file" accept="audio/*" onChange={handleAudioChange} />
-      <h2>Upload your image file (optional)</h2>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      <input type="text" value={comment} onChange={handleCommentChange} placeholder="Enter comment" />
-    </div>
+    <Container>
+      <Grid container spacing={8}>
+        <Grid item xs={12}>
+          <Typography variant="h4" component="h2">Upload your audio file</Typography>
+          <input
+            accept="audio/*"
+            id="contained-button-file-audio"
+            multiple
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleAudioChange}
+          />
+          <label htmlFor="contained-button-file-audio">
+          <br/>
+            <Button variant="contained" color="primary" component="span">
+              Upload Audio
+            </Button>
+          </label>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h4" component="h2">Upload with image (optional)</Typography>
+          <input
+            accept="image/*"
+            id="contained-button-file-image"
+            multiple
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleImageChange}
+          />
+          <label htmlFor="contained-button-file-image">
+            <br/>
+            <Button variant="contained" color="primary" component="span">
+              Upload Image
+            </Button>
+          </label>
+        </Grid>
+        <Grid item xs={12}>
+        <Typography variant="h4" component="h2">Upload with file Comment (optional)</Typography>
+        <br/>
+          <TextField
+            id="outlined-multiline-flexible"
+            label="Comment"
+            multiline
+            rowsMax={4}
+            value={comment}
+            onChange={handleCommentChange}
+            variant="outlined"
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
