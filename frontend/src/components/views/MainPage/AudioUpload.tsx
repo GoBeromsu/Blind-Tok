@@ -1,7 +1,8 @@
-import React, {ChangeEvent, useState, useEffect} from "react";
-import {postAudioFile, getFileMetaList, deleteAudioFile} from "@data/upload/axios";
-import {useRecoilState} from "recoil";
-import {userState, sideState} from "@data/user/state";
+import React, { ChangeEvent, useState, useEffect } from "react";
+import { postAudioFile, getFileMetaList, deleteAudioFile } from "@data/upload/axios";
+import { useRecoilState } from "recoil";
+import { userState, sideState } from "@data/user/state";
+import "@style/AudioUpload.css"
 
 const AudioUploadPage: React.FC = () => {
   const [selectedAudio, setSelectedAudio]: any = useState<File | null>(null);
@@ -26,10 +27,10 @@ const AudioUploadPage: React.FC = () => {
     if (!file) return;
 
     encodeFileToBase64(file)
-      .then(base64File => {
+      .then((base64File) => {
         setSelectedImage(base64File as string);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Failed to convert file:", error);
       });
     console.log(selectedImage);
@@ -79,7 +80,7 @@ const AudioUploadPage: React.FC = () => {
 
   return (
     <>
-      <div style={sidebarOpen ? {paddingLeft: "350px"} : {paddingLeft: "90px"}}>
+      <div style={sidebarOpen ? { paddingLeft: "350px" } : { paddingLeft: "90px" }}>
         <h2>Upload your audio file</h2>
         <input type="file" accept="audio/*" onChange={handleAudioChange} />
         <h2>Upload your image file (optional)</h2>
@@ -94,7 +95,7 @@ const AudioUploadPage: React.FC = () => {
                 <div>
                   <h3>{audioFile.filename}</h3>
                   <p>Comment: {audioFile.comment}</p>
-                  {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+                  {audioFile.image && <img src={audioFile.image} alt="Audio Image" className="audio-image" />}
                   <button onClick={() => handleDeleteAudio(audioFile)}>Delete</button>
                 </div>
               </li>
@@ -109,11 +110,12 @@ const AudioUploadPage: React.FC = () => {
 };
 
 export default AudioUploadPage;
+
 const encodeFileToBase64 = (image: File) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = (event: any) => resolve(event.target.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 };
