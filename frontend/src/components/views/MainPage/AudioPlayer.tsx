@@ -1,20 +1,21 @@
-﻿import React, {useEffect, useState, useRef} from "react";
+﻿import React, { useEffect, useState, useRef } from "react";
 import "../../style/AudioPlayer.css";
 import ReactPlayer from "react-player";
-import {Modal, Backdrop, Fade} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { Modal, Backdrop, Fade } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import UserModal from "./UserModal";
-import {getUserInfo} from "@data/user/axios";
+import { getUserInfo } from "@data/user/axios";
 
 interface Props {
   src: string;
   own: any;
   autoPlay: boolean;
   title: string;
-  fileImg?: any;
+  fileImg?: string;
+  fileComment?: any;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -35,7 +36,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
+const AudioPlayer: React.FC<Props> = ({
+  src,
+  own,
+  autoPlay,
+  title,
+  fileImg,
+  fileComment,
+}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,6 +51,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
   const classes = useStyles();
   const [playerUrl, setPlayerUrl] = useState<string | null>(null);
   const [owner, setOwner] = useState<any>();
+  const [isImageLoaded, setIsImageLoaded] = useState(false); // Track image loading status
 
   useEffect(() => {
     setPlayerUrl(src);
@@ -83,7 +92,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
     try {
       const getData = await getUserInfo(own);
       const ownerData = getData.data;
-      // console.log(ownerData);
+      console.log(fileImg);
       setOwner(ownerData);
     } catch (error) {
       console.error("Failed to get owner information:", error);
@@ -92,13 +101,18 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
   };
 
   return (
-    <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
+    <div className="audio-panel" style={{ width: `${windowWidth - 332}px` }}>
       <div
         className="audio-player"
-        style={fileImg ? {backgroundImage: fileImg} : {backgroundImage: 'url("/image/defaultImage.png")'}}
-        onClick={handlePlayerClick}>
+        style={
+          fileImg
+            ? { backgroundImage: `url(${fileImg})` }
+            : { backgroundImage: 'url("/image/defaultImage.png")' }
+        }
+        onClick={handlePlayerClick}
+      >
         {title}
-        {playerUrl && ( // playerUrl이 존재할 때에만 ReactPlayer 렌더링
+        {playerUrl && (
           <ReactPlayer
             url={playerUrl}
             playing={autoPlay}
@@ -124,7 +138,8 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg}) => {
         className={classes.modal}
         BackdropProps={{
           timeout: 500,
-        }}>
+        }}
+      >
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
             <UserModal own={owner} />
