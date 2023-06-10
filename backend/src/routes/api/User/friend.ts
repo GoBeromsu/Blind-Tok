@@ -1,5 +1,5 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
-import {removeUser} from "@user/service/UserService";
+import {getUserInfo, removeUser} from "@user/service/UserService";
 import {addFriend, editFriend, getFriendInfo, getFriendsInfo, removeFriend} from "@user/service/UserRelationService";
 
 export default async function (fastify: FastifyInstance) {
@@ -33,14 +33,24 @@ export default async function (fastify: FastifyInstance) {
     reply.send(result);
   });
 
-  // 추가함
-  // 친구의 userid뿐만 아니라 relationid 등 여러 정보가 필요
   fastify.get("/relation/:userid", async (req: FastifyRequest<{Params: {userid: number}}>, reply: FastifyReply) => {
     const {userid} = req.params;
     const userRelations = await getFriendInfo(userid);
-    // console.log(userRelations);
-    const relationList = userRelations.filter(relation => relation.userid === userid || relation.friendid === userid);
-    reply.send(relationList);
+
+    const friendIdList = userRelations
+      .filter(relation => relation.friendid !== userid)
+      .map(relation => {
+        return {friendId: relation.friendid, status: relation.status, relationId: relation.relationid};
+      });
+
+    const resultPromises = friendIdList.map(async friend => {
+      const userInfo = await getUserInfo(friend?.friendId);
+      return {friendId: friend?.friendId, friendName: userInfo?.name, status: friend?.status, relationId: friend?.relationId};
+    });
+
+    const result = await Promise.all(resultPromises);
+
+    reply.send(result);
   });
   // 보내면 userid friendid 관계로 하나가 생성
   // 하지만 반대의 경우는 생성되지 않음

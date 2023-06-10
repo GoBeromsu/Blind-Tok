@@ -7,7 +7,7 @@ import {getFileMetaList, deleteAudioFile} from "@data/upload/axios";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {userState, sideState} from "@data/user/state";
 import "@style/UserPage.css";
-
+import Loading from "@loading/Loading";
 export let fetchAudioList: any = () => {};
 
 Modal.setAppElement("#root");
@@ -15,9 +15,13 @@ const UserPage = () => {
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
+  if (!loginUser) {
+    return <Loading />;
+  }
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const sidebarOpen: any = useRecoilValue(sideState);
+  const [userProfileImg, setUserProfileImg] = useState<any>(loginUser?.meta?.profilePictureUrl);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -55,6 +59,9 @@ const UserPage = () => {
   useEffect(() => {
     if (loginUser) {
       fetchAudioList();
+
+      setUserProfileImg(loginUser?.meta?.profilePictureUrl);
+      console.log("loginUser", loginUser, userProfileImg);
     }
   }, [loginUser]);
 
@@ -77,7 +84,6 @@ const UserPage = () => {
   };
 
   fetchAudioList = async () => {
-    console.log("zzzz");
     if (loginUser) {
       try {
         const audioFiles = await getFileMetaList(loginUser.userid);
@@ -95,11 +101,7 @@ const UserPage = () => {
       <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
         <div className="container">
           <div className="profile-picture">
-            {loginUser?.meta?.profilepictureurl ? (
-              <img src={loginUser?.meta?.profilepictureurl} alt="Profile Picture" />
-            ) : (
-              <div className="empty-image"></div>
-            )}
+            {loginUser?.meta?.profilePictureUrl ? <img src={userProfileImg} alt="Profile Picture" /> : <div className="empty-image"></div>}
           </div>
           <div className="user-info">
             <h2>
