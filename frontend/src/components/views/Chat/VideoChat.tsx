@@ -53,14 +53,23 @@ const VideoChat: React.FC = () => {
       socket.on("message", (message: any) => {
         let {id, data} = message;
         switch (id) {
+          case "existingParticipants":
+            console.log("existingParticipants", data);
+            //TODO: 유저가 새로 들어왔으니까, 그 유저의 화면을 띄어줄 것을 넣어야지
+            break;
+          case "iceCandidate":
+            console.log("iceCandidate", data);
+            break;
           default:
             break;
         }
       });
+
+      return () => {
+        socket.off();
+        socket.disconnect();
+      };
     }
-    return () => {
-      socket.off();
-    };
   }, [socket]);
 
   const handleMuteClick = () => {
@@ -131,4 +140,5 @@ const createVideoForParticipant = (participant: any) => {
   video.poster = "https://koreanbots.dev/api/image/discord/avatars/739392161929363507.webp?size=256";
   document.getElementById("videolist")?.appendChild(video);
 };
+
 export default VideoChat;
