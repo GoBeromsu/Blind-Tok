@@ -16,11 +16,18 @@ export default class File extends BaseEntity {
   // filecomment: string;
   @Column({type: COLUMN_TYPE_TEXT})
   filename: string;
+
   @Column({type: COLUMN_TYPE_TEXT})
   filepath: string;
 
+  @Column({type: COLUMN_TYPE_TEXT, nullable: true})
+  image: string;
+  @Column({type: COLUMN_TYPE_TEXT, nullable: true})
+  comment: string;
+
   @Column({type: COLUMN_TYPE_TEXT})
   filetype: string;
+
   @Column({type: COLUMN_TYPE_TEXT})
   mimetype: string;
 

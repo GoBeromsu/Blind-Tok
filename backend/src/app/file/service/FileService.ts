@@ -23,6 +23,8 @@ export async function addFile(file: {
   filesize: number;
   filetype: string;
   mimetype: string;
+  comment: string;
+  image: string;
 }) {
   return await txProcess(async manager => {
     const repository = manager.getRepository(File);

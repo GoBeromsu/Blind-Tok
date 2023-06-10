@@ -5,7 +5,7 @@ import {userState, sideState} from "@data/user/state";
 
 const AudioUploadPage: React.FC = () => {
   const [selectedAudio, setSelectedAudio]: any = useState<File | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
   const [audioList, setAudioList] = useState<any[]>([]);
   const [comment, setComment] = useState<string>("");
@@ -23,7 +23,16 @@ const AudioUploadPage: React.FC = () => {
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
-    setSelectedImage(file);
+    if (!file) return;
+
+    encodeFileToBase64(file)
+      .then(base64File => {
+        setSelectedImage(base64File as string);
+      })
+      .catch(error => {
+        console.error("Failed to convert file:", error);
+      });
+    console.log(selectedImage);
   };
 
   const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +47,7 @@ const AudioUploadPage: React.FC = () => {
         formData.append("image", selectedImage);
       }
       formData.append("comment", comment);
+      console.log("image, comment : ", selectedImage, comment);
       await postAudioFile(formData, loginUser.userid);
       fetchAudioList();
     } catch (error) {
@@ -99,3 +109,11 @@ const AudioUploadPage: React.FC = () => {
 };
 
 export default AudioUploadPage;
+const encodeFileToBase64 = (image: File) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = (event: any) => resolve(event.target.result);
+    reader.onerror = error => reject(error);
+  });
+};
