@@ -128,7 +128,7 @@ const UserPage = () => {
               <div>
                 <h3>{audioFile.filename}</h3>
                 <p>Comment: {audioFile.comment}</p>
-                {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+                {audioFile.image ? <img src={audioFile.image} alt="Audio Image" />: <img src="/image/defaultImage.png"/>}
                 <button onClick={() => handleDeleteAudio(audioFile)}>Delete</button>
               </div>
             </li>
