@@ -129,6 +129,7 @@ const AudioPlayer: React.FC<Props> = ({
             }}
           />
         )}
+
       </div>
       <Modal
         open={isModalOpen}
