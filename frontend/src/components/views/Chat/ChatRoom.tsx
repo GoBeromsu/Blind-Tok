@@ -70,13 +70,13 @@ const ChatRoom: React.FC = () => {
 
   return (
     <Box>
-      <Box style={sidebarOpen ? {width: `100%`, height: "100%", paddingLeft: "350px"} : {width: `100%`, height: "100%", paddingLeft: "50px"}}>
-        <Box style={{width: `100%`, height: "93vh", overflow: "scroll"}}>
+      <Box style={sidebarOpen ? {paddingLeft: "350px"} : {paddingLeft: "50px"}}>
+        <Box style={{height: "93vh", overflow: "scroll"}}>
           {chatDataState?.map((friend: any, index: number) => (
             <Box
               key={index}
               className="text"
-              style={{width: "800px"}}
+              style={{width: "81vw"}}
               onLoad={() => {
                 textspace.scrollTop = textspace.scrollHeight;
               }}>
@@ -84,18 +84,17 @@ const ChatRoom: React.FC = () => {
                 {check_name(friend.nickname) === 1 ? "" : friend.nickname}
               </Box>
               <Box style={loginUser?.userid === friend?.userid ? myCSS : youCSS}>
-                <Box style={dataCSS}>{friend.data_s}</Box>
+                <Box style={{...dataCSS, whiteSpace: "pre-wrap", wordWrap: "break-word"}}>{friend.data_s}</Box>
                 <Box style={{fontSize: "10px"}}>{friend.time}</Box>
               </Box>
             </Box>
           ))}
         </Box>
         <Box>
-          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `90%`, height: "5vh"}} />
+          <Input type="text" placeholder="" value={string} onChange={textChange} style={{width: `78vw`, height: "5vh"}} />
           <Button onClick={handleSendMessage}>확인</Button>
         </Box>
       </Box>
-      인
     </Box>
   );
 };
@@ -108,7 +107,7 @@ const myCSS = {
   borderStyle: "solid",
   borderWidth: "0px",
   margin: "5px",
-  maxWidth: "800px",
+  maxWidth: "83vw",
   backgroundColor: "rgba(30, 150, 100, 0.1)",
 };
 const youCSS = {
@@ -117,7 +116,7 @@ const youCSS = {
   borderStyle: "solid",
   borderWidth: "0px",
   margin: "5px",
-  maxWidth: "800px",
+  maxWidth: "83vw",
   backgroundColor: "rgba(30, 150, 100, 0.1)",
 };
 const nameCSS = {
@@ -131,6 +130,7 @@ const dataCSS = {
   borderStyle: "solid",
   borderWidth: "0px",
   margin: "5px",
-  maxWidth: "400px",
+  maxWidth: "30vw",
   backgroundColor: "rgba(30, 150, 100, 0.1)",
+  overflow: "hidden",
 };
