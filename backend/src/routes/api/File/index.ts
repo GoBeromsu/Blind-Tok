@@ -5,7 +5,7 @@ import {pipeline, Readable} from "stream";
 import util from "util";
 import {format} from "date-fns";
 import {generatedUUID} from "@utils/UUIDUtils";
-import {addFile, deleteFile, editFile, getFileInfo, getFilesByUser, getFilesInfo} from "@file/service/FileService";
+import {addFile, deleteFile, editFile, getFileInfo, getFileNameInfo, getFilesByUser, getFilesInfo} from "@file/service/FileService";
 import * as path from "path";
 const pump = util.promisify(pipeline);
 
@@ -19,6 +19,11 @@ export default async function (fastify: FastifyInstance) {
     const files = await getFilesByUser(userid);
     reply.send(files);
   });
+  // fastify.get("/:filename", async (req: FastifyRequest<{ Params: { filename: string } }>, reply: FastifyReply) => {
+  //   const { filename } = req.params;
+  //   const files = await getFilesByFilename(filename);
+  //   reply.send(files);
+  // });
   fastify.get("/:fileid", async (req: FastifyRequest<{Params: {fileid: string}}>, reply: FastifyReply) => {
     const {fileid} = req.params;
     const result = await getFileInfo(fileid);

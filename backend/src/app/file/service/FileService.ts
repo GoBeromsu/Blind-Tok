@@ -4,6 +4,9 @@ import File from "../entity/File";
 export async function getFileInfo(fileid: string) {
   return await File.findOne({where: {fileid}, relations: {user: true}});
 }
+export async function getFileNameInfo(filename: string) {
+  return await File.find({where: {filename}, relations: {user: true}});
+}
 export async function getFilesInfo() {
   return await File.find({relations: {user: true}});
 }
@@ -13,6 +16,8 @@ export async function getFilesByUser(userid: number) {
 export async function addFile(file: {
   userid: number;
   fileid: string;
+  // fileimage: any;
+  // filecomment:string;
   filename: string;
   filepath: string;
   filesize: number;
@@ -29,6 +34,8 @@ export async function addFile(file: {
 export async function editFile({
   fileid,
   userid,
+  // fileimage,
+  // filecomment,
   filename,
   filepath,
   filetype,
@@ -37,6 +44,8 @@ export async function editFile({
 }: {
   fileid: string;
   userid: number;
+  // fileimage:any;
+  // filecomment:string;
   filename: string;
   filepath: string;
   filetype: string;
@@ -47,6 +56,8 @@ export async function editFile({
     const repository = manager.getRepository(File);
     return repository.update(fileid, {
       userid,
+      // fileimage,
+      // filecomment,
       filename,
       filepath,
       filetype,

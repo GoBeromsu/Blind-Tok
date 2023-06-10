@@ -10,3 +10,8 @@ export const sideState = atom({
   key: "sideState",
   default: true,
 });
+
+export const SearchState = atom({
+  key: "SearchState",
+  default: null,
+});
