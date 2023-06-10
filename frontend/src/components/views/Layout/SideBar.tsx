@@ -8,6 +8,7 @@ import IconBar from "./IconBar";
 import IconBarOpen from "./IconBarOpen";
 import {userState, sideState, SearchState} from "@data/user/state";
 import {useRecoilState, useRecoilValue} from "recoil";
+import {fetchAudioList} from "@views/User/UserPage";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const SideBar = () => {
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const [search, setSearch]: any = useRecoilState(SearchState);
   const defaultImg = "/image/l.png";
+
+  const [userProfileImg, setUserProfileImg] = useState("/image/l.png");
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,6 +34,14 @@ const SideBar = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  useEffect(() => {
+    if (loginUser) {
+      fetchAudioList();
+
+      setUserProfileImg(loginUser?.meta?.profilePictureUrl);
+      console.log("loginUser", loginUser, userProfileImg);
+    }
+  }, [loginUser]);
 
   return (
     <div style={{display: "flex"}}>
@@ -48,7 +59,7 @@ const SideBar = () => {
             </div>
             <Br />
             <Br />
-            <C_Image src={defaultImg /* 원래 들어가야하는 거 -> loginUser.meta.profilepictureurl */} alt="Profile image" size="130" />
+            <C_Image src={userProfileImg /* 원래 들어가야하는 거 -> loginUser.meta.profilepictureurl */} alt="Profile image" size="130" />
           </div>
           <Br />
           <Br />
