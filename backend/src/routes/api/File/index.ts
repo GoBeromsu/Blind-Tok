@@ -40,19 +40,20 @@ export default async function (fastify: FastifyInstance) {
     // reply.send(file);
   });
 
-  fastify.post("/", async (req: FastifyRequest<{Body: {file: any; userid: any}}>, reply: FastifyReply) => {
+  fastify.post("/", async (req: FastifyRequest<{Body: {file: any; userid: any; image: any; comment: any}}>, reply: FastifyReply) => {
     const userid = req.body.userid?.value;
     const file = req.body.file;
+    const {comment, image} = req.body;
+    console.log(req.body.image);
     if (!file) {
       reply.status(400).send({error: "No file provided"});
       return;
     }
-    console.log(file);
     const fileresult = [];
     // const part = part?.file || null; // stream
     const filename = file?.filename || "";
     const filetype = file?.mimetype || "";
-    const fileid = await makefile(userid, file, filename, filetype);
+    const fileid = await makefile(userid, file, filename, filetype, comment?.value, image?.value);
     fileresult.push(fileid);
     reply.send({files: fileresult, filetype});
   });
@@ -64,7 +65,7 @@ export default async function (fastify: FastifyInstance) {
     reply.send(result);
   });
 
-  async function makefile(userid: any, part: any, filename: string, filetype: string) {
+  async function makefile(userid: any, part: any, filename: string, filetype: string, comment: string, image: string) {
     const mimetype = part.mimetype;
     const fileid = generatedUUID();
     const img_root = "public/temp";
@@ -73,7 +74,8 @@ export default async function (fastify: FastifyInstance) {
       fs.mkdirSync(filepath, {recursive: true});
     }
     const filesize = part.file.bytesRead;
-    await addFile({userid: userid, fileid: fileid, filename, filepath, filesize, mimetype, filetype});
+
+    await addFile({userid: userid, fileid: fileid, filename, filepath, filesize, mimetype, filetype, comment, image});
     // 확장자 없이 저장 + 파일 중복을 피하기 위해 fileid로 저장
     const newfilepath = filepath + "/" + fileid;
 
