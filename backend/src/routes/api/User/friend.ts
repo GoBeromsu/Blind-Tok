@@ -10,10 +10,26 @@ export default async function (fastify: FastifyInstance) {
   fastify.get("/:userid", async (req: FastifyRequest<{Params: {userid: number}}>, reply: FastifyReply) => {
     const {userid} = req.params;
     const userRelations = await getFriendInfo(userid);
+    const resultPromises = userRelations.map(async user => {
+      const userInfo = await getUserInfo(user?.userid);
+      const friendInfo = await getUserInfo(user?.friendid);
+      return {
+        userid: user.userid,
+        friendid: user.friendid,
+        friendName: friendInfo?.name,
+        userName: userInfo?.name,
+        status: user?.status,
+        relationId: user?.relationid,
+      };
+    });
+
+    const result = await Promise.all(resultPromises);
+
+    reply.send(result);
+
     // console.log(userRelations);
 
     // const friendIdList = userRelations.map(relation => (relation.userid === userid ? relation.friendid : relation.userid));
-    reply.send(userRelations);
   });
   fastify.post("/:userid/:friendid", async (req: FastifyRequest<{Params: {userid: number; friendid: number}}>, reply: FastifyReply) => {
     const {userid, friendid} = req.params;

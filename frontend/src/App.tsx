@@ -71,6 +71,9 @@ function AppRoutes() {
           <Route path="/friend" element={Auth(FriendList, true, user)}>
             <Route path=":friendid" element={Auth(FriendPage, true, user)} />
           </Route>
+          <Route path="/ChatRoom">
+            <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
+          </Route>
           <Route path="/chat" element={Auth(newChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
           <Route path="/upload" element={Auth(AudioUploadPage, true, user)}></Route>
@@ -89,9 +92,6 @@ function AppRoutes() {
         {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
-        <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
-          <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
-        </Route>
         <Route path="/ChatRoom/:roomid/video" element={Auth(videoChat, true, user)} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
