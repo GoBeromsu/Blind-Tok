@@ -2,46 +2,12 @@
 import axios from "axios";
 import {api, axiosProcess, server} from "../constant";
 
-export async function getFileMetaList(userid: any) {
-  try {
-    const getData = await api.get(`file/user/${userid}`);
-    return getData;
-  } catch (error) {
-    throw new Error("Failed to fetch audio files");
-  }
-}
+export const getFileMetaList = (userid: number) => api.get(`file/user/${userid}`);
 
-export async function getFileData(fileid: any) {
-  try {
-    const getData = await api.get(`file/${fileid}`, {responseType: "blob"});
-    // console.log("this is getData.data", getData.data);
-    // console.log("this is blob", blob);
-    // const url = URL.createObjectURL(getData.data);
-    // console.log(url);
-    return getData;
-  } catch (error) {
-    throw new Error("Failed to fetch audio files");
-  }
-}
-// 모든 파일을 받아오는 요청
-// export async function getAllFile(userid: any) {
-//   try {
-//     const getData = await api.get(`file/user/${userid}`);
-//     return getData;
-//   } catch (error) {
-//     throw new Error("Failed to fetch audio files");
-//   }
-// }
+export const getFileData = (fileid: any) => api.get(`file/${fileid}`, {responseType: "blob"});
 
 // 삭제하려는 fileid와 그 요청을 보내는 user의 id를 받아서 서버로 요청을 보내는 함수.
-export function deleteAudioFile(audioFile: any, loginUser: any) {
-  try {
-    const res = api.delete(`/file/${audioFile.fileid}`);
-    return res;
-  } catch (error) {
-    throw new Error("Failed to delete audio files");
-  }
-}
+export const deleteAudioFile = (audioFile: any, loginUser: any) => api.delete(`/file/${audioFile.fileid}`);
 
 // 오디오 파일 서버에 보내기 및 에러 처리
 export function postAudioFile(formData: any, userid: any) {
