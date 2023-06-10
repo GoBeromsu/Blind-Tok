@@ -49,6 +49,7 @@ const MainComponent: React.FC = () => {
 
   useEffect(() => {
     console.log("searchAudio changed:", search);
+    fetchAudioList();
   }, [search]);
 
   const fetchAudioList = async () => {
@@ -65,8 +66,8 @@ const MainComponent: React.FC = () => {
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
             const getFileName = audioMetaData[i].filename;
-            // console.log(search);
-            // if (!getFileName.find(search)) continue;
+            console.log(search);
+            if (getFileName.search(search)) continue;
             const fileName = getFileName.split(".mp3")[0];
             const dataURL = URL.createObjectURL(getData.data);
             const userId = audioMetaData[i].userid;
