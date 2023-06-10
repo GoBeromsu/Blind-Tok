@@ -81,7 +81,7 @@ const ChatBar: React.FC = () => {
     setSearchInput(event.target.value);
   };
   const handleVideoChat = () => {
-    joinVideoChat(Number(roomid), loginUser?.userid);
+    // joinVideoChat(Number(roomid), loginUser?.userid);
     window.location.href = `http://localhost:8080?roomId=${roomid}`;
   };
 
