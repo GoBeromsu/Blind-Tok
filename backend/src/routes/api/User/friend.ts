@@ -37,15 +37,18 @@ export default async function (fastify: FastifyInstance) {
     const {userid} = req.params;
     const userRelations = await getFriendInfo(userid);
 
-    const friendIdList = userRelations.filter(relation => relation.friendid !== userid).map(relation => relation.friendid);
+    const friendIdList = userRelations
+      .filter(relation => relation.friendid !== userid)
+      .map(relation => {
+        return {friendId: relation.friendid, status: relation.status, relationId: relation.relationid};
+      });
 
-    const resultPromises = friendIdList.map(async friendId => {
-      const userInfo = await getUserInfo(friendId);
-      return {friendId, friendName: userInfo?.name};
+    const resultPromises = friendIdList.map(async friend => {
+      const userInfo = await getUserInfo(friend?.friendId);
+      return {friendId: friend?.friendId, friendName: userInfo?.name, status: friend?.status, relationId: friend?.relationId};
     });
 
     const result = await Promise.all(resultPromises);
-    console.log(result);
 
     reply.send(result);
   });
