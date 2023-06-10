@@ -64,7 +64,7 @@ function UserList({friendList, handleSelectedUser, selectedUser}: any) {
     <List sx={{padding: 0}}>
       {friendList.map((friend: any, index: number) => (
         <Box key={index} style={{height: "50px"}} onClick={() => handleSelectedUser(friend)}>
-          선택 된 친구의 id : {friend}
+          선택 된 친구 : {friend.friendName}
         </Box>
       ))}
     </List>

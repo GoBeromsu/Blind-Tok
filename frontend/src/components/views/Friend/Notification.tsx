@@ -69,6 +69,7 @@ const Notification = () => {
     if (loginUser) {
       getRelation(loginUser.userid).then(data => {
         let list = data.data;
+        console.log(list);
         list = list?.filter((relation: any) => relation.status === "wait");
         setReciveList(list.filter((relation: any) => relation.friendid === loginUser.userid));
         setSendList(list.filter((relation: any) => relation.userid === loginUser.userid));
@@ -152,7 +153,7 @@ const Notification = () => {
               console.log(receiveList);
               console.log(sendList);
             }}>
-            {req.friendid}에게 친구요청을 보냈습니다.
+            {req.friendName}에게 친구요청을 보냈습니다.
             <Button
               onClick={() => {
                 cancleEvent(req.relationid);
