@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <script src="bower_components/adapter.js/adapter.js"></script>
+  <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/participants.js"></script>
+  <meta charset="utf-8" />
+  <link href="assets/img/favicon.png" rel="icon" />
+  <style>
+      body {
+          background: #ffffff;
+      }
+      .section-title h2 {
+          color: #000000;
+          margin-bottom: 30px;
+      }
+      .video-section {
+          box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+          border-radius: 5px;
+          background: #FFFFFF;
+          padding: 20px;
+      }
+      video {
+          border-radius: 5px;
+          width: 100%;
+      }
+      .control-section {
+          margin-top: 20px;
+      }
+      .btn-primary {
+          background-color: #000000;
+          border-color: #000000;
+      }
+      .video-label {
+          color: #000000;
+          font-weight: bold;
+      }
+  </style>
+</head>
+<body>
+<script>
+  function handleRoomId() {
+    joinRoom();
+  }
+  document.addEventListener('DOMContentLoaded', handleRoomId);
+</script>
+
+<main class="container py-5">
+  <div class="section-title text-center mb-5">
+    <h2><i class="fas fa-video"></i> Blind Talk</h2>
+  </div>
+  <div class="video-section">
+    <div class="row">
+      <div class="col-lg-6">
+        <p class="video-label">Host</p>
+        <div id="myStream">
+          <video
+            id="local_video"
+            autoplay
+            poster="img/music.png"
+          ></video>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <p class="video-label">Guest</p>
+        <div id="video_list"></div>
+      </div>
+    </div>
+  </div>
+  <div class="control-section">
+    <div class="row">
+      <div class="col-md-6 mt-4">
+        <label for="cameras">Camera</label>
+        <select class="form-control" id="cameras"></select>
+        <label for="audios" class="mt-3">Audio</label>
+        <select class="form-control" id="audios"></select>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+    <button
+      class="btn btn-primary me-md-2"
+      type="button"
+      id="leaveRoom"
+      disabled="disabled"
+      onclick="leaveRoom()"
+    >
+      Leave room
+    </button>
+    <button
+      class="btn btn-primary me-md-2"
+      type="button"
+      id="mute"
+    >
+      Mute
+    </button>
+    <button
+      class="btn btn-primary me-md-2"
+      type="button"
+      id="camera"
+    >
+      Turn camera off
+    </button>
+  </div>
+</main>
+<script src="js/index.js"></script>
+</body>
+</html>

@@ -111,6 +111,7 @@ export function createRoomAndNotify(io: any, data: {user: any; userlist: any; ro
     updateRoomList(createdRoom.roomid, updatedUserList);
     createData(createdRoom.roomid);
     //(io, createdRoom);
+    notifyUsersConnect(io, createdRoom);
   }
   // console.log("Socket 좀 보자~ ", userRegistry.getAll());
 }

@@ -82,6 +82,7 @@ const ChatBar: React.FC = () => {
   };
   const handleVideoChat = () => {
     joinVideoChat(Number(roomid), loginUser?.userid);
+    window.location.href = `http://localhost:8080?roomId=${roomid}`;
   };
 
   //.filter((friend: any) => friend.userid.toLowerCase().includes(search_f.toLowerCase()));
