@@ -6,13 +6,14 @@ import "@style/SideBar.css";
 import Br from "./Br";
 import IconBar from "./IconBar";
 import IconBarOpen from "./IconBarOpen";
-import {userState, sideState} from "@data/user/state";
+import {userState, sideState, SearchState} from "@data/user/state";
 import {useRecoilState, useRecoilValue} from "recoil";
 
 const SideBar = () => {
   const navigate = useNavigate();
   const loginUser: any = useRecoilValue(userState);
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
+  const [search, setSearch]: any = useRecoilState(SearchState);
   const defaultImg = "/image/l.png";
 
   useEffect(() => {
@@ -36,7 +37,11 @@ const SideBar = () => {
       <div className={`sidebar${sidebarOpen ? "" : " closed"}`} style={{display: "flex", flexDirection: "row"}}>
         <div className="sidebar_main">
           <div className="sidebar_top">
-            <div onClick={() => navigate("/")}>
+            <div
+              onClick={() => {
+                setSearch(null);
+                navigate("/");
+              }}>
               <Link to="/">
                 <BTlogo />
               </Link>

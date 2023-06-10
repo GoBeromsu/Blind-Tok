@@ -40,7 +40,7 @@ const IconBarOpen = () => {
 
   const handleSubmit = (event: {preventDefault: () => void}) => {
     event.preventDefault();
-    console.log(query);
+    // console.log(query);
     setSearchAudio(query);
     setSearchResults([query, ...searchResults]);
     setQuery("");

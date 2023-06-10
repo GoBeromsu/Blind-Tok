@@ -48,7 +48,7 @@ const MainComponent: React.FC = () => {
   }, [loginUser]);
 
   useEffect(() => {
-    console.log("searchAudio changed:", search);
+    // console.log("searchAudio changed:", search);
     fetchAudioList();
   }, [search]);
 
@@ -57,7 +57,7 @@ const MainComponent: React.FC = () => {
       try {
         const audioFiles = await getFileMetaList(loginUser.userid);
         const audioMetaData = audioFiles.data;
-        console.log(audioMetaData[0].userid);
+        // console.log(audioMetaData[0].userid);
         if (Array.isArray(audioMetaData) && audioMetaData.length > 0) {
           setAudioList(audioMetaData);
           const audioURLs: any[] = [];
@@ -66,8 +66,7 @@ const MainComponent: React.FC = () => {
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
             const getFileName = audioMetaData[i].filename;
-            console.log(search);
-            if (getFileName.search(search)) continue;
+            if (getFileName.search(search) && search) continue;
             const fileName = getFileName.split(".mp3")[0];
             const dataURL = URL.createObjectURL(getData.data);
             const userId = audioMetaData[i].userid;
@@ -100,7 +99,7 @@ const MainComponent: React.FC = () => {
   useEffect(() => {
     const handleScroll = debounce(() => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const threshold = 800;
+      const threshold = 700;
 
       if (isLoading || allLoaded) return;
 
