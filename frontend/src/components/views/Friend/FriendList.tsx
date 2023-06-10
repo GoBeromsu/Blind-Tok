@@ -4,6 +4,9 @@ import {userState, sideState} from "@data/user/state";
 import {useRecoilState} from "recoil";
 import {Box, Input, Button} from "@mui/material";
 import Modal from "react-modal";
+import {getRelation} from "@data/Friend/axios";
+import {getFriendListQuery, getFriends} from "@data/Friend/state";
+import Loading from "@loading/Loading";
 
 interface Friend {
   userid: string;
@@ -14,11 +17,25 @@ Modal.setAppElement("#root");
 const FriendList = () => {
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-  const [friendList, setFriendList] = useState<Friend[]>([]);
+
+  if (!loginUser) {
+    return <Loading />;
+  }
+  const {isLoading, isError, data, error} = getFriends(loginUser?.userid);
+
+  const [friendList, setFriendList] = useState([]);
+
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
   const [W, setW] = useState<number>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const friends = data.map((friend: any) => ({userid: friend.friendId, username: friend.friendName}));
+      setFriendList(friends);
+    }
+  }, [data]);
   const M_style: any = {
     overlay: {
       position: "fixed",
@@ -53,17 +70,6 @@ const FriendList = () => {
   };
 
   useEffect(() => {
-    if (loginUser) {
-      let list = loginUser.friends?.filter((user: any) => user.status === "normal");
-      console.log(list);
-      let friendIdList = list?.map((user: any) => ({
-        userid: user.friendid,
-      }));
-      setFriendList(friendIdList);
-    }
-  }, [loginUser]);
-
-  useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -76,8 +82,6 @@ const FriendList = () => {
     setSearch(event.target.value);
   };
 
-  const filteredFriends = friendList?.filter(friend => friend.userid?.toLowerCase().includes(search.toLowerCase()));
-
   return (
     <Box
       className="f_list"
@@ -85,8 +89,8 @@ const FriendList = () => {
       <h1>Friend List</h1>
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">
-        {filteredFriends?.map((friend: any, index) => (
-          <Link to={`/friend/${friend.userid}`}>
+        {friendList?.map((friend: any, index) => (
+          <Link to={`/friend/${friend?.userid}`}>
             <Box
               key={index}
               className="friend-item"
@@ -94,7 +98,7 @@ const FriendList = () => {
               onClick={() => {
                 setModalIsOpen(true);
               }}>
-              {friend.nickname}
+              {friend?.username}
             </Box>
           </Link>
         ))}
