@@ -92,7 +92,7 @@ const AudioPlayer: React.FC<Props> = ({
     try {
       const getData = await getUserInfo(own);
       const ownerData = getData.data;
-      console.log(fileImg);
+      // console.log(fileImg);
       setOwner(ownerData);
     } catch (error) {
       console.error("Failed to get owner information:", error);
@@ -111,7 +111,9 @@ const AudioPlayer: React.FC<Props> = ({
         }
         onClick={handlePlayerClick}
       >
+       
         {title}
+      
         {playerUrl && (
           <ReactPlayer
             url={playerUrl}
@@ -129,8 +131,8 @@ const AudioPlayer: React.FC<Props> = ({
             }}
           />
         )}
-
       </div>
+      
       <Modal
         open={isModalOpen}
         onClose={closeModal}
@@ -147,6 +149,7 @@ const AudioPlayer: React.FC<Props> = ({
           </div>
         </Fade>
       </Modal>
+      
     </div>
   );
 };

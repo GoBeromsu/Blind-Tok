@@ -39,7 +39,7 @@ const SideBar = () => {
       fetchAudioList();
 
       setUserProfileImg(loginUser?.meta?.profilePictureUrl);
-      console.log("loginUser", loginUser, userProfileImg);
+      // console.log("loginUser", loginUser, userProfileImg);
     }
   }, [loginUser]);
 
