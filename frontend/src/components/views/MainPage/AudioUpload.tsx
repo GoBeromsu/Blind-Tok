@@ -33,7 +33,7 @@ const AudioUploadPage: React.FC = () => {
       .catch((error) => {
         console.error("Failed to convert file:", error);
       });
-    console.log(selectedImage);
+
   };
 
   const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,7 @@ const AudioUploadPage: React.FC = () => {
         formData.append("image", selectedImage);
       }
       formData.append("comment", comment);
-      console.log("image, comment : ", selectedImage, comment);
+      // console.log("image, comment : ", selectedImage, comment);
       await postAudioFile(formData, loginUser.userid);
       fetchAudioList();
     } catch (error) {

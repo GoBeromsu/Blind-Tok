@@ -59,7 +59,7 @@ const MainComponent: React.FC = () => {
       try {
         const audioFiles = await getFileMetaList(loginUser.userid);
         const audioMetaData = audioFiles.data;
-        console.log(audioMetaData)
+        // console.log(audioMetaData)
         // console.log(audioMetaData[0].userid);
         if (Array.isArray(audioMetaData) && audioMetaData.length > 0) {
           setAudioList(audioMetaData);
@@ -140,8 +140,9 @@ const MainComponent: React.FC = () => {
   }, [isLoading, allLoaded, audioURL,audioImages, components]);
 
   return (
-    <div className="maincomponent" style={sidebarOpen ? {width: `${windowWidth - 200}px`, paddingLeft: "300px"} : {width: `${windowWidth - 200}px`}}>
+    <div className="maincomponent" style={sidebarOpen ? {width: `${windowWidth - 200}px`, paddingLeft: "200px"} : {width: `${windowWidth - 200}px`}}>
       {components}
+      
     </div>
   );
 };
