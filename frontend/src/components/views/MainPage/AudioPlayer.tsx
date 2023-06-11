@@ -1,10 +1,10 @@
-﻿import React, { useEffect, useState, useRef } from "react";
+﻿import React, {useEffect, useState, useRef} from "react";
 import "../../style/AudioPlayer.css";
 import ReactPlayer from "react-player";
-import { Modal, Backdrop, Fade } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import {Modal, Backdrop, Fade} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 import UserModal from "./UserModal";
-import { getUserInfo } from "@data/user/axios";
+import {getUserInfo} from "@data/user/axios";
 
 interface Props {
   src: string;
@@ -13,9 +13,10 @@ interface Props {
   title: string;
   fileImg?: string;
   fileComment?: any;
+  list?: any;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -36,14 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AudioPlayer: React.FC<Props> = ({
-  src,
-  own,
-  autoPlay,
-  title,
-  fileImg,
-  fileComment,
-}) => {
+const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileComment, list}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +78,8 @@ const AudioPlayer: React.FC<Props> = ({
 
   useEffect(() => {
     if (own) {
-      getOwnerData(own);
+      console.log(own);
+      getOwnerData(20);
     }
   }, [own]);
 
@@ -101,16 +96,11 @@ const AudioPlayer: React.FC<Props> = ({
   };
 
   return (
-    <div className="audio-panel" style={{ width: `${windowWidth - 332}px` }}>
+    <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
       <div
         className="audio-player"
-        style={
-          fileImg
-            ? { backgroundImage: `url(${fileImg})` }
-            : { backgroundImage: 'url("/image/defaultImage.png")' }
-        }
-        onClick={handlePlayerClick}
-      >
+        style={fileImg ? {backgroundImage: `url(${fileImg})`} : {backgroundImage: 'url("/image/defaultImage.png")'}}
+        onClick={handlePlayerClick}>
         {title}
         {playerUrl && (
           <ReactPlayer
@@ -129,7 +119,6 @@ const AudioPlayer: React.FC<Props> = ({
             }}
           />
         )}
-
       </div>
       <Modal
         open={isModalOpen}
@@ -139,11 +128,10 @@ const AudioPlayer: React.FC<Props> = ({
         className={classes.modal}
         BackdropProps={{
           timeout: 500,
-        }}
-      >
+        }}>
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
-            <UserModal own={owner} />
+            <UserModal own={owner} list={list} />
           </div>
         </Fade>
       </Modal>
