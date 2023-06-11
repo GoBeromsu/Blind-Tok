@@ -58,6 +58,7 @@ const UserModal: React.FC<Props> = ({own, list}) => {
   };
 
   useEffect(() => {
+    //acceptFriend(20, 3);
     if (own) {
       fetchAudioList();
     }
@@ -82,20 +83,20 @@ const UserModal: React.FC<Props> = ({own, list}) => {
 
   const handdleFriend = async (own: any) => {
     try {
-      let index = user?.friends?.find((user: any) => list.userid === own.userid);
+      let index = list?.find((user: any) => user.userid === own.userid);
       console.log("my name", user);
       console.log("list", list);
       // console.log(own);
       // 친구인지 구별
-      if (index != -1) {
+      if (index && index != -1) {
         // 일단 저쪽에서 유저에게 보낸 정황이 있음
         setFlag1(true);
         setRelationid(user?.friends[index]?.relationid);
       } else {
         setFlag1(false);
       }
-      index = user?.friends?.find((user: any) => list.friendid === own.userid);
-      if (index != -1) {
+      index = list?.find((user: any) => user.friendid === own.userid);
+      if (index && index != -1) {
         // 유저에서 저쪽으로 보낸 정황이 있음
         setFlag2(true);
       } else {

@@ -66,7 +66,7 @@ const Notification = () => {
   };
 
   useEffect(() => {
-    //removeRelation(79);
+    //removeRelation(108);
     if (loginUser) {
       getFriendlist(loginUser.userid).then(data => {
         let list = data.data;
