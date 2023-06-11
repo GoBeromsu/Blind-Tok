@@ -30,7 +30,7 @@ const AudioUploadPage: React.FC = () => {
       .catch(error => {
         console.error("Failed to convert file:", error);
       });
-    console.log(selectedImage);
+    // console.log(selectedImage);
   };
 
   const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {

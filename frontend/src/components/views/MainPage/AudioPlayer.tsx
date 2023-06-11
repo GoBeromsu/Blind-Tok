@@ -1,10 +1,10 @@
-﻿import React, {useEffect, useState, useRef} from "react";
+﻿import React, { useEffect, useState, useRef } from "react";
 import "../../style/AudioPlayer.css";
 import ReactPlayer from "react-player";
-import {Modal, Backdrop, Fade} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { Modal, Backdrop, Fade } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import UserModal from "./UserModal";
-import {getUserInfo} from "@data/user/axios";
+import { getUserInfo } from "@data/user/axios";
 
 interface Props {
   src: string;
@@ -13,10 +13,9 @@ interface Props {
   title: string;
   fileImg?: string;
   fileComment?: any;
-  list?: any;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -37,7 +36,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileComment, list}) => {
+const AudioPlayer: React.FC<Props> = ({
+  src,
+  own,
+  autoPlay,
+  title,
+  fileImg,
+  fileComment,
+}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,8 +84,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileC
 
   useEffect(() => {
     if (own) {
-      console.log(own);
-      getOwnerData(20);
+      getOwnerData(own);
     }
   }, [own]);
 
@@ -87,7 +92,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileC
     try {
       const getData = await getUserInfo(own);
       const ownerData = getData.data;
-      console.log(fileImg);
+      // console.log(fileImg);
       setOwner(ownerData);
     } catch (error) {
       console.error("Failed to get owner information:", error);
@@ -96,12 +101,19 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileC
   };
 
   return (
-    <div className="audio-panel" style={{width: `${windowWidth - 332}px`}}>
+    <div className="audio-panel" style={{ width: `${windowWidth - 332}px` }}>
       <div
         className="audio-player"
-        style={fileImg ? {backgroundImage: `url(${fileImg})`} : {backgroundImage: 'url("/image/defaultImage.png")'}}
-        onClick={handlePlayerClick}>
+        style={
+          fileImg
+            ? { backgroundImage: `url(${fileImg})` }
+            : { backgroundImage: 'url("/image/defaultImage.png")' }
+        }
+        onClick={handlePlayerClick}
+      >
+       
         {title}
+      
         {playerUrl && (
           <ReactPlayer
             url={playerUrl}
@@ -120,6 +132,7 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileC
           />
         )}
       </div>
+      
       <Modal
         open={isModalOpen}
         onClose={closeModal}
@@ -128,13 +141,15 @@ const AudioPlayer: React.FC<Props> = ({src, own, autoPlay, title, fileImg, fileC
         className={classes.modal}
         BackdropProps={{
           timeout: 500,
-        }}>
+        }}
+      >
         <Fade in={isModalOpen}>
           <div className={classes.paper} ref={modalRef} tabIndex={-1}>
-            <UserModal own={owner} list={list} />
+            <UserModal own={owner} />
           </div>
         </Fade>
       </Modal>
+      
     </div>
   );
 };
