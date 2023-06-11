@@ -9,14 +9,9 @@ import {useRecoilState} from "recoil";
 
 const FriendPage = ({userInfo, list}: any) => {
   const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
-  const [windowHeight, setWindowHeight] = useState<any>(window.innerHeight);
   const [user, setUser]: any = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-    setWindowHeight(window.innerHeight);
-  };
 
   useEffect(() => {
     if (userInfo) setUser(userInfo);
@@ -24,19 +19,17 @@ const FriendPage = ({userInfo, list}: any) => {
   });
 
   return (
-    <Box
-      className="userAudioList"
-      style={sidebarOpen ? {width: `${windowWidth - 300}px`, paddingLeft: "340px"} : {width: `${windowWidth - 300}px`, paddingLeft: "40px"}}>
-      <Box className="user-info" style={{width: `${windowWidth - 300}px`}}>
+    <Box className="userAudioList" style={{paddingLeft: "60px"}}>
+      <Box className="user-info" style={{}}>
         <div className="container">
           <div className="profile-picture">
-            {user?.meta?.profilepictureurl ? <img src={user?.meta?.profilepictureurl} alt="Profile Picture" /> : <div className="empty-image"></div>}
+            {user?.meta?.profilePictureUrl ? <img src={user?.meta?.profilePictureUrl} alt="Profile Picture" /> : <div className="empty-image"></div>}
           </div>
           <div className="user-info">
             <h2>
               {user?.name} ( {user?.nickname} )
             </h2>
-            <p>{user?.meta?.profilemesage}</p>
+            <p>소개:{user?.meta?.profileMesage}</p>
             <p>친구: {user?.friends?.length}</p>
             <p>게시물 수: {audioList?.length}</p>
           </div>

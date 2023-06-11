@@ -53,7 +53,7 @@ const FriendList = () => {
       display: "flex",
       background: "#ffffff",
       overflow: "auto",
-      inset: "100px 300px",
+      inset: "100px 450px",
       WebkitOverflowScrolling: "touch",
       borderRadius: "14px",
       outline: "none",
@@ -64,6 +64,7 @@ const FriendList = () => {
       justifyContent: "space-between",
       padding: "10px 30px",
       height: "70vh",
+      width: "66.5vw",
     },
   };
   const handleResize = () => {
