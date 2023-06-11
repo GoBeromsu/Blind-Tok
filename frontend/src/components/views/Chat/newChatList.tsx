@@ -37,10 +37,9 @@ const NewChatList = () => {
   const socket = useSocket();
 
   const handleInvited = (newFriend: any) => {
-    console.log("새로운 user가 선택 되었습니다", newFriend);
+    // console.log("새로운 user가 선택 되었습니다", newFriend);
     setInvitedFriend(newFriend);
-
-    createRoom(loginUser, [newFriend]);
+    createRoom(loginUser, [newFriend], `${newFriend?.friendName}, ${newFriend?.userName}`);
     getRooms();
   };
   const onChangeUser = (e: any) => {
@@ -95,7 +94,7 @@ const NewChatList = () => {
         <ChatUserDialog
           open={oepn}
           setOpen={setOepn}
-          users={data.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
+          users={data?.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
           selectedUser={invitedFriend}
           handleUser={handleInvited}
         />

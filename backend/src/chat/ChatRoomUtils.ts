@@ -127,8 +127,8 @@ export function createRoom(userlist: any, roomname: string): ChatRoomData | null
 
   if (filteredRooms.length > 0) return null;
 
-  let roomName: string = userlist.map((userid: {datenum: number; userid: string}) => userid).join(", ");
-
+  // let roomName: string = userlist.map((userid: {datenum: number; userid: string}) => userid).join(", ");
+  let roomName = roomname;
   let newRoom: ChatRoomData = {
     roomid: roomid,
     roomname: roomName,
