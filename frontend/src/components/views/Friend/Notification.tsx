@@ -66,6 +66,7 @@ const Notification = () => {
   };
 
   useEffect(() => {
+    //removeRelation(79);
     if (loginUser) {
       getFriendlist(loginUser.userid).then(data => {
         let list = data.data;
@@ -128,13 +129,13 @@ const Notification = () => {
             <Box>
               <Button
                 onClick={() => {
-                  acceptEvent(req.relationid, req.userid);
+                  acceptEvent(req.relationId, req.userid);
                 }}>
                 수락
               </Button>
               <Button
                 onClick={() => {
-                  refuseEvent(req.relationid);
+                  refuseEvent(req.relationId);
                 }}>
                 거절
               </Button>
@@ -156,7 +157,8 @@ const Notification = () => {
             {req.friendName}에게 친구요청을 보냈습니다.
             <Button
               onClick={() => {
-                cancleEvent(req.relationid);
+                console.log(req);
+                cancleEvent(req.relationId);
               }}>
               취소
             </Button>

@@ -5,6 +5,7 @@ import {getUserListQuery /*{UserListQueryData}*/} from "@data/user/query";
 import {getFileMetaList, getFileData} from "@data/upload/axios";
 import {userState, sideState, SearchState} from "@data/user/state";
 import {useRecoilState, useRecoilValue} from "recoil";
+import {getFriendlist} from "@data/Friend/axios";
 
 interface AudioFile {
   fileid: string;
@@ -15,6 +16,7 @@ interface AudioFile {
 }
 
 const MainComponent: React.FC = () => {
+  const [list, setlist] = useState([]);
   const [components, setComponents] = useState<JSX.Element[]>([]);
   const [allLoaded, setAllLoaded] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
@@ -36,6 +38,11 @@ const MainComponent: React.FC = () => {
       fetchAudioList();
       previousLoginUser.current = loginUser;
     }
+    if (loginUser)
+      getFriendlist(loginUser.userid).then(data => {
+        setlist(data.data);
+        console.log(list);
+      });
   }, [loginUser]);
 
   const debounce = (func: Function, wait: number) => {
@@ -67,13 +74,13 @@ const MainComponent: React.FC = () => {
           const audioOwns: any[] = [];
           const audioNames: any[] = [];
           const audioImages_p: any[] = [];
-          const audioComments_p : any[] = [];
+          const audioComments_p: any[] = [];
           for (let i = 0; i < audioMetaData.length; i++) {
             const getData = await getFileData(audioMetaData[i].fileid);
             const getFileName = audioMetaData[i].filename;
             if (getFileName.search(search) && search) continue;
-            let audioImage:any = null;
-            if(audioMetaData[i].image) audioImage = audioMetaData[i].image;
+            let audioImage: any = null;
+            if (audioMetaData[i].image) audioImage = audioMetaData[i].image;
             const audioComment = audioMetaData[i].comment;
             const fileName = getFileName.split(".mp3")[0];
             const dataURL = URL.createObjectURL(getData.data);
@@ -81,7 +88,7 @@ const MainComponent: React.FC = () => {
             audioNames.push(fileName);
             audioURLs.push(dataURL);
             audioOwns.push(userId);
-            if(audioImage) audioImages_p.push(audioImage);
+            if (audioImage) audioImages_p.push(audioImage);
             audioComments_p.push(audioComment);
           }
           setAudioTitles(audioNames);
@@ -102,7 +109,18 @@ const MainComponent: React.FC = () => {
       const componentCount = Math.min(audioURL.length, 4);
       // 처음 페이지에 접속했을 때는 첫 음악을 재생시킴
       for (let i = 0; i < componentCount; i++) {
-        initialComponents.push(<AudioPlayer src={audioURL[i]} key={i} autoPlay={i === 0} own={audioOwn[i]} title={audioTitles[i]} fileImg={audioImages[i]} fileComment={audioComments[i]}/>);
+        initialComponents.push(
+          <AudioPlayer
+            src={audioURL[i]}
+            key={i}
+            autoPlay={i === 0}
+            own={audioOwn[i]}
+            title={audioTitles[i]}
+            fileImg={audioImages[i]}
+            fileComment={audioComments[i]}
+            list={list}
+          />,
+        );
       }
       setComponents(initialComponents);
     }
@@ -124,7 +142,16 @@ const MainComponent: React.FC = () => {
           const isDuplicate = components.some(component => component.key === nextIndex);
           if (!isDuplicate) {
             newComponents.push(
-              <AudioPlayer src={audioURL[nextIndex]} key={nextIndex} autoPlay={false} own={audioOwn[nextIndex]} title={audioTitles[nextIndex]} fileImg={audioImages[nextIndex]} fileComment={audioComments[nextIndex]} />,
+              <AudioPlayer
+                src={audioURL[nextIndex]}
+                key={nextIndex}
+                autoPlay={false}
+                own={audioOwn[nextIndex]}
+                title={audioTitles[nextIndex]}
+                fileImg={audioImages[nextIndex]}
+                fileComment={audioComments[nextIndex]}
+                list={list}
+              />,
             );
           }
         }
@@ -137,12 +164,11 @@ const MainComponent: React.FC = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isLoading, allLoaded, audioURL,audioImages, components]);
+  }, [isLoading, allLoaded, audioURL, audioImages, components]);
 
   return (
     <div className="maincomponent" style={sidebarOpen ? {width: `${windowWidth - 200}px`, paddingLeft: "200px"} : {width: `${windowWidth - 200}px`}}>
       {components}
-      
     </div>
   );
 };

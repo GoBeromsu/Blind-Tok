@@ -35,6 +35,7 @@ const FriendList = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       const friends = data.map((friend: any) => ({userid: friend.friendId, username: friend.friendName}));
       setFriendList(friends);
     }
