@@ -124,14 +124,14 @@ const UserModal: React.FC<Props> = ({own}) => {
         <div className="container">
           <div className="profile-picture">
             {/* own.meta?.profilepictureurl가 undefined 이라 익명 아이콘 나오는거 */}
-            {(user.userid === own.userid || (flag1 && flag2)) && own && own.meta?.profilepictureurl ? (
-              <img src={own.meta.profilepictureurl} alt="Profile Picture" />
+            {(user.userid === own.userid || (flag1 && flag2)) && own && own.meta?.profilePictureUrl ? (
+              <img src={own.meta.profilePictureUrl} alt="Profile Picture" />
             ) : (
               <img src={blindImg} />
             )}
           </div>
           <div className="user-info">
-            {user.userid === own.userid || (flag1 && flag2) ? (
+            {(user.userid === own.userid || (flag1 && flag2))? (
               <h2>{own && own.name && own.nickname ? `${own.name} (${own.nickname})` : "익명"}</h2>
             ) : (
               <h2>익명</h2>
