@@ -95,7 +95,7 @@ const NewChatList = () => {
         <ChatUserDialog
           open={oepn}
           setOpen={setOepn}
-          users={data.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
+          users={data?.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
           selectedUser={invitedFriend}
           handleUser={handleInvited}
         />
