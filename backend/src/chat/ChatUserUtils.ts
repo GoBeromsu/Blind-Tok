@@ -85,7 +85,7 @@ export function sendOfflineMessage(io: any, socket: any, roomid: number) {
   let index = rooms[roomid]?.userlist?.findIndex(user => user.userid === userid);
   console.log(index);
   if (!rooms[roomid].userlist) return;
-  if (index === -1 || rooms[roomid].userlist[index].offlineData.length === 0) return;
+  if (index === -1 || rooms[roomid].userlist[index].offlineData?.length === 0) return;
   let data = getOfflineData(roomid, index);
   sendMessage(socket, {data: {roomid, data}, id: "chatData"});
   // console.log("chatData : " + roomid + data);

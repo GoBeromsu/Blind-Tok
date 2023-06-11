@@ -15,10 +15,12 @@ Modal.setAppElement("#root");
 
 interface Props {
   own: any;
+  list: any;
 }
 
-const UserModal: React.FC<Props> = ({own}) => {
-  let user: any = useRecoilState(userState)[0];
+const UserModal: React.FC<Props> = ({own, list}) => {
+  let user: any = list;
+  const loginUser: any = useRecoilState(userState);
   const [relationid, setRelationid] = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -42,7 +44,7 @@ const UserModal: React.FC<Props> = ({own}) => {
       position: "fixed",
       background: "#ffffff",
       overflow: "auto",
-      inset: "100px 700px",
+      inset: "100px 100px",
       WebkitOverflowScrolling: "touch",
       borderRadius: "14px",
       outline: "none",
@@ -81,7 +83,8 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   const handdleFriend = async (own: any) => {
     try {
-      let index = user?.friends?.find((user: any) => user.userid === own.userid);
+      console.log(user);
+      let index = user?.find((user: any) => user.userid === own.userid);
       // console.log("my name", user);
       // console.log(own);
       // 친구인지 구별
@@ -92,9 +95,11 @@ const UserModal: React.FC<Props> = ({own}) => {
       } else {
         setFlag1(false);
       }
-      index = user?.friends?.find((user: any) => user.userid === own.userid);
+      index = user?.find((user: any) => user.friendid === own.userid);
       if (index && index != -1) {
         // 유저에서 저쪽으로 보낸 정황이 있음
+
+        console.log(flag1, flag2);
         setFlag2(true);
       } else {
         setFlag2(false);
@@ -107,13 +112,13 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   // 친구 추가 버튼 클릭 시 실행될 동작을 정의.
   const handleAddFriend = () => {
-    console.log(`${user?.userid} -> ${own.userid}`);
-    addFriend(user?.userid, own.userid);
+    console.log(`${loginUser?.userid} -> ${own.userid}`);
+    addFriend(loginUser?.userid, own.userid);
   };
   const handleAcceptFriend = () => {
-    console.log(`${user?.userid} -> ${own.userid}`);
+    console.log(`${loginUser?.userid} -> ${own.userid}`);
     editFriendStatus(relationid, "normal");
-    acceptFriend(user?.userid, own.userid);
+    acceptFriend(loginUser?.userid, own.userid);
     setFlag2(true);
   };
   // 친추 버튼 텍스트
@@ -124,14 +129,14 @@ const UserModal: React.FC<Props> = ({own}) => {
         <div className="container">
           <div className="profile-picture">
             {/* own.meta?.profilepictureurl가 undefined 이라 익명 아이콘 나오는거 */}
-            {(user.userid === own.userid || (flag1 && flag2)) && own && own.meta?.profilePictureUrl ? (
+            {(user?.friendid === own.userid || (flag1 && flag2)) && own && own.meta?.profilePictureUrl ? (
               <img src={own.meta.profilePictureUrl} alt="Profile Picture" />
             ) : (
               <img src={blindImg} />
             )}
           </div>
           <div className="user-info">
-            {(user.userid === own.userid || (flag1 && flag2))? (
+            {user?.friendid === own.userid || (flag1 && flag2) ? (
               <h2>{own && own.name && own.nickname ? `${own.name} (${own.nickname})` : "익명"}</h2>
             ) : (
               <h2>익명</h2>
@@ -146,20 +151,24 @@ const UserModal: React.FC<Props> = ({own}) => {
         </div>
       </Box>
       <h2>이 사람의 게시물</h2>
-      {audioList.length > 0 ? (
-        <ul>
-          {audioList.map((audioFile, index) => (
-            <li key={index}>
-              <div>
-                <h3>{audioFile.filename}</h3>
-                <p>Comment: {audioFile.comment}</p>
-                {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
-              </div>
-            </li>
-          ))}
-        </ul>
+      {flag1 === true && flag2 === true ? (
+        audioList?.length > 0 ? (
+          <ul>
+            {audioList.map((audioFile, index) => (
+              <li key={index}>
+                <div>
+                  <h3>{audioFile.filename}</h3>
+                  <p>Comment: {audioFile.comment}</p>
+                  {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No audio files found.</p>
+        )
       ) : (
-        <p>No audio files found.</p>
+        <p></p>
       )}
       <Modal
         isOpen={modalIsOpen}
