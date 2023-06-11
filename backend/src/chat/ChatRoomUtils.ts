@@ -121,7 +121,7 @@ export function createRoom(userlist: any, roomname: string): ChatRoomData | null
   let roomid: number = nextId;
 
   let filteredRooms: ChatRoomData[] = Object.values(rooms).filter(room => {
-    const foundUsers = userlist.filter((userid: any) => room?.userlist.some(u => u.userid === userid));
+    const foundUsers = userlist?.filter((userid: any) => room?.userlist.some(u => u.userid === userid));
     return foundUsers.length === userlist.length && foundUsers.length === room.userlist.length;
   });
 

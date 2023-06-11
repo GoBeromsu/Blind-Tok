@@ -15,9 +15,10 @@ Modal.setAppElement("#root");
 
 interface Props {
   own: any;
+  list: any;
 }
 
-const UserModal: React.FC<Props> = ({own}) => {
+const UserModal: React.FC<Props> = ({own, list}) => {
   let user: any = useRecoilState(userState)[0];
   const [relationid, setRelationid] = useState<any>();
   const [audioList, setAudioList] = useState<any[]>([]);
@@ -81,19 +82,20 @@ const UserModal: React.FC<Props> = ({own}) => {
 
   const handdleFriend = async (own: any) => {
     try {
-      let index = user?.friends?.find((user: any) => user.userid === own.userid);
-      // console.log("my name", user);
+      let index = user?.friends?.find((user: any) => list.userid === own.userid);
+      console.log("my name", user);
+      console.log("list", list);
       // console.log(own);
       // 친구인지 구별
-      if (index && index != -1) {
+      if (index != -1) {
         // 일단 저쪽에서 유저에게 보낸 정황이 있음
         setFlag1(true);
         setRelationid(user?.friends[index]?.relationid);
       } else {
         setFlag1(false);
       }
-      index = user?.friends?.find((user: any) => user.userid === own.userid);
-      if (index && index != -1) {
+      index = user?.friends?.find((user: any) => list.friendid === own.userid);
+      if (index != -1) {
         // 유저에서 저쪽으로 보낸 정황이 있음
         setFlag2(true);
       } else {
@@ -131,7 +133,7 @@ const UserModal: React.FC<Props> = ({own}) => {
             )}
           </div>
           <div className="user-info">
-            {(user.userid === own.userid || (flag1 && flag2))? (
+            {user.userid === own.userid || (flag1 && flag2) ? (
               <h2>{own && own.name && own.nickname ? `${own.name} (${own.nickname})` : "익명"}</h2>
             ) : (
               <h2>익명</h2>
@@ -146,20 +148,24 @@ const UserModal: React.FC<Props> = ({own}) => {
         </div>
       </Box>
       <h2>이 사람의 게시물</h2>
-      {audioList.length > 0 ? (
-        <ul>
-          {audioList.map((audioFile, index) => (
-            <li key={index}>
-              <div>
-                <h3>{audioFile.filename}</h3>
-                <p>Comment: {audioFile.comment}</p>
-                {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
-              </div>
-            </li>
-          ))}
-        </ul>
+      {flag1 && flag2 ? (
+        audioList.length > 0 ? (
+          <ul>
+            {audioList.map((audioFile, index) => (
+              <li key={index}>
+                <div>
+                  <h3>{audioFile.filename}</h3>
+                  <p>Comment: {audioFile.comment}</p>
+                  {audioFile.image && <img src={audioFile.image} alt="Audio Image" />}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No audio files found.</p>
+        )
       ) : (
-        <p>No audio files found.</p>
+        <p></p>
       )}
       <Modal
         isOpen={modalIsOpen}

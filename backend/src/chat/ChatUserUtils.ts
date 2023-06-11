@@ -84,7 +84,7 @@ export function sendOfflineMessage(io: any, socket: any, roomid: number) {
   let userid = userRegistry.getBySocket(socket?.id).userid;
   let index = rooms[roomid]?.userlist?.findIndex(user => user.userid === userid);
   console.log(index);
-  if (!rooms[roomid].userlist) return;
+  if (!rooms[roomid]?.userlist) return;
   if (index === -1 || rooms[roomid].userlist[index].offlineData?.length === 0) return;
   let data = getOfflineData(roomid, index);
   sendMessage(socket, {data: {roomid, data}, id: "chatData"});
@@ -162,6 +162,8 @@ export function joinRoom(socket: any, room: any) {
 export function getRooms(socket: any) {
   const user = userRegistry.getBySocket(socket?.id);
   const rooms = getUserRooms(user?.userid);
+  console.log("???/", rooms);
+  console.log("???/", rooms[0]?.userlist);
   // console.log("getRooms", rooms, userRegistry.getAll());
   // console.log("getRooms : ", user, user?.userid, rooms);
   sendMessage(socket, {id: "getRooms", data: rooms});
