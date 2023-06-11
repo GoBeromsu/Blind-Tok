@@ -47,7 +47,7 @@ const UserPage = () => {
       justifyContent: "space-between",
       padding: "10px 30px",
       height: "70vh",
-      width:"450px"
+      width: "450px",
     },
   };
 
@@ -130,7 +130,7 @@ const UserPage = () => {
               <div className="audio-item">
                 <h3>{audioFile.filename}</h3>
                 <p>Comment: {audioFile.comment}</p>
-                {audioFile.image ? <img src={audioFile.image} alt="Audio Image" />: <img src="/image/defaultImage.png"/>}
+                {audioFile.image ? <img src={audioFile.image} alt="Audio Image" /> : <img src="/image/defaultImage.png" />}
                 <button onClick={() => handleDeleteAudio(audioFile)}>Delete</button>
               </div>
             </li>
@@ -151,7 +151,7 @@ const UserPage = () => {
             setModalIsOpen(false);
             handleFileUpload();
           }}
-          style={{width: "50px", height: "50px",fontSize:"15px", alignSelf: "flex-end"}}>
+          style={{width: "50px", height: "50px", fontSize: "15px", alignSelf: "flex-end"}}>
           업로드
         </Button>
       </Modal>
