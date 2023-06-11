@@ -7,6 +7,9 @@ import Modal from "react-modal";
 import {getRelation} from "@data/Friend/axios";
 import {getFriendListQuery, getFriends} from "@data/Friend/state";
 import Loading from "@loading/Loading";
+import FriendPage from "./FriendPage";
+import {getUserInfo} from "@data/user/axios";
+import {getFileMetaList} from "@data/upload/axios";
 
 interface Friend {
   userid: string;
@@ -17,14 +20,14 @@ Modal.setAppElement("#root");
 const FriendList = () => {
   const [sidebarOpen, setSidebarOpen]: any = useRecoilState(sideState);
   const [loginUser, setLoginUser]: any = useRecoilState(userState);
-
+  const [friendInfo, setFriendInfo]: any = useState();
+  const [audioList, setAudioList] = useState<any[]>([]);
   if (!loginUser) {
     return <Loading />;
   }
   const {isLoading, isError, data, error} = getFriends(loginUser?.userid);
 
   const [friendList, setFriendList] = useState([]);
-
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
   const [W, setW] = useState<number>(window.innerWidth < 850 ? window.innerWidth - 350 : 500);
@@ -50,7 +53,7 @@ const FriendList = () => {
       display: "flex",
       background: "#ffffff",
       overflow: "auto",
-      inset: "100px 300px",
+      inset: "100px 450px",
       WebkitOverflowScrolling: "touch",
       borderRadius: "14px",
       outline: "none",
@@ -61,6 +64,7 @@ const FriendList = () => {
       justifyContent: "space-between",
       padding: "10px 30px",
       height: "70vh",
+      width: "66.5vw",
     },
   };
   const handleResize = () => {
@@ -82,6 +86,28 @@ const FriendList = () => {
     setSearch(event.target.value);
   };
 
+  const fetchUser = async (friendid: number) => {
+    if (friendid) {
+      try {
+        const userinfo = await getUserInfo(Number(friendid)).then(data => {
+          return data.data;
+        });
+        setFriendInfo(userinfo);
+      } catch (error) {
+        console.error("Failed to fetch audio files:", error);
+      }
+    }
+  };
+
+  const fetchAudioList = async (friendid: number) => {
+    try {
+      const audioFiles = await getFileMetaList(friendid);
+      setAudioList(audioFiles.data.reverse());
+    } catch (error) {
+      console.error("Failed to fetch audio files:", error);
+    }
+  };
+
   return (
     <Box
       className="f_list"
@@ -90,17 +116,17 @@ const FriendList = () => {
       <Input type="text" placeholder="Search friends..." value={search} onChange={handleSearchChange} style={{position: "sticky", top: "30px"}} />
       <Box className="f_item">
         {friendList?.map((friend: any, index) => (
-          <Link to={`/friend/${friend?.userid}`}>
-            <Box
-              key={index}
-              className="friend-item"
-              style={{width: `${W}px`, height: "50px"}}
-              onClick={() => {
-                setModalIsOpen(true);
-              }}>
-              {friend?.username}
-            </Box>
-          </Link>
+          <Box
+            key={index}
+            className="friend-item"
+            style={{width: `${W}px`, height: "50px"}}
+            onClick={() => {
+              setModalIsOpen(true);
+              fetchUser(friend.userid);
+              fetchAudioList(friend.userid);
+            }}>
+            {friend?.username}
+          </Box>
         ))}
       </Box>
       <Modal
@@ -109,7 +135,7 @@ const FriendList = () => {
           setModalIsOpen(false);
         }}
         style={M_style}>
-        <Outlet />
+        <FriendPage userInfo={friendInfo} list={audioList} />
         <Button
           onClick={() => {
             setModalIsOpen(false);

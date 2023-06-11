@@ -114,7 +114,6 @@ const UserModal: React.FC<Props> = ({own}) => {
     console.log(`${user?.userid} -> ${own.userid}`);
     editFriendStatus(relationid, "normal");
     acceptFriend(user?.userid, own.userid);
-
     setFlag2(true);
   };
   // 친추 버튼 텍스트

@@ -92,7 +92,13 @@ const NewChatList = () => {
             새로운 방 생성
           </Button>
         </Box>
-        <ChatUserDialog open={oepn} setOpen={setOepn} users={data} selectedUser={invitedFriend} handleUser={handleInvited} />
+        <ChatUserDialog
+          open={oepn}
+          setOpen={setOepn}
+          users={data.filter((user: any) => user.userid === loginUser.userid && user.status === "normal")}
+          selectedUser={invitedFriend}
+          handleUser={handleInvited}
+        />
       </Box>
       <Box>
         <Box>방 리스트가 들어갈 공간</Box>

@@ -68,8 +68,9 @@ function AppRoutes() {
         {/* Auth에 뭐 줘야 할지 헷갈리면 걍 True로 두셈 ㅇㅇ 아니면 주석 처리하거나 // Auth 페이지에 유저를 주는 이유는 로그인이 되어 있지 않으면로그인 페이지로 이동하기 위함*/}
         <Route path="/" element={Auth(SideBar, true, user)}>
           <Route index element={Auth(MainComponent, true, user)}></Route>
-          <Route path="/friend" element={Auth(FriendList, true, user)}>
-            <Route path=":friendid" element={Auth(FriendPage, true, user)} />
+          <Route path="/friend" element={Auth(FriendList, true, user)} />
+          <Route path="/ChatRoom">
+            <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
           </Route>
           <Route path="/chat" element={Auth(newChatList, true, user)}></Route>
           <Route path="/User" element={Auth(UserPage, true, user)}></Route>
@@ -89,9 +90,6 @@ function AppRoutes() {
         {/*<Route path="/friend_s" element={<SideBar user={user} />}>*/}
         {/*  /!*<Route path=":friendid" element={<MainComponent/>}/>*!/*/}
         {/*</Route>*/}
-        <Route path="/ChatRoom" element={Auth(ChatBar, true, user)}>
-          <Route path=":roomid" element={Auth(ChatRoom, true, user)} />
-        </Route>
         <Route path="/ChatRoom/:roomid/video" element={Auth(videoChat, true, user)} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
