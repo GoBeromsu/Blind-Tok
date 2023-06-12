@@ -62,6 +62,12 @@ export default function (fastify: FastifyInstance) {
       reply.code(ERROR_AUTH_UNVALID).send("ERROR_AUTH_UNVALID");
     }
   });
+  //킹 갓 제네럿 멘토님
+  fastify.addHook("onRequest", (request, reply, done) => {
+    reply.header("Connection", "Keep-Alive");
+    reply.header("Keep-Alive", `timeout=${fastify.server.keepAliveTimeout / 1000}`);
+    done();
+  });
 
   fastify.addHook("onSend", async (req: FastifyRequest, reply: FastifyReply, _) => {
     const ip = req.headers["x-forwarded-for"];
