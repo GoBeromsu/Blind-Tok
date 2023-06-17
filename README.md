@@ -16,11 +16,10 @@
 ![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/7b3b6319-f448-40af-b3f0-ba66dbc8a92c)
 
 ## 개선 사항
-<img width="482" alt="image" src="https://github.com/GoBeromsu/Blind-Tok/assets/37897508/bbccf01e-4297-4415-bb79-ac60a4f82c51">
+![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/19c07e13-29dc-423f-9566-40a358e6f203)
 
 현대 사회에서는 많은 기기들이 NAT 뒷 단에 있는 경우가 많아 직접적인 P2P 연결이 불가능합니다.
 이를 해결하기 위해 STUN 서버를 거쳐서, 유저들의 Public IP를 찾기도 하지만, 이 또한, 방화벽이나 엄격한 NAT 정책이 있는 경우 무용 지물이 되었습니다
 
 즉 WebRTC 서비스를 위해서는 외부에 데이터를 릴레이하여 유저에게 전달하는 TURN 서버와 기본적으로 STUN 서버가 필요하게 됩니다
 
-![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/19c07e13-29dc-423f-9566-40a358e6f203)
