@@ -13,7 +13,7 @@
 ![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/e87d11f9-d0b5-437c-8264-da267eea2ff6)
 ![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/de72e634-fc89-4d91-9859-163abdb47986)
 ![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/da640673-e0db-496e-8d8e-e108f3a36762)
-![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/681a5371-d342-4104-b871-2f22dd86aa5a)
+![image](https://github.com/GoBeromsu/Blind-Tok/assets/37897508/7b3b6319-f448-40af-b3f0-ba66dbc8a92c)
 
 ## 개선 사항
 <img width="482" alt="image" src="https://github.com/GoBeromsu/Blind-Tok/assets/37897508/bbccf01e-4297-4415-bb79-ac60a4f82c51">
