@@ -28,9 +28,9 @@ export default async function (fastify: FastifyInstance) {
     socket.on("getRooms", (data: any) => {
       getRooms(socket);
     });
-    socket.on("getOfflineMessage", (data: any)=>{
+    socket.on("getOfflineMessage", (data: any) => {
       sendOfflineMessage(fastify.io, socket, data.roomid);
-    })
+    });
 
     socket.on("disconnect", (reason: any) => {
       // TODO: 방을 나가는 것과 socket이 disconnect 되는 것은 다름
@@ -44,6 +44,7 @@ export default async function (fastify: FastifyInstance) {
 
     socket.on("createRoom", (data: {user: any; userlist: any; roomname: string}) => {
       const {user, userlist, roomname} = data;
+      console.log("createRoom : ", user, userlist, roomname);
       createRoomAndNotify(fastify.io, data);
     });
 

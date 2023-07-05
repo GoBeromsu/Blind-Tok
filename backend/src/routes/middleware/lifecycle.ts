@@ -1,4 +1,4 @@
-import {FastifyReply} from "fastify";
+import {FastifyReply, FastifyServerOptions} from "fastify";
 import {FastifyInstance, FastifyRequest} from "fastify";
 
 import {xssFilter} from "@utils/StringUtils";
@@ -8,6 +8,7 @@ import {verifyJWT} from "@utils/OAuth2Utils";
 import {EXCEPT_URL} from "@config/adam.config";
 const isProd = process.env.NODE_ENV == "production";
 // console.log("isProd >", isProd);
+
 export default function (fastify: FastifyInstance) {
   //1. preValidation : xxsFilter
   fastify.addHook("preValidation", async (req: FastifyRequest, _: FastifyReply) => {
@@ -62,6 +63,8 @@ export default function (fastify: FastifyInstance) {
       reply.code(ERROR_AUTH_UNVALID).send("ERROR_AUTH_UNVALID");
     }
   });
+
+  fastify.server.keepAliveTimeout = 60000 * 2;
   //킹 갓 제네럿 멘토님
   fastify.addHook("onRequest", (request, reply, done) => {
     reply.header("Connection", "Keep-Alive");
@@ -70,7 +73,14 @@ export default function (fastify: FastifyInstance) {
   });
 
   fastify.addHook("onSend", async (req: FastifyRequest, reply: FastifyReply, _) => {
-    const ip = req.headers["x-forwarded-for"];
+    const ip =
+      req.headers[
+        'x-forwarded-fo  fastify.addHook("onRequest", (request, reply, done) => {\n' +
+          '    reply.header("Connection", "Keep-Alive");\n' +
+          '    reply.header("Keep-Alive", `timeout=${fastify.server.keepAliveTimeout / 1000}`);\n' +
+          "    done();\n" +
+          "  });\nr"
+      ];
     const userAgent = req.headers["user-agent"];
     const url = req.url;
     const isNotStatic = false;

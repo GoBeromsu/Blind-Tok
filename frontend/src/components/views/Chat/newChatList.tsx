@@ -39,6 +39,7 @@ const NewChatList = () => {
   const handleInvited = (newFriend: any) => {
     // console.log("새로운 user가 선택 되었습니다", newFriend);
     setInvitedFriend(newFriend);
+    console.log("새로운 user가 선택 되었습니다", newFriend);
     createRoom(loginUser, [newFriend], `${newFriend?.friendName}, ${newFriend?.userName}`);
     getRooms();
   };

@@ -22,7 +22,7 @@ export default class User extends BaseEntity {
   @Column({nullable: true, length: 512})
   refresh_token: string;
 
-  @OneToOne(() => UserMeta, meta => meta.user)
+  @OneToOne(() => UserMeta)
   meta: UserMeta;
 
   @OneToMany(() => UserLogin, login => login.user)

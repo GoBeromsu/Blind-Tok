@@ -14,7 +14,7 @@ let sessionId;
 let participants = {};
 
 const urlParams = new URLSearchParams(window.location.search);
-const roomId = urlParams.get("roomId");
+const roomId = urlParams.get("roomId") || 1;
 console.log("URL Params : ", roomId);
 
 const StandardConstraints = {
